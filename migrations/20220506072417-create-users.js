@@ -1,4 +1,3 @@
-
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.createTable('users',
     {
@@ -8,27 +7,41 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4(),
       },
-      name: {
+      first_name: {
         type: Sequelize.STRING,
+        allowNull: false,
+      },
+      surname: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      phone_number: {
+        type: Sequelize.BIGINT,
         allowNull: false,
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       password: {
         type: Sequelize.STRING,
-      },
-      active: {
-        type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+      },
+      confirm_password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      sms_code: {
+        type: Sequelize.STRING,
+      },
+      sms_verified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       reset_token: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(1234),
       },
       auth_token: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(1234),
       },
       token_expired: {
         type: Sequelize.DATE,

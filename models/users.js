@@ -8,21 +8,35 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      name: {
+      first_name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      email: {
+      surname: {
         type: DataTypes.STRING,
         allowNull: false,
+      }, 
+      phone_number: {
+        type: DataTypes.NUMBER,
+        allowNull: false,
+      }, 
+      email: {
+        type: DataTypes.STRING,
       },
       password: {
         type: DataTypes.STRING,
-      },
-      active: {
-        type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+      },
+      confirm_password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      sms_code: {
+        type: DataTypes.STRING,
+      },
+      sms_verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
       },
       reset_token: {
         type: DataTypes.STRING
@@ -34,36 +48,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE
       }
     },
-    {
-      hooks: {
-        beforeCreate(user) {
-          if (user.changed('password')) {
-            user.password = crypto
-              .createHash('md5')
-              .update(user.password || '')
-              .digest('hex');
-          }
-        },
-        beforeUpdate(user) {
-          if (user.changed('password')) {
-            user.password = crypto
-              .createHash('md5')
-              .update(user.password || '')
-              .digest('hex');
-          }
-        },
-      },
-    },
-    {
-      defaultScope: {
-        attributes: { exclude: ['password'] },
-      },
-      scopes: {
-        withSecretColumns: {
-          attributes: { include: ['password'] },
-        },
-      },
-    });
+    // {
+    //   defaultScope: {
+    //     attributes: { exclude: ['password' , 'confirm_password'] },
+    //   },
+    //   scopes: {
+    //     withSecretColumns: {
+    //       attributes: { include: ['password' , 'confirm_password'] },
+    //     },
+    //   },
+    // }
+    );
 
   users.associate = () => {
   };
