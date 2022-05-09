@@ -9,18 +9,19 @@ async function findUserByEmail(email) {
   });
 }
 
-async function userFindByPhoneNumber(phoneNumber) {
+async function userFindByPhoneNumber(phoneNumber, countryCode) {
   return await users.findOne({
     where: {
+      country_code: countryCode,
       phone_number: phoneNumber,
     },
   });
 }
 
-async function updateResetTokensByPhoneNumber(resetToken, phoneNumber) {
+async function updateCodeByPhoneNumber(phoneNumber) {
   return await users.update(
     {
-      reset_token: resetToken,
+      sms_code: Math.floor(100000 + Math.random() * 900000),
     },
     {
       where: {
@@ -30,10 +31,11 @@ async function updateResetTokensByPhoneNumber(resetToken, phoneNumber) {
   );
 }
 
-async function userFindByPhoneNumberAndPwd(phoneNumber, password) {
+async function userFindByPhoneNumberAndPwd(phoneNumber, countryCode, password) {
   return await users.findOne({
     where: {
       phone_number: phoneNumber,
+      country_code: countryCode,
       password: password,
     },
   });
@@ -47,7 +49,27 @@ async function userFindByResetToken(token) {
   });
 }
 
-async function userFindByCode(code) {
+async function userFindByCodeForLogin(code, phoneNumber) {
+  return await users.findOne({
+    where: {
+      sms_code: code,
+      phone_number: phoneNumber,
+      sms_verified: false,
+    },
+  });
+}
+
+async function userFindByCodeForReset(code, phoneNumber) {
+  return await users.findOne({
+    where: {
+      sms_code: code,
+      phone_number: phoneNumber,
+      sms_verified: true,
+    },
+  });
+}
+
+async function smsCodeVerified(code, phoneNumber) {
   return await users.update(
     {
       sms_verified: true,
@@ -55,6 +77,8 @@ async function userFindByCode(code) {
     {
       where: {
         sms_code: code,
+        phone_number: phoneNumber,
+        sms_verified: false,
       },
     }
   );
@@ -82,7 +106,9 @@ module.exports = {
   findUserByEmail,
   userFindByPhoneNumberAndPwd,
   userFindByPhoneNumber,
-  updateResetTokensByPhoneNumber,
+  updateCodeByPhoneNumber,
   userFindByResetToken,
-  userFindByCode,
+  userFindByCodeForLogin,
+  smsCodeVerified,
+  userFindByCodeForReset,
 };

@@ -12,7 +12,7 @@ exports.signupValidator = async (req, res, next) => {
     "password",
     "confirmPassword",
     "phoneNumber",
-    "countryCode"
+    "countryCode",
   ];
 
   Object.keys(param).forEach((element) => {
@@ -30,19 +30,19 @@ exports.signupValidator = async (req, res, next) => {
   return next();
 };
 
-  exports.loginValidator = async (req, res, next) => {
-    const param = { ...req.body };
+exports.loginValidator = async (req, res, next) => {
+  const param = { ...req.body };
 
-    let failed = false;
-    let allowedParams = ['phoneNumber', 'password'];
+  let failed = false;
+  let allowedParams = ["phoneNumber", "countryCode", "password"];
 
-    Object.keys(param).forEach((element) => {
-      if (!allowedParams.includes(element)) failed = true;
-    });
+  Object.keys(param).forEach((element) => {
+    if (!allowedParams.includes(element)) failed = true;
+  });
 
-    allowedParams.forEach((element) => {
-      if (!param[element]) failed = true;
-    });
-    if (failed) return errorResponse(req, res, INVALID_PARAMS, 400);
-    return next();
-  };
+  allowedParams.forEach((element) => {
+    if (!param[element]) failed = true;
+  });
+  if (failed) return errorResponse(req, res, INVALID_PARAMS, 400);
+  return next();
+};

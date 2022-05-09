@@ -20,12 +20,14 @@ const {
 const {
   findUserById,
   userFindByPhoneNumberAndPwd,
-  updateResetTokensByPhoneNumber,
+  updateCodeByPhoneNumber,
   userFindByPhoneNumber,
   passwordEncrypt,
   findUserByEmail,
   userFindByResetToken,
-  userFindByCode
+  userFindByCodeForLogin,
+  userFindByCodeForReset,
+  smsCodeVerified,
 } = require("../../Dao/user");
 const randomString = require("randomstring");
 
@@ -45,12 +47,12 @@ async function userSignup(param) {
       const userObj = {
         first_name: param.firstName,
         surname: param.surname,
-        country_code:param.countryCode,
+        country_code: param.countryCode,
         phone_number: param.phoneNumber,
         email: param.email.toLowerCase(),
         password: passwordEncrypt(param.password),
         confirm_password: passwordEncrypt(param.password),
-        sms_code : Math.floor(100000 + Math.random() * 900000)
+        sms_code: Math.floor(100000 + Math.random() * 900000),
       };
 
       // const params = {
@@ -63,11 +65,11 @@ async function userSignup(param) {
       //         }
       //     }
       // };
-  
+
       // const publishTextPromise = new AWS.SNS({ apiVersion: '2010-03-31' }).publish(params).promise();
       // console.log("~ publishTextPromise", publishTextPromise)
-  
-      
+
+
       // publishTextPromise.then(
       //     function (data) {
       //         res.end(JSON.stringify({ MessageID: data.MessageId }));
@@ -75,7 +77,7 @@ async function userSignup(param) {
       //         function (err) {
       //             res.end(JSON.stringify({ Error: err }));
       //         });
-  
+
       const newUser = await users.create(userObj);
 
       user = await findUserById(newUser.id);
@@ -103,6 +105,7 @@ async function userLogin(param) {
   try {
     let user = await userFindByPhoneNumberAndPwd(
       param.phoneNumber,
+      param.countryCode,
       passwordEncrypt(param.password)
     );
 
@@ -149,7 +152,6 @@ async function userLogin(param) {
       msg: "Login Successfully.",
     };
   } catch (error) {
-    console.log(error);
     return {
       err: true,
       msg: error,
@@ -159,25 +161,22 @@ async function userLogin(param) {
 
 async function forgotPassword(param) {
   try {
-    let user = await userFindByPhoneNumber(param.phoneNumber);
+    let user = await userFindByPhoneNumber(param.phoneNumber, param.countryCode);
 
     if (!user) {
       return {
         err: true,
         msg: USER_NOT_EXIST,
       };
+    }else{
+      await updateCodeByPhoneNumber(param.phoneNumber);
     }
-    const passwordResetToken = randomString.generate();
-
-    await updateResetTokensByPhoneNumber(passwordResetToken, param.phoneNumber);
 
     return {
       err: false,
-      data: passwordResetToken,
-      msg: "Reset password link send in your phone number.",
+      msg: "OTP send in your phone number.",
     };
   } catch (error) {
-    console.log(error);
     return {
       err: true,
       msg: error,
@@ -189,10 +188,10 @@ async function resetPassword(token, newPassword, confirmPassword) {
   try {
     const userData = await userFindByResetToken(token);
     if (!userData) {
-        return {
-            err: true,
-            msg: INVALID_TOKEN,
-        }
+      return {
+        err: true,
+        msg: INVALID_TOKEN,
+      };
     }
     if (newPassword !== confirmPassword) {
       return {
@@ -203,11 +202,9 @@ async function resetPassword(token, newPassword, confirmPassword) {
 
     return {
       err: false,
-      data: {},
       msg: "Reset Password Successfully.",
     };
   } catch (error) {
-    console.log(error);
     return {
       err: true,
       msg: error,
@@ -217,13 +214,21 @@ async function resetPassword(token, newPassword, confirmPassword) {
 
 async function codeVerify(param) {
   try {
-    let user = await userFindByCode(param.code);
-
-    if (!user) {
+    const userLogin = await userFindByCodeForLogin(
+      param.code,
+      param.phoneNumber
+    );
+    const userResetPwd = await userFindByCodeForReset(
+      param.code,
+      param.phoneNumber
+    );
+    if (!userLogin && !userResetPwd) {
       return {
         err: true,
         msg: USER_NOT_EXIST,
       };
+    } else {
+      await smsCodeVerified(param.code, param.phoneNumber);
     }
 
     return {
@@ -231,13 +236,12 @@ async function codeVerify(param) {
       msg: "Code Verified Successfully.",
     };
   } catch (error) {
-    console.log(error);
     return {
       err: true,
       msg: error,
     };
   }
-} 
+}
 
 module.exports = {
   userSignup,
