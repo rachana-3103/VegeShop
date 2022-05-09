@@ -34,13 +34,11 @@ if (process.env.NODE_ENV === 'development') {
   const workerIndex = (ip, len) => (ip ? farmhash.fingerprint32(ip) % len : farmhash.fingerprint32('demo') % len);
 
   net.createServer({ pauseOnConnect: true }, (connection) => {
-    console.log(process.env.APP_PORT ,'.................PPPP');
     const worker = workers[workerIndex(connection.remoteAddress, numCPUs)];
     worker.send('sticky-session:connection', connection);
   }).listen(process.env.APP_PORT || 4000);
 } else {
   console.info(`Worker ${process.pid} started`);
-  console.log(process.env.APP_PORT ,'.................PPPP');
 
   server.listen(0, () => {
     console.info(chalk.blue(`Server & Socket listening on port ${process.env.APP_PORT}!`));
