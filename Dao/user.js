@@ -9,22 +9,25 @@ async function findUserByEmail(email) {
   });
 }
 
-async function userFindByPhoneNumber(phoneNumber){
+async function userFindByPhoneNumber(phoneNumber) {
   return await users.findOne({
     where: {
-      phone_number: phoneNumber
+      phone_number: phoneNumber,
     },
   });
 }
 
 async function updateResetTokensByPhoneNumber(resetToken, phoneNumber) {
-  return await users.update({
-    reset_token: resetToken,
-  }, {
-    where: {
-      phone_number: phoneNumber,
+  return await users.update(
+    {
+      reset_token: resetToken,
     },
-  });
+    {
+      where: {
+        phone_number: phoneNumber,
+      },
+    }
+  );
 }
 
 async function userFindByPhoneNumberAndPwd(phoneNumber, password) {
@@ -42,6 +45,19 @@ async function userFindByResetToken(token) {
       reset_token: token,
     },
   });
+}
+
+async function userFindByCode(code) {
+  return await users.update(
+    {
+      sms_verified: true,
+    },
+    {
+      where: {
+        sms_code: code,
+      },
+    }
+  );
 }
 
 async function findUserById(userId) {
@@ -67,5 +83,6 @@ module.exports = {
   userFindByPhoneNumberAndPwd,
   userFindByPhoneNumber,
   updateResetTokensByPhoneNumber,
-  userFindByResetToken
+  userFindByResetToken,
+  userFindByCode,
 };

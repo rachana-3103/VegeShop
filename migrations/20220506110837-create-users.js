@@ -15,6 +15,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      country_code: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       phone_number: {
         type: Sequelize.BIGINT,
         allowNull: false,

@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 
 module.exports = (sequelize, DataTypes) => {
   const users = sequelize.define('users',
@@ -13,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       surname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      }, 
+      country_code: {
         type: DataTypes.STRING,
         allowNull: false,
       }, 
@@ -48,16 +51,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE
       }
     },
-    // {
-    //   defaultScope: {
-    //     attributes: { exclude: ['password' , 'confirm_password'] },
-    //   },
-    //   scopes: {
-    //     withSecretColumns: {
-    //       attributes: { include: ['password' , 'confirm_password'] },
-    //     },
-    //   },
-    // }
     );
 
   users.associate = () => {

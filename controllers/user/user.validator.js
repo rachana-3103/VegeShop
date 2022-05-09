@@ -12,6 +12,7 @@ exports.signupValidator = async (req, res, next) => {
     "password",
     "confirmPassword",
     "phoneNumber",
+    "countryCode"
   ];
 
   Object.keys(param).forEach((element) => {

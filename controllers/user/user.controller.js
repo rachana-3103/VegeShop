@@ -1,11 +1,14 @@
 const { successResponse, errorResponse } = require("../../helpers/helpers");
 const { isEmpty } = require("lodash");
 
-const { userSignup, userLogin , forgotPassword, resetPassword} = require("./user.helper");
+const { userSignup, userLogin , forgotPassword, resetPassword, codeVerify} = require("./user.helper");
 
 exports.signup = async (req, res) => {
   try {
     const param = req.body;
+    if (isEmpty(param)){
+      return errorResponse(req, res, 'Something Went Wrong', 400)
+    }
     const user = await userSignup(param);
     if (!isEmpty(user) && user.err) {
       return errorResponse(req, res, user.msg, 400);
@@ -20,6 +23,9 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const param = { ...req.body };
+    if (isEmpty(param)){
+      return errorResponse(req, res, 'Something Went Wrong', 400)
+    }
     const user = await userLogin(param);
     if (!isEmpty(user) && user.err) {
       return errorResponse(req, res, user.msg, 401);
@@ -32,12 +38,10 @@ exports.login = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
   try {
-    const data = req.body
-    if (isEmpty(data)){
+    const param = { ...req.body };
+    if (isEmpty(param)){
       return errorResponse(req, res, 'Something Went Wrong', 400)
     }
-
-    const param = { ...req.body };
     const user = await forgotPassword(param);
 
     if (!isEmpty(user) && user.err) {
@@ -68,6 +72,23 @@ exports.resetPassword = async (req, res) => {
     }
 
     return successResponse(req, res, response.msg);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+}
+
+exports.codeVerify = async (req,res) => {
+  try {
+    const param = { ...req.body };
+    if (isEmpty(param)){
+      return errorResponse(req, res, 'Something Went Wrong', 400)
+    }
+    const user = await codeVerify(param);
+
+    if (!isEmpty(user) && user.err) {
+      return errorResponse(req, res, user.msg, 401);
+    }
+    return successResponse(req, res, user.data, user.msg);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }

@@ -13,7 +13,7 @@ router.post('/signup', userValidator.signupValidator, userController.signup);
 router.post('/login', userValidator.loginValidator, userController.login);
 router.post('/forgot-password',  userController.forgotPassword);
 router.post('/reset-password',  userController.resetPassword);
-
+router.post('/code-verify',  userController.codeVerify);
 
 
 module.exports = router;

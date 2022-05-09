@@ -1,5 +1,6 @@
 const { users } = require("../../models");
 const moment = require("moment");
+// const AWS = require('aws-sdk');
 
 const {
   generateJWTtoken,
@@ -23,7 +24,8 @@ const {
   userFindByPhoneNumber,
   passwordEncrypt,
   findUserByEmail,
-  userFindByResetToken
+  userFindByResetToken,
+  userFindByCode
 } = require("../../Dao/user");
 const randomString = require("randomstring");
 
@@ -38,16 +40,42 @@ async function userSignup(param) {
         msg: PASSWORD_NOT_MATCH,
       };
     }
+    // AWS.config.update({region: 'REGION'});
     if (isEmpty(user)) {
       const userObj = {
         first_name: param.firstName,
         surname: param.surname,
+        country_code:param.countryCode,
         phone_number: param.phoneNumber,
         email: param.email.toLowerCase(),
         password: passwordEncrypt(param.password),
         confirm_password: passwordEncrypt(param.password),
+        sms_code : Math.floor(100000 + Math.random() * 900000)
       };
 
+      // const params = {
+      //     Message: 'This OTP useful for user 2 step authentication',
+      //     PhoneNumber: userObj.sms_code,
+      //     MessageAttributes: {
+      //         'AWS.SNS.SMS.SenderID': {
+      //             'DataType': 'String',
+      //             'StringValue': 'Brett Williams'
+      //         }
+      //     }
+      // };
+  
+      // const publishTextPromise = new AWS.SNS({ apiVersion: '2010-03-31' }).publish(params).promise();
+      // console.log("~ publishTextPromise", publishTextPromise)
+  
+      
+      // publishTextPromise.then(
+      //     function (data) {
+      //         res.end(JSON.stringify({ MessageID: data.MessageId }));
+      //     }).catch(
+      //         function (err) {
+      //             res.end(JSON.stringify({ Error: err }));
+      //         });
+  
       const newUser = await users.create(userObj);
 
       user = await findUserById(newUser.id);
@@ -187,9 +215,34 @@ async function resetPassword(token, newPassword, confirmPassword) {
   }
 }
 
+async function codeVerify(param) {
+  try {
+    let user = await userFindByCode(param.code);
+
+    if (!user) {
+      return {
+        err: true,
+        msg: USER_NOT_EXIST,
+      };
+    }
+
+    return {
+      err: false,
+      msg: "Code Verified Successfully.",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+} 
+
 module.exports = {
   userSignup,
   userLogin,
   forgotPassword,
   resetPassword,
+  codeVerify
 };
