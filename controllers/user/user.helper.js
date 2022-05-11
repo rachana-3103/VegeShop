@@ -1,20 +1,20 @@
 const { users } = require("../../models");
 const moment = require("moment");
-// const AWS = require('aws-sdk');
 
 const {
   generateJWTtoken,
-  encrypt,
   comparePassword,
+  verifyRefreshtoken,
+  generateRefreshtoken,
 } = require("../../helpers/helpers");
 
 const {
   ALLREADY_REGISTER,
-  INVALID_UNAME_PWORD,
+  INVALID_PWORD,
   USER_NOT_EXIST,
-  OLD_PASSWORD_WRONG,
-  INVALID_TOKEN,
   PASSWORD_NOT_MATCH,
+  INVALID_PHNUMBER,
+  CODE_NOT_VALID,
 } = require("../../helpers/messages");
 
 const {
@@ -24,12 +24,11 @@ const {
   userFindByPhoneNumber,
   passwordEncrypt,
   findUserByEmail,
-  userFindByResetToken,
   userFindByCodeForLogin,
   userFindByCodeForReset,
   smsCodeVerified,
+  updatePassword,
 } = require("../../Dao/user");
-const randomString = require("randomstring");
 
 const { isEmpty } = require("lodash");
 
@@ -42,7 +41,6 @@ async function userSignup(param) {
         msg: PASSWORD_NOT_MATCH,
       };
     }
-    // AWS.config.update({region: 'REGION'});
     if (isEmpty(user)) {
       const userObj = {
         first_name: param.firstName,
@@ -54,29 +52,6 @@ async function userSignup(param) {
         confirm_password: passwordEncrypt(param.password),
         sms_code: Math.floor(100000 + Math.random() * 900000),
       };
-
-      // const params = {
-      //     Message: 'This OTP useful for user 2 step authentication',
-      //     PhoneNumber: userObj.sms_code,
-      //     MessageAttributes: {
-      //         'AWS.SNS.SMS.SenderID': {
-      //             'DataType': 'String',
-      //             'StringValue': 'Brett Williams'
-      //         }
-      //     }
-      // };
-
-      // const publishTextPromise = new AWS.SNS({ apiVersion: '2010-03-31' }).publish(params).promise();
-      // console.log("~ publishTextPromise", publishTextPromise)
-
-
-      // publishTextPromise.then(
-      //     function (data) {
-      //         res.end(JSON.stringify({ MessageID: data.MessageId }));
-      //     }).catch(
-      //         function (err) {
-      //             res.end(JSON.stringify({ Error: err }));
-      //         });
 
       const newUser = await users.create(userObj);
 
@@ -120,32 +95,31 @@ async function userLogin(param) {
     if (!password) {
       return {
         err: true,
-        msg: INVALID_UNAME_PWORD,
+        msg: INVALID_PWORD,
       };
     }
 
-    let tokenExpireIn;
-    const currentTime = moment();
-    if (user.token_expired < currentTime || user.token_expired === null) {
-      tokenExpireIn = moment().add(process.env.AUTH_TOKEN_EXPIRED, "minutes");
-    }
+    let tokenExpireIn = moment().add(process.env.AUTH_TOKEN_EXPIRED, "minutes");
 
-    const encryptedToken = encrypt(
-      generateJWTtoken({ id: user.id, email: user.email })
-    );
+    const accessToken = generateJWTtoken({
+      id: user.id,
+      email: user.email,
+      phone_number: user.phone_number,
+      country_code: user.country_code,
+    });
 
-    await users.update(
-      {
-        auth_token: encryptedToken,
-        token_expired: tokenExpireIn,
-      },
-      {
-        where: {
-          id: user.id,
-        },
-      }
-    );
+    const refreshToken = generateRefreshtoken({
+      id: user.id,
+      email: user.email,
+      phone_number: user.phone_number,
+      country_code: user.country_code,
+    });
+
     user = await findUserById(user.id);
+    user.dataValues.access_token = accessToken;
+    user.dataValues.refresh_token = refreshToken;
+    user.dataValues.token_expired = tokenExpireIn;
+
     return {
       err: false,
       data: user,
@@ -159,16 +133,41 @@ async function userLogin(param) {
   }
 }
 
+async function refreshToken(param) {
+  try {
+    const user = verifyRefreshtoken(param.refreshToken);
+    const accessToken = generateJWTtoken({
+      id: user.id,
+      email: user.email,
+      phone_number: user.phone_number,
+      country_code: user.country_code,
+    });
+    return {
+      err: false,
+      data: { access_token: accessToken },
+      msg: "Generate new access token.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+}
+
 async function forgotPassword(param) {
   try {
-    let user = await userFindByPhoneNumber(param.phoneNumber, param.countryCode);
+    let user = await userFindByPhoneNumber(
+      param.phoneNumber,
+      param.countryCode
+    );
 
     if (!user) {
       return {
         err: true,
-        msg: USER_NOT_EXIST,
+        msg: INVALID_PHNUMBER,
       };
-    }else{
+    } else {
       await updateCodeByPhoneNumber(param.phoneNumber);
     }
 
@@ -184,21 +183,16 @@ async function forgotPassword(param) {
   }
 }
 
-async function resetPassword(token, newPassword, confirmPassword) {
+async function resetPassword(newPassword, confirmPassword, user) {
   try {
-    const userData = await userFindByResetToken(token);
-    if (!userData) {
-      return {
-        err: true,
-        msg: INVALID_TOKEN,
-      };
-    }
     if (newPassword !== confirmPassword) {
       return {
         err: true,
         msg: PASSWORD_NOT_MATCH,
       };
     }
+
+    await updatePassword(passwordEncrypt(newPassword), user);
 
     return {
       err: false,
@@ -216,23 +210,66 @@ async function codeVerify(param) {
   try {
     const userLogin = await userFindByCodeForLogin(
       param.code,
-      param.phoneNumber
+      param.phoneNumber,
+      param.countryCode
     );
     const userResetPwd = await userFindByCodeForReset(
       param.code,
-      param.phoneNumber
+      param.phoneNumber,
+      param.countryCode
     );
     if (!userLogin && !userResetPwd) {
       return {
         err: true,
-        msg: USER_NOT_EXIST,
+        msg: CODE_NOT_VALID,
       };
     } else {
-      await smsCodeVerified(param.code, param.phoneNumber);
+      await smsCodeVerified(param.code, param.phoneNumber, param.countryCode);
+    }
+
+    let tokenExpireIn = moment().add(process.env.AUTH_TOKEN_EXPIRED, "minutes");
+    let user;
+
+    if (userLogin) {
+      const accessToken = generateJWTtoken({
+        id: userLogin.id,
+        email: userLogin.email,
+        phone_number: userLogin.phone_number,
+        country_code: userLogin.country_code,
+      });
+      const refreshToken = generateRefreshtoken({
+        id: userLogin.id,
+        email: userLogin.email,
+        phone_number: userLogin.phone_number,
+        country_code: userLogin.country_code,
+      });
+      userLogin.dataValues.access_token = accessToken;
+      userLogin.dataValues.refresh_token = refreshToken;
+      userLogin.dataValues.token_expired = tokenExpireIn;
+      user = userLogin;
+    } else {
+      const accessToken = generateJWTtoken({
+        id: userResetPwd.id,
+        email: userResetPwd.email,
+        phone_number: userResetPwd.phone_number,
+        country_code: userResetPwd.country_code,
+      });
+
+      const refreshToken = generateRefreshtoken({
+        id: userResetPwd.id,
+        email: userResetPwd.email,
+        phone_number: userResetPwd.phone_number,
+        country_code: userResetPwd.country_code,
+      });
+      userResetPwd.dataValues.access_token = accessToken;
+      userResetPwd.dataValues.refresh_token = refreshToken;
+      userResetPwd.dataValues.token_expired = tokenExpireIn;
+      user = userResetPwd;
     }
 
     return {
       err: false,
+      data: user,
       msg: "Code Verified Successfully.",
     };
   } catch (error) {
@@ -246,7 +283,8 @@ async function codeVerify(param) {
 module.exports = {
   userSignup,
   userLogin,
+  refreshToken,
   forgotPassword,
   resetPassword,
-  codeVerify
+  codeVerify,
 };

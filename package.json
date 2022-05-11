@@ -31,6 +31,7 @@
     "farmhash": "^3.2.2",
     "fs": "0.0.1-security",
     "husky": "^7.0.4",
+    "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.3",
@@ -43,7 +44,6 @@
     "randomstring": "^1.2.2",
     "sequelize": "^6.19.0",
     "sequelize-cli": "^6.4.1",
-    "simple-crypto-js": "^3.0.1",
     "socket.io": "^4.5.0"
   }
 }

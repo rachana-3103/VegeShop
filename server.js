@@ -6,8 +6,6 @@ const socketIO = require('socket.io');
 const fs = require('fs');
 const chalk = require('chalk');
 
-// const { users } = require('./models');
-
 const conn = require('./config/sequelize-connect');
 
 conn.dbConnect();

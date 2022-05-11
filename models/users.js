@@ -41,20 +41,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
-      reset_token: {
-        type: DataTypes.STRING
-      },
-      auth_token: {
-        type: DataTypes.STRING
-      },
-      token_expired: {
-        type: DataTypes.DATE
-      }
     },
     );
-
-  users.associate = () => {
-  };
 
   return users;
 };

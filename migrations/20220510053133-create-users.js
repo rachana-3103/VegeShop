@@ -41,15 +41,6 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
-      reset_token: {
-        type: Sequelize.STRING(1234),
-      },
-      auth_token: {
-        type: Sequelize.STRING(1234),
-      },
-      token_expired: {
-        type: Sequelize.DATE,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

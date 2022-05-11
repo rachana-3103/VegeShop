@@ -1,48 +1,66 @@
 const { errorResponse } = require("../../helpers/helpers");
-
-const { INVALID_PARAMS } = require("../../helpers/messages");
+const Joi = require("joi");
 
 exports.signupValidator = async (req, res, next) => {
   const param = { ...req.body };
-  let failed = false;
-  let allowedParams = [
-    "firstName",
-    "surname",
-    "email",
-    "password",
-    "confirmPassword",
-    "phoneNumber",
-    "countryCode",
-  ];
+  const schema = Joi.object({
+    firstName: Joi.string().alphanum().min(3).max(10).required(),
+    surname: Joi.string().alphanum().min(3).max(10).required(),
+    password: Joi.string()
+      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*]{8,16}$/))
+      .required(),
+    confirmPassword: Joi.ref("password"),
+    phoneNumber: Joi.number().required(),
+    countryCode: Joi.string().max(5).required(),
+    email: Joi.string().email({
+      minDomainSegments: 2,
+      tlds: { allow: ["com", "net", "in"] },
+    }),
+  }).with("password", "confirmPassword");
 
-  Object.keys(param).forEach((element) => {
-    if (!allowedParams.includes(element)) {
-      failed = true;
-    }
-  });
-  allowedParams.forEach((element) => {
-    if (!param[element]) failed = true;
-  });
+  const error = this.validateRequest(param, schema);
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
+};
 
+exports.validateRequest = (param, schema) => {
+  const options = {
+    abortEarly: false,
+    allowUnknown: true,
+    stripUnknown: true,
+  };
+  const { error } = schema.validate(param, options);
 
-  if (failed) return errorResponse(req, res, INVALID_PARAMS, 400);
-
-  return next();
+  if (error) {
+    let object = [];
+    `${error.details.map((x) => {
+      if (x.path[0] == "password" && x.type == "string.pattern.base") {
+        x.message =
+          "Password must have 8 characters including capital letters and symbols.";
+      }
+      object.push({ error: x.message });
+    })}`;
+    return object;
+  } 
 };
 
 exports.loginValidator = async (req, res, next) => {
   const param = { ...req.body };
 
-  let failed = false;
-  let allowedParams = ["phoneNumber", "countryCode", "password"];
+  const schema = Joi.object({
+    password: Joi.string().required(),
+    phoneNumber: Joi.number().required(),
+    countryCode: Joi.string().max(5).required(),
+  }).with("phoneNumber", "countryCode");
 
-  Object.keys(param).forEach((element) => {
-    if (!allowedParams.includes(element)) failed = true;
-  });
-
-  allowedParams.forEach((element) => {
-    if (!param[element]) failed = true;
-  });
-  if (failed) return errorResponse(req, res, INVALID_PARAMS, 400);
-  return next();
+  const error = this.validateRequest(param, schema);
+  
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
 };

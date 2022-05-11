@@ -4,6 +4,7 @@ const { isEmpty } = require("lodash");
 const {
   userSignup,
   userLogin,
+  refreshToken,
   forgotPassword,
   resetPassword,
   codeVerify,
@@ -41,6 +42,20 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.refreshToken = async (req, res) => {
+  try {
+    let param = { ...req.body };
+    const user = await refreshToken(param);
+
+    if (!isEmpty(user) && user.err) {
+      return errorResponse(req, res, user.msg, 401);
+    }
+    return successResponse(req, res, user.data, user.msg);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+}
+
 exports.forgotPassword = async (req, res) => {
   try {
     const param = { ...req.body };
@@ -60,17 +75,14 @@ exports.forgotPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   try {
-    const token = req.query.token;
-    if (isEmpty(token)) {
-      return errorResponse(req, res, TOKEN_NOT_FOUND, 400);
-    }
     const newPassword = req.body.newPassword;
     const confirmPassword = req.body.confirmPassword;
+    const user = req.body.user;
 
     if (isEmpty(newPassword) && isEmpty(confirmPassword)) {
       return errorResponse(req, res, "New And Confirm Password is blank");
     }
-    const response = await resetPassword(token, newPassword, confirmPassword);
+    const response = await resetPassword(newPassword, confirmPassword, user);
 
     if (!isEmpty(response) && response.err) {
       return errorResponse(req, res, response.msg, 400);
@@ -84,7 +96,7 @@ exports.resetPassword = async (req, res) => {
 
 exports.codeVerify = async (req, res) => {
   try {
-    const param = { ...req.body, ...req.query };
+    const param = { ...req.body };
     if (isEmpty(param)) {
       return errorResponse(req, res, "Something Went Wrong", 400);
     }

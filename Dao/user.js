@@ -49,27 +49,29 @@ async function userFindByResetToken(token) {
   });
 }
 
-async function userFindByCodeForLogin(code, phoneNumber) {
+async function userFindByCodeForLogin(code, phoneNumber, countryCode) {
   return await users.findOne({
     where: {
       sms_code: code,
       phone_number: phoneNumber,
       sms_verified: false,
+      country_code: countryCode,
     },
   });
 }
 
-async function userFindByCodeForReset(code, phoneNumber) {
+async function userFindByCodeForReset(code, phoneNumber, countryCode) {
   return await users.findOne({
     where: {
       sms_code: code,
       phone_number: phoneNumber,
       sms_verified: true,
+      country_code: countryCode,
     },
   });
 }
 
-async function smsCodeVerified(code, phoneNumber) {
+async function smsCodeVerified(code, phoneNumber, countryCode) {
   return await users.update(
     {
       sms_verified: true,
@@ -79,6 +81,24 @@ async function smsCodeVerified(code, phoneNumber) {
         sms_code: code,
         phone_number: phoneNumber,
         sms_verified: false,
+        country_code: countryCode,
+      },
+    }
+  );
+}
+
+async function updatePassword(password, user) {
+  return await users.update(
+    {
+      password: password,
+      confirm_password: password,
+    },
+    {
+      where: {
+        id: user.id,
+        email: user.email,
+        phone_number: user.phone_number,
+        country_code: user.country_code,
       },
     }
   );
@@ -111,4 +131,5 @@ module.exports = {
   userFindByCodeForLogin,
   smsCodeVerified,
   userFindByCodeForReset,
+  updatePassword,
 };

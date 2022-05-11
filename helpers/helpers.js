@@ -1,11 +1,7 @@
-const jwt = require('jsonwebtoken');
-const SimpleCrypto = require('simple-crypto-js').default;
-const crypto = require('crypto');
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
-const {
-  SOMETHING_WENT_WRONG,
-  OPERATION_COMPLETED,
-} = require('./messages');
+const { SOMETHING_WENT_WRONG } = require("./messages");
 
 exports.successResponse = (req, res, data, message, code = 200) => {
   res.status(code);
@@ -17,7 +13,12 @@ exports.successResponse = (req, res, data, message, code = 200) => {
   });
 };
 
-exports.errorResponse = (req, res, message = SOMETHING_WENT_WRONG, code = 500) => {
+exports.errorResponse = (
+  req,
+  res,
+  message = SOMETHING_WENT_WRONG,
+  code = 500
+) => {
   res.status(code);
   res.send({
     code,
@@ -27,26 +28,31 @@ exports.errorResponse = (req, res, message = SOMETHING_WENT_WRONG, code = 500) =
   });
 };
 
-exports.generateJWTtoken = (object, secretKey = process.env.JWT_SECRET) => jwt.sign(JSON.parse(JSON.stringify(object)), secretKey, { expiresIn: process.env.AUTH_TOKEN_EXPIRED });
-
-exports.decrypt = (text) => {
-  const simpleCrypto = new SimpleCrypto(process.env.ENCRYPTION_KEY);
-  const chiperText = simpleCrypto.decrypt(text);
-  return chiperText;
+exports.generateJWTtoken = (object, secretKey = process.env.JWT_SECRET) => {
+  return jwt.sign(object, secretKey, {
+    expiresIn: process.env.AUTH_TOKEN_EXPIRED,
+  });
 };
 
-exports.encrypt = (text) => {
-  const simpleCrypto = new SimpleCrypto(process.env.ENCRYPTION_KEY);
-  const chiperText = simpleCrypto.encrypt(text);
-  return chiperText;
+exports.generateRefreshtoken = (
+  object,
+  secretKey = process.env.REFRESH_SECRET
+) => {
+  return jwt.sign(object, secretKey, {
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRED,
+  });
+};
+
+exports.verifyRefreshtoken = (
+  token,
+  secretKey = process.env.REFRESH_SECRET
+) => {
+  const user = jwt.verify(token, secretKey);
+  return user;
 };
 
 exports.comparePassword = (paramPass, dbPass) => {
-  const password = crypto
-    .createHash('md5')
-    .update(paramPass)
-    .digest('hex');
-
+  const password = crypto.createHash("md5").update(paramPass).digest("hex");
   if (password === dbPass) {
     return true;
   }
