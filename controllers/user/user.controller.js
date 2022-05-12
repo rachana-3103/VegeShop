@@ -12,6 +12,8 @@ const {
 
 exports.signup = async (req, res) => {
   try {
+    console.info('info');
+    logging.log('info1');
     const param = req.body;
     if (isEmpty(param)) {
       return errorResponse(req, res, "Something Went Wrong", 400);
