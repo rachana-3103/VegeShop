@@ -12,8 +12,6 @@ if (process.env.NODE_ENV === 'development') {
     console.info(chalk.blue(`Server & Socket listening on port ${process.env.APP_PORT || 4000}!`));
   });
 } else if (cluster.isMaster) {
-  console.info(`Master ${process.pid} is running`);
-
   const workers = [];
 
   const spawn = (i) => {
@@ -23,7 +21,6 @@ if (process.env.NODE_ENV === 'development') {
       if (worker && worker.process && worker.process.pid) {
         console.warn(`Worker ${worker.process.pid} died with code: ${code}, and signal: ${signal}`);
       }
-      console.info('Starting a new worker');
       spawn(i);
     });
   };
@@ -38,8 +35,6 @@ if (process.env.NODE_ENV === 'development') {
     worker.send('sticky-session:connection', connection);
   }).listen(process.env.APP_PORT || 4000);
 } else {
-  console.info(`Worker ${process.pid} started`);
-
   server.listen(0, () => {
     console.info(chalk.blue(`Server & Socket listening on port ${process.env.APP_PORT}!`));
   });

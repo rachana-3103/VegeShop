@@ -28,7 +28,6 @@ const io = socketIO(server, {
 
 io.on('connection', (socket) => {
   socket.on('CLIENT_JOINED', async (data) => {
-    console.info('TCL: data ->  ', data);
     const userData = await users.findOne({ where: { id: data.id } });
     if (userData) {
       socket.join(data.id);
