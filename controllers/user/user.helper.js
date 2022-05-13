@@ -51,7 +51,7 @@ async function userSignup(param) {
     const OTP = Math.floor(100000 + Math.random() * 900000);
     let sendSMS = {
       Message: `Welcome! your mobile verification code is: ${OTP} `,
-      phoneNumber: "+918980423855",
+      // phoneNumber: "+918980423855",
     };
     return new Promise((resolve, reject) => {
       sns.publish(sendSMS, function(err, data) {
