@@ -34,6 +34,8 @@ const { isEmpty } = require("lodash");
 
 async function userSignup(param) {
   try {
+    console.info('info 1');
+
     let user = await findUserByEmail(param.email);
     if (param.password !== param.confirmPassword) {
       return {
@@ -41,6 +43,8 @@ async function userSignup(param) {
         msg: PASSWORD_NOT_MATCH,
       };
     }
+    console.info("~ user", user)
+    
     if (isEmpty(user)) {
       const userObj = {
         first_name: param.firstName,
@@ -54,6 +58,7 @@ async function userSignup(param) {
       };
 
       const newUser = await users.create(userObj);
+      console.info("~ user", user)
 
       user = await findUserById(newUser.id);
 
@@ -69,6 +74,8 @@ async function userSignup(param) {
       };
     }
   } catch (error) {
+    console.info("~ error", error)
+
     return {
       err: true,
       msg: error.message,

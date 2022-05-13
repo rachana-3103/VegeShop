@@ -12,8 +12,7 @@ const {
 
 exports.signup = async (req, res) => {
   try {
-    console.info('info');
-    logging.log('info1');
+    console.info("info");
     const param = req.body;
     if (isEmpty(param)) {
       return errorResponse(req, res, "Something Went Wrong", 400);
@@ -24,6 +23,8 @@ exports.signup = async (req, res) => {
     }
     return successResponse(req, res, user.data, user.msg);
   } catch (error) {
+    console.info("~ error ----- control", error);
+
     return errorResponse(req, res, error, 400);
   }
 };
@@ -56,7 +57,7 @@ exports.refreshToken = async (req, res) => {
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
-}
+};
 
 exports.forgotPassword = async (req, res) => {
   try {
