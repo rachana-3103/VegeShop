@@ -14,3 +14,4 @@ exports.PASSWORD_NOT_MATCH = 'New password and confirmed password not same.';
 exports.ALLREADY_REGISTER = 'Already registered!';
 exports.SUCCESS = 'success';
 exports.TOKEN_NOT_FOUND = 'Token Not Found';
+exports.OTP_MESSAGE = 'Welcome to our Aegis 24/7 Application! your mobile verification code is:';

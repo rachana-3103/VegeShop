@@ -15,6 +15,7 @@ const {
   PASSWORD_NOT_MATCH,
   INVALID_PHNUMBER,
   CODE_NOT_VALID,
+  OTP_MESSAGE
 } = require("../../helpers/messages");
 
 const {
@@ -33,9 +34,9 @@ const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
 
 AWS.config.update({
-  accessKeyId: "AKIA6FNKFW5EI3AHRT27",
-  secretAccessKey: "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",
-  region: "us-east-1",
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+  region: process.env.AWS_REGION,
 });
 
 async function userSignup(param) {
@@ -49,29 +50,19 @@ async function userSignup(param) {
     }
     const sns = new AWS.SNS();
     const OTP = Math.floor(100000 + Math.random() * 900000);
+    const mobile  = '+'+Number(param.countryCode)+param.phoneNumber;
+
     let sendSMS = {
-      Message: `Welcome! your mobile verification code is: ${OTP} `,
-      // phoneNumber: "+918980423855",
+      Subject:'Aegis24/7',
+      Message: `${OTP_MESSAGE} ${OTP} `,
+      PhoneNumber: mobile,
     };
-    return new Promise((resolve, reject) => {
-      sns.publish(sendSMS, function(err, data) {
-        if(err) {
-          reject(err);
-          console.info("~ err", err)
-        }
-        else {
-            console.info("~ data", data)
-              resolve(data);
-          }
-      })
-  })
-    // sns.publish(sendSMS, (err, result) => {
-    //   if (err) {
-    //     console.info("~ err", err);
-    //   } else {
-    //     console.info("~ result", result);
-    //   }
-    // });
+
+    sns.publish(sendSMS, (err, result) => {
+      if(err){
+        return err;
+      }
+    });
 
     if (isEmpty(user)) {
       const userObj = {
