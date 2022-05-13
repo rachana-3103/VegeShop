@@ -11,9 +11,26 @@ router.get("/", (req, res) => {
 
 router.post("/signup", userValidator.signupValidator, userController.signup);
 router.post("/login", userValidator.loginValidator, userController.login);
-router.post("/refresh-token", userController.refreshToken);
-router.post("/forgot-password", userController.forgotPassword);
-router.post("/reset-password", authorization, userController.resetPassword);
-router.post("/code-verify", userController.codeVerify);
+router.post(
+  "/refresh-token",
+  userValidator.refreshValidator,
+  userController.refreshToken
+);
+router.post(
+  "/forgot-password",
+  userValidator.forgotValidator,
+  userController.forgotPassword
+);
+router.post(
+  "/reset-password",
+  authorization,
+  userValidator.resetValidator,
+  userController.resetPassword
+);
+router.post(
+  "/code-verify",
+  userValidator.codeVerifyValidator,
+  userController.codeVerify
+);
 
 module.exports = router;
