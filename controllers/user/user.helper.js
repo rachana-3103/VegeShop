@@ -49,20 +49,29 @@ async function userSignup(param) {
     }
     const sns = new AWS.SNS();
     const OTP = Math.floor(100000 + Math.random() * 900000);
-    console.log("~ param.phoneNumber", param.phoneNumber);
-
     let sendSMS = {
       Message: `Welcome! your mobile verification code is: ${OTP} `,
       phoneNumber: "+918980423855",
     };
-
-    sns.publish(sendSMS, (err, result) => {
-      if (err) {
-        console.info("~ err", err);
-      } else {
-        console.info("~ result", result);
-      }
-    });
+    return new Promise((resolve, reject) => {
+      SNS.publish(sendSMS, function(err, data) {
+        if(err) {
+          reject(err);
+          console.info("~ err", err)
+        }
+        else {
+            console.info("~ data", data)
+              resolve(data);
+          }
+      })
+  })
+    // sns.publish(sendSMS, (err, result) => {
+    //   if (err) {
+    //     console.info("~ err", err);
+    //   } else {
+    //     console.info("~ result", result);
+    //   }
+    // });
 
     if (isEmpty(user)) {
       const userObj = {
