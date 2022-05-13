@@ -54,7 +54,7 @@ async function userSignup(param) {
       phoneNumber: "+918980423855",
     };
     return new Promise((resolve, reject) => {
-      SNS.publish(sendSMS, function(err, data) {
+      sns.publish(sendSMS, function(err, data) {
         if(err) {
           reject(err);
           console.info("~ err", err)
