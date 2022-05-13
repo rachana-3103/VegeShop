@@ -29,12 +29,17 @@ const {
   smsCodeVerified,
   updatePassword,
 } = require("../../Dao/user");
-
+const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
+
+AWS.config.update({
+  accessKeyId: "AKIA6FNKFW5EI3AHRT27",
+  secretAccessKey: "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",
+  region: "us-east-1",
+});
 
 async function userSignup(param) {
   try {
-
     let user = await findUserByEmail(param.email);
     if (param.password !== param.confirmPassword) {
       return {
@@ -42,6 +47,23 @@ async function userSignup(param) {
         msg: PASSWORD_NOT_MATCH,
       };
     }
+    const sns = new AWS.SNS();
+    const OTP = Math.floor(100000 + Math.random() * 900000);
+    console.log("~ param.phoneNumber", param.phoneNumber);
+
+    let sendSMS = {
+      Message: `Welcome! your mobile verification code is: ${OTP} `,
+      phoneNumber: "+918980423855",
+    };
+
+    sns.publish(sendSMS, (err, result) => {
+      if (err) {
+        console.info("~ err", err);
+      } else {
+        console.info("~ result", result);
+      }
+    });
+
     if (isEmpty(user)) {
       const userObj = {
         first_name: param.firstName,
@@ -51,7 +73,7 @@ async function userSignup(param) {
         email: param.email.toLowerCase(),
         password: passwordEncrypt(param.password),
         confirm_password: passwordEncrypt(param.password),
-        sms_code: Math.floor(100000 + Math.random() * 900000),
+        sms_code: OTP,
       };
 
       const newUser = await users.create(userObj);
