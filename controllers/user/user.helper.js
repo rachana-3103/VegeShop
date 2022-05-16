@@ -15,7 +15,7 @@ const {
   PASSWORD_NOT_MATCH,
   INVALID_PHNUMBER,
   CODE_NOT_VALID,
-  OTP_MESSAGE
+  OTP_MESSAGE,
 } = require("../../helpers/messages");
 
 const {
@@ -48,19 +48,21 @@ async function userSignup(param) {
         msg: PASSWORD_NOT_MATCH,
       };
     }
-    const sns = new AWS.SNS();
     const OTP = Math.floor(100000 + Math.random() * 900000);
-    const mobile  = '+'+Number(param.countryCode)+param.phoneNumber;
+    const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
 
     let sendSMS = {
-      Subject:'Aegis24/7',
+      Subject: "Aegis24/7 Verification Code",
       Message: `${OTP_MESSAGE} ${OTP} `,
-      PhoneNumber: mobile,
+      phoneNumber: mobile,
     };
+    const sns = new AWS.SNS();
 
     sns.publish(sendSMS, (err, result) => {
-      if(err){
-        return err;
+      if (err) {
+        console.info(err);
+      } else {
+        console.info(result);
       }
     });
 
@@ -190,6 +192,22 @@ async function forgotPassword(param) {
         msg: INVALID_PHNUMBER,
       };
     } else {
+      const OTP = Math.floor(100000 + Math.random() * 900000);
+      const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
+  
+      let sendSMS = {
+        Subject: "Aegis24/7 Verification Code",
+        Message: `${OTP_MESSAGE} ${OTP} `,
+        phoneNumber: mobile,
+      };
+      const sns = new AWS.SNS();
+      sns.publish(sendSMS, (err, result) => {
+        if (err) {
+          console.info(err);
+        } else {
+          console.info(result);
+        }
+      });
       await updateCodeByPhoneNumber(param.phoneNumber);
     }
 
