@@ -54,7 +54,7 @@ async function userSignup(param) {
     let sendSMS = {
       Subject: "Aegis24/7 Verification Code",
       Message: `${OTP_MESSAGE} ${OTP} `,
-      phoneNumber: mobile,
+      PhoneNumber: mobile,
     };
     const sns = new AWS.SNS();
 
@@ -198,7 +198,7 @@ async function forgotPassword(param) {
       let sendSMS = {
         Subject: "Aegis24/7 Verification Code",
         Message: `${OTP_MESSAGE} ${OTP} `,
-        phoneNumber: mobile,
+        PhoneNumber: mobile,
       };
       const sns = new AWS.SNS();
       sns.publish(sendSMS, (err, result) => {

@@ -58,3 +58,27 @@ exports.comparePassword = (paramPass, dbPass) => {
   }
   return false;
 };
+
+exports.validateRequest = (param, schema) => {
+  const options = {
+    abortEarly: false,
+    allowUnknown: true,
+    stripUnknown: true,
+  };
+  const { error } = schema.validate(param, options);
+
+  if (error) {
+    let object = [];
+    `${error.details.map((x) => {
+      if (
+        (x.path[0] == "password" || x.path[0] == "newPassword") &&
+        x.type == "string.pattern.base"
+      ) {
+        x.message =
+          "Password must have 8 characters including capital letters and symbols.";
+      }
+      object.push({ error: x.message });
+    })}`;
+    return object;
+  }
+};

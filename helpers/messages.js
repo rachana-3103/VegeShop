@@ -15,3 +15,6 @@ exports.ALLREADY_REGISTER = 'Already registered!';
 exports.SUCCESS = 'success';
 exports.TOKEN_NOT_FOUND = 'Token Not Found';
 exports.OTP_MESSAGE = 'Welcome to our Aegis 24/7 Application! your mobile verification code is:';
+exports.GROUP_ALREADY_EXIST = 'Group Already Exist.'
+exports.GROUP_NOT_FOUND = 'Group Not Found.'
+exports.CONTACT_PHONENUMBER_SAME = "Contact Phone Number is the same."

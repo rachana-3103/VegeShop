@@ -67,7 +67,7 @@ exports.forgotPassword = async (req, res) => {
     if (!isEmpty(user) && user.err) {
       return errorResponse(req, res, user.msg, 401);
     }
-    return successResponse(req, res, user.msg);
+    return successResponse(req, res, null, user.msg);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
@@ -88,7 +88,7 @@ exports.resetPassword = async (req, res) => {
       return errorResponse(req, res, response.msg, 400);
     }
 
-    return successResponse(req, res, response.msg);
+    return successResponse(req, res, null, response.msg);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }
