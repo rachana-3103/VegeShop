@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-
 const { SOMETHING_WENT_WRONG } = require("./messages");
 
 exports.successResponse = (req, res, data, message, code = 200) => {
@@ -65,8 +64,8 @@ exports.validateRequest = (param, schema) => {
     allowUnknown: true,
     stripUnknown: true,
   };
+  
   const { error } = schema.validate(param, options);
-
   if (error) {
     let object = [];
     `${error.details.map((x) => {

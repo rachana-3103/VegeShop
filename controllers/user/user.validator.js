@@ -5,19 +5,17 @@ const { validateRequest } = require("../../helpers/helpers");
 exports.signupValidator = async (req, res, next) => {
   const param = { ...req.body };
   const schema = Joi.object({
-    firstName: Joi.string().alphanum().min(3).max(10).required(),
-    surname: Joi.string().alphanum().min(3).max(10).required(),
+    name: Joi.string().alphanum().min(3).max(15).required(),
     password: Joi.string()
       .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*]{8,16}$/))
       .required(),
-    confirmPassword: Joi.ref("password"),
     phoneNumber: Joi.number().required(),
     countryCode: Joi.string().max(5).required(),
     email: Joi.string().email({
       minDomainSegments: 2,
       tlds: { allow: ["com", "net", "in"] },
     }),
-  }).with("password", "confirmPassword");
+  });
 
   const error = validateRequest(param, schema);
   if (error) {
@@ -32,7 +30,7 @@ exports.loginValidator = async (req, res, next) => {
 
   const schema = Joi.object({
     password: Joi.string().required(),
-    phoneNumber: Joi.number().required(),
+    phoneNumber: Joi.string().required(),
     countryCode: Joi.string().max(5).required(),
   }).with("phoneNumber", "countryCode");
 
@@ -65,7 +63,7 @@ exports.forgotValidator = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
-    phoneNumber: Joi.number().required(),
+    phoneNumber: Joi.string().required(),
     countryCode: Joi.string().max(5).required(),
   }).with("phoneNumber", "countryCode");
 
@@ -101,8 +99,8 @@ exports.codeVerifyValidator = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
-    code: Joi.string().required(),
-    phoneNumber: Joi.number().required(),
+    code: Joi.string().max(6).required(),
+    phoneNumber: Joi.string().required(),
     countryCode: Joi.string().max(5).required(),
   }).with("phoneNumber", "countryCode");
 

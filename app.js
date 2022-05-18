@@ -6,6 +6,9 @@ const path = require('path');
 
 const userRoutes = require('./routes/user.routes');
 const groupRoutes = require('./routes/group.routes');
+const safetyPlanRoutes = require('./routes/safetyplan.routes');
+const locationRoutes = require('./routes/location.routes');
+
 const { errorHandler } = require('./middleware/errorHandler');
 
 const { TOO_MANY_REQUESTS } = require('./helpers/messages');
@@ -30,7 +33,11 @@ app.set('templates', path.join(__dirname, 'templates'));
 //set view engine
 app.set('view engine', 'ejs');
 app.use('/api/user', apiLimiter, userRoutes);
-app.use('/api/group',  apiLimiter, groupRoutes)
+app.use('/api/group',  apiLimiter, groupRoutes);
+app.use('/api/safetyplan',  apiLimiter, safetyPlanRoutes);
+app.use('/api/location',  apiLimiter, locationRoutes);
+
+
 app.use(errorHandler);
 
 module.exports = app;

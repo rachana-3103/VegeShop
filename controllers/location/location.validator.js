@@ -1,12 +1,15 @@
 const { errorResponse } = require("../../helpers/helpers");
 const Joi = require("joi");
 const { validateRequest } = require("../../helpers/helpers");
+const { min } = require("lodash");
 
-exports.addGroupValidator = async (req, res, next) => {
+exports.addlocationValidator = async (req, res, next) => {
   const param = { ...req.body };
+
   const schema = Joi.object({
-    name: Joi.string().alphanum().max(30).required(),
-    contacts: Joi.array().required(),
+    latitude: Joi.string().required(),
+    longitude: Joi.string().required(),
+    name: Joi.string().max(30).required(),
   });
 
   const error = validateRequest(param, schema);
@@ -17,12 +20,14 @@ exports.addGroupValidator = async (req, res, next) => {
   }
 };
 
-exports.updateGroupValidator = async (req, res, next) => {
+exports.updatelocationValidator = async (req, res, next) => {
   const param = { ...req.body };
+
   const schema = Joi.object({
-    groupId:Joi.string().required(),
-    name: Joi.string().alphanum().max(30).required(),
-    contacts: Joi.array().required(),
+    locationId: Joi.string().required(),
+    latitude: Joi.string().required(),
+    longitude: Joi.string().required(),
+    name: Joi.string().max(30).required(),
   });
 
   const error = validateRequest(param, schema);

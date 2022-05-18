@@ -1,17 +1,13 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('users',
-    {
+  up: (queryInterface, Sequelize) =>
+    queryInterface.createTable("users", {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4(),
       },
-      first_name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      surname: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -30,16 +26,12 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      confirm_password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       sms_code: {
         type: Sequelize.STRING,
       },
       sms_verified: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,
@@ -51,6 +43,6 @@ module.exports = {
       },
     }),
   down: (queryInterface) => {
-    queryInterface.dropTable('users');
-  }
+    queryInterface.dropTable("users");
+  },
 };

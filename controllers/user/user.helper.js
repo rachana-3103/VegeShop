@@ -42,12 +42,6 @@ AWS.config.update({
 async function userSignup(param) {
   try {
     let user = await findUserByEmail(param.email);
-    if (param.password !== param.confirmPassword) {
-      return {
-        err: true,
-        msg: PASSWORD_NOT_MATCH,
-      };
-    }
     const OTP = Math.floor(100000 + Math.random() * 900000);
     const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
 
@@ -68,13 +62,11 @@ async function userSignup(param) {
 
     if (isEmpty(user)) {
       const userObj = {
-        first_name: param.firstName,
-        surname: param.surname,
+        name: param.name,
         country_code: param.countryCode,
         phone_number: param.phoneNumber,
         email: param.email.toLowerCase(),
         password: passwordEncrypt(param.password),
-        confirm_password: passwordEncrypt(param.password),
         sms_code: OTP,
       };
 

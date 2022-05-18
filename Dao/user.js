@@ -91,7 +91,6 @@ async function updatePassword(password, user) {
   return await users.update(
     {
       password: password,
-      confirm_password: password,
     },
     {
       where: {
@@ -110,7 +109,7 @@ async function findUserById(userId) {
       id: userId,
     },
     attributes: {
-      exclude: ["password", "confirm_password"],
+      exclude: ["password", "sms_code"],
     },
   });
 }
