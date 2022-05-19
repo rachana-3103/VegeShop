@@ -8,7 +8,7 @@ const { authorization } = require("../middleware/authorization");
 router.post(
   "/add",
   authorization,
-  groupValidator.addGroupValidator,
+  groupValidator.addGroup,
   groupController.addGroup
 );
 
@@ -21,7 +21,7 @@ router.delete("/delete", authorization, groupController.deleteGroup);
 router.put(
   "/update",
   authorization,
-  groupValidator.updateGroupValidator,
+  groupValidator.updateGroup,
   groupController.updateGroup
 );
 

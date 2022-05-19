@@ -9,41 +9,41 @@ router.get("/", (req, res) => {
   res.send({ message: "Hello World!!" });
 });
 
-router.post("/signup", userValidator.signupValidator, userController.signup);
-router.post("/login", userValidator.loginValidator, userController.login);
+router.post("/signup", userValidator.signup, userController.signup);
+router.post("/login", userValidator.login, userController.login);
 router.post(
   "/refresh-token",
-  userValidator.refreshValidator,
+  userValidator.refresh,
   userController.refreshToken
 );
 router.post(
   "/forgot-password",
-  userValidator.forgotValidator,
+  userValidator.forgot,
   userController.forgotPassword
 );
 router.post(
   "/reset-password",
   authorization,
-  userValidator.resetValidator,
+  userValidator.reset,
   userController.resetPassword
 );
 router.post(
   "/code-verify",
-  userValidator.codeVerifyValidator,
+  userValidator.codeVerify,
   userController.codeVerify
 );
 
 router.post(
   "/update-code",
   authorization,
-  userValidator.updateCodeValidator,
+  userValidator.updateCode,
   userController.updateCode
 );
 
 router.put(
   "/update-number",
   authorization,
-  userValidator.updateNumberValidator,
+  userValidator.updateNumber,
   userController.updateNewNumber
 );
 

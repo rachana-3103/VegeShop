@@ -3,7 +3,7 @@ const Joi = require("joi");
 const { validateRequest } = require("../../helpers/helpers");
 const { min } = require("lodash");
 
-exports.addlocationValidator = async (req, res, next) => {
+exports.addLocation = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
@@ -20,7 +20,7 @@ exports.addlocationValidator = async (req, res, next) => {
   }
 };
 
-exports.updatelocationValidator = async (req, res, next) => {
+exports.updateLocation = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({

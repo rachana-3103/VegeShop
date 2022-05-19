@@ -8,23 +8,19 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4(),
       },
       user_id: {
-        allowNull: false,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4(),
-      },
-      name: {
-        type: Sequelize.STRING,
+        references: {
+          model: "users",
+          key: "id",
+        },
         allowNull: false,
       },
       location_id: {
-        type: Sequelize.STRING,
-      },
-      latitude: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      longitude: {
-        type: Sequelize.STRING,
+        type: Sequelize.UUID,
+        references: {
+          model: "locations",
+          key: "id",
+        },
         allowNull: false,
       },
       cover_radius: {

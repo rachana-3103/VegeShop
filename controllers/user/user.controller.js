@@ -126,7 +126,6 @@ exports.updateCode = async (req, res) => {
     }
     return successResponse(req, res, user.data, user.msg);
   } catch (error) {
-    console.log("~ error", error)
     return errorResponse(req, res, error.message);
   }
 };

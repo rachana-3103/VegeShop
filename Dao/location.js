@@ -31,19 +31,12 @@ async function deleteLocations(userId, id) {
 }
 
 async function updateLocations(obj) {
-  return await locations.update(
-    {
-      name: obj.name,
-      latitude: obj.latitude,
-      longitude: obj.longitude,
+  return await locations.update(obj, {
+    where: {
+      id: obj.id,
+      user_id: obj.user_id,
     },
-    {
-      where: {
-        id: obj.id,
-        user_id: obj.user_id,
-      },
-    }
-  );
+  });
 }
 
 module.exports = {

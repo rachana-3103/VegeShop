@@ -9,20 +9,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     location_id: {
       type: DataTypes.STRING,
-    },
-    latitude: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    longitude: {
-      type: DataTypes.STRING,
-      allowNull: false,
     },
     cover_radius: {
       type: DataTypes.INTEGER,

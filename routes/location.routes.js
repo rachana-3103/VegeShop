@@ -8,7 +8,7 @@ const { authorization } = require("../middleware/authorization");
 router.post(
   "/add",
   authorization,
-  locationValidator.addlocationValidator,
+  locationValidator.addLocation,
   locationController.addLocation
 );
 
@@ -19,7 +19,7 @@ router.delete("/delete", authorization, locationController.deleteLocation);
 router.put(
   "/update",
   authorization,
-  locationValidator.updatelocationValidator,
+  locationValidator.updateLocation,
   locationController.updateLocation
 );
 

@@ -1,4 +1,4 @@
-const { safetyplans } = require("../../models/index");
+const { safetyplans, locations } = require("../../models/index");
 const {
   SAFETYPLAN_NOT_FOUND,
   SAFETYPLAN_ALREADY_EXIST,
@@ -6,26 +6,38 @@ const {
 } = require("../../helpers/messages");
 const {
   findSafetyPlanById,
-  findSafetyPlanByName,
+  findSafetyPlanByLocationId,
   updateStatus,
+  updateSafetyplan,
 } = require("../../Dao/safetyplan");
 
+const { updateLocations } = require("../../Dao/location");
 async function addSafetyPlan(param) {
   try {
-    const safetyplan = await findSafetyPlanByName(param.user.id, param.name);
-    if (safetyplan) {
-      return {
-        err: true,
-        msg: SAFETYPLAN_ALREADY_EXIST,
+    let location;
+    if (param.locationId) {
+      const safetyplan = await findSafetyPlanByLocationId(
+        param.user.id,
+        param.locationId
+      );
+      if (safetyplan) {
+        return {
+          err: true,
+          msg: SAFETYPLAN_ALREADY_EXIST,
+        };
+      }
+    } else {
+      const locationObj = {
+        user_id: param.user.id,
+        latitude: param.latitude,
+        longitude: param.longitude,
+        name: param.name,
       };
+      location = await locations.create(locationObj);
     }
     const safetyPlanObj = {
-      name: param.name,
       user_id: param.user.id,
-      location_id: param.locationId || null,
-      latitude: param.latitude,
-      longitude: param.longitude,
-      favorite: param.favorite,
+      location_id: param.locationId || location.dataValues.id,
       cover_radius: param.coverRadius,
       person_name: param.personName,
       start_time: param.startTime,
@@ -36,10 +48,56 @@ async function addSafetyPlan(param) {
     };
 
     await safetyplans.create(safetyPlanObj);
+
     return {
       err: false,
       data: null,
       msg: "SafetyPlan added Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error.message,
+    };
+  }
+}
+
+async function updateSafetyPlan(param) {
+  try {
+    const safetyplan = await findSafetyPlanById(
+      param.user.id,
+      param.safetyPlanId
+    );
+    if (!safetyplan) {
+      return {
+        err: true,
+        msg: SAFETYPLAN_NOT_FOUND,
+      };
+    }
+
+    const locationObj = {
+      id: safetyplan.dataValues.location_id,
+      user_id: param.user.id,
+      latitude: param.latitude,
+      longitude: param.longitude,
+      name: param.name,
+    };
+    await updateLocations(locationObj);
+    const safetyPlanObj = {
+      location_id: param.locationId || safetyplan.dataValues.location_id,
+      cover_radius: param.coverRadius,
+      person_name: param.personName,
+      start_time: param.startTime,
+      end_time: param.endTime,
+      help: param.help,
+      check_in_out: param.checkInOut,
+    };
+
+    await updateSafetyplan(safetyPlanObj, param.safetyPlanId, param.user.id);
+    return {
+      err: false,
+      data: null,
+      msg: "SafetyPlan updated Successfully.",
     };
   } catch (error) {
     return {
@@ -127,6 +185,7 @@ async function getSafetyPlan(param) {
 
 module.exports = {
   addSafetyPlan,
+  updateSafetyPlan,
   cancelSafetyPlan,
   completeSafetyPlan,
   getSafetyPlan,

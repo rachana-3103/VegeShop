@@ -11,12 +11,12 @@ async function findSafetyPlanById(userId, id) {
   });
 }
 
-async function findSafetyPlanByName(userId, name) {
+async function findSafetyPlanByLocationId(userId, locationId) {
   return await safetyplans.findOne({
     where: {
-      name,
+      location_id: locationId,
       user_id: userId,
-      status: STATUS.INPROGRESS
+      status: STATUS.INPROGRESS,
     },
   });
 }
@@ -34,8 +34,19 @@ async function updateStatus(status, userId, id) {
   );
 }
 
+async function updateSafetyplan(safetyplan, id, userId) {
+  return await safetyplans.update(safetyplan, {
+    where: {
+      id,
+      user_id: userId,
+      status: STATUS.INPROGRESS,
+    },
+  });
+}
+
 module.exports = {
   findSafetyPlanById,
-  findSafetyPlanByName,
+  findSafetyPlanByLocationId,
   updateStatus,
+  updateSafetyplan,
 };

@@ -8,6 +8,7 @@ const userRoutes = require('./routes/user.routes');
 const groupRoutes = require('./routes/group.routes');
 const safetyPlanRoutes = require('./routes/safetyplan.routes');
 const locationRoutes = require('./routes/location.routes');
+const locationSharingRoutes = require('./routes/locationsharing.routes');
 
 const { errorHandler } = require('./middleware/errorHandler');
 
@@ -36,7 +37,7 @@ app.use('/api/user', apiLimiter, userRoutes);
 app.use('/api/group',  apiLimiter, groupRoutes);
 app.use('/api/safetyplan',  apiLimiter, safetyPlanRoutes);
 app.use('/api/location',  apiLimiter, locationRoutes);
-
+app.use('/api/locationsharing',  apiLimiter, locationSharingRoutes);
 
 app.use(errorHandler);
 

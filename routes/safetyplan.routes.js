@@ -8,21 +8,28 @@ const { authorization } = require("../middleware/authorization");
 router.post(
   "/add",
   authorization,
-  safetyPlanValidator.safetyPlanValidator,
+  safetyPlanValidator.addSafetyPlan,
   safetyPlanController.addSafetyPlan
+);
+
+router.put(
+  "/update",
+  authorization,
+  safetyPlanValidator.updateSafetyPlan,
+  safetyPlanController.updateSafetyPlan
 );
 
 router.put(
   "/cancel",
   authorization,
-  safetyPlanValidator.safetyPlanStatusValidator,
+  safetyPlanValidator.safetyPlanStatus,
   safetyPlanController.cancelSafetyPlan
 );
 
 router.put(
   "/complete",
   authorization,
-  safetyPlanValidator.safetyPlanStatusValidator,
+  safetyPlanValidator.safetyPlanStatus,
   safetyPlanController.completeSafetyPlan
 );
 

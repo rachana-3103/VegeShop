@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
-    queryInterface.createTable("locations", {
+    queryInterface.createTable("groups", {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -8,20 +8,23 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4(),
       },
       user_id: {
-        allowNull: false,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4(),
+        references: {
+          model: "users",
+          key: "id",
+        },
+        allowNull: false,
       },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      latitude: {
+      no_of_contact: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      longitude: {
-        type: Sequelize.STRING,
+      contacts: {
+        type: Sequelize.JSON,
         allowNull: false,
       },
       createdAt: {
@@ -34,6 +37,6 @@ module.exports = {
       },
     }),
   down: (queryInterface) => {
-    queryInterface.dropTable("locations");
+    queryInterface.dropTable("groups");
   },
 };

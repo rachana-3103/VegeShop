@@ -2,7 +2,7 @@ const { errorResponse } = require("../../helpers/helpers");
 const Joi = require("joi");
 const { validateRequest } = require("../../helpers/helpers");
 
-exports.signupValidator = async (req, res, next) => {
+exports.signup = async (req, res, next) => {
   const param = { ...req.body };
   const schema = Joi.object({
     name: Joi.string().alphanum().min(3).max(15).required(),
@@ -25,7 +25,7 @@ exports.signupValidator = async (req, res, next) => {
   }
 };
 
-exports.loginValidator = async (req, res, next) => {
+exports.login = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
@@ -43,7 +43,7 @@ exports.loginValidator = async (req, res, next) => {
   }
 };
 
-exports.refreshValidator = async (req, res, next) => {
+exports.refresh = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
@@ -59,7 +59,7 @@ exports.refreshValidator = async (req, res, next) => {
   }
 };
 
-exports.forgotValidator = async (req, res, next) => {
+exports.forgot = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
@@ -76,7 +76,7 @@ exports.forgotValidator = async (req, res, next) => {
   }
 };
 
-exports.resetValidator = async (req, res, next) => {
+exports.reset = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
@@ -95,7 +95,7 @@ exports.resetValidator = async (req, res, next) => {
   }
 };
 
-exports.codeVerifyValidator = async (req, res, next) => {
+exports.codeVerify = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
@@ -113,7 +113,7 @@ exports.codeVerifyValidator = async (req, res, next) => {
   }
 };
 
-exports.updateCodeValidator = async (req, res, next) => {
+exports.updateCode = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
@@ -134,7 +134,7 @@ exports.updateCodeValidator = async (req, res, next) => {
   }
 };
 
-exports.updateNumberValidator = async (req, res, next) => {
+exports.updateNumber = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({

@@ -2,7 +2,7 @@ const { errorResponse } = require("../../helpers/helpers");
 const Joi = require("joi");
 const { validateRequest } = require("../../helpers/helpers");
 
-exports.addGroupValidator = async (req, res, next) => {
+exports.addGroup = async (req, res, next) => {
   const param = { ...req.body };
   const schema = Joi.object({
     name: Joi.string().alphanum().max(30).required(),
@@ -17,7 +17,7 @@ exports.addGroupValidator = async (req, res, next) => {
   }
 };
 
-exports.updateGroupValidator = async (req, res, next) => {
+exports.updateGroup = async (req, res, next) => {
   const param = { ...req.body };
   const schema = Joi.object({
     groupId:Joi.string().required(),
