@@ -16,6 +16,7 @@ const {
   INVALID_PHNUMBER,
   CODE_NOT_VALID,
   OTP_MESSAGE,
+  NEW_PHONENUMBER_EXIST,
 } = require("../../helpers/messages");
 
 const {
@@ -29,6 +30,9 @@ const {
   userFindByCodeForReset,
   smsCodeVerified,
   updatePassword,
+  userFindByNumber,
+  userCodeVerifyById,
+  updatePhoneNumber,
 } = require("../../Dao/user");
 const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
@@ -38,6 +42,7 @@ AWS.config.update({
   secretAccessKey: process.env.AWS_SECRET_KEY,
   region: process.env.AWS_REGION,
 });
+const sns = new AWS.SNS();
 
 async function userSignup(param) {
   try {
@@ -50,7 +55,6 @@ async function userSignup(param) {
       Message: `${OTP_MESSAGE} ${OTP} `,
       PhoneNumber: mobile,
     };
-    const sns = new AWS.SNS();
 
     sns.publish(sendSMS, (err, result) => {
       if (err) {
@@ -186,13 +190,12 @@ async function forgotPassword(param) {
     } else {
       const OTP = Math.floor(100000 + Math.random() * 900000);
       const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
-  
+
       let sendSMS = {
         Subject: "Aegis24/7 Verification Code",
         Message: `${OTP_MESSAGE} ${OTP} `,
         PhoneNumber: mobile,
       };
-      const sns = new AWS.SNS();
       sns.publish(sendSMS, (err, result) => {
         if (err) {
           console.info(err);
@@ -200,7 +203,7 @@ async function forgotPassword(param) {
           console.info(result);
         }
       });
-      await updateCodeByPhoneNumber(param.phoneNumber);
+      await updateCodeByPhoneNumber(OTP, param.countryCode, param.phoneNumber);
     }
 
     return {
@@ -312,6 +315,96 @@ async function codeVerify(param) {
   }
 }
 
+async function updateCode(param) {
+  try {
+    const user = await userFindByNumber(
+      param.user.id,
+      param.oldCountryCode,
+      param.oldPhoneNumber
+    );
+    if (!user) {
+      return {
+        err: true,
+        msg: USER_NOT_EXIST,
+      };
+    }
+    const newNumberCheck = await userFindByNumber(
+      param.user.id,
+      param.newCountryCode,
+      param.newPhoneNumber
+    );
+
+    if (newNumberCheck) {
+      return {
+        err: true,
+        msg: NEW_PHONENUMBER_EXIST,
+      };
+    }
+
+    const OTP = Math.floor(100000 + Math.random() * 900000);
+    const mobile = "+" + Number(param.newCountryCode) + param.newPhoneNumber;
+
+    let sendSMS = {
+      Subject: "Aegis24/7 Verification Code",
+      Message: `${OTP_MESSAGE} ${OTP} `,
+      PhoneNumber: mobile,
+    };
+
+    sns.publish(sendSMS, (err, result) => {
+      if (err) {
+        console.info(err);
+      } else {
+        console.info(result);
+      }
+    });
+    await updateCodeByPhoneNumber(
+      OTP,
+      param.oldCountyCode,
+      param.oldPhoneNumber
+    );
+
+    return {
+      err: false,
+      data: null,
+      msg: "OTP send in your new phone number.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+}
+
+async function updateNewNumber(param) {
+  try {
+    const user = await userCodeVerifyById(param.code, param.user.id);
+    if (!user) {
+      return {
+        err: true,
+        msg: CODE_NOT_VALID,
+      };
+    }
+
+    await updatePhoneNumber(
+      param.user.id,
+      param.countryCode,
+      param.phoneNumber
+    );
+
+    return {
+      err: false,
+      data: null,
+      msg: "New Phone Number Updated Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+}
+
 module.exports = {
   userSignup,
   userLogin,
@@ -319,4 +412,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   codeVerify,
+  updateCode,
+  updateNewNumber,
 };

@@ -18,13 +18,14 @@ async function userFindByPhoneNumber(phoneNumber, countryCode) {
   });
 }
 
-async function updateCodeByPhoneNumber(phoneNumber) {
+async function updateCodeByPhoneNumber(code, countryCode, phoneNumber) {
   return await users.update(
     {
-      sms_code: Math.floor(100000 + Math.random() * 900000),
+      sms_code: code,
     },
     {
       where: {
+        country_code: countryCode,
         phone_number: phoneNumber,
       },
     }
@@ -67,6 +68,16 @@ async function userFindByCodeForReset(code, phoneNumber, countryCode) {
       phone_number: phoneNumber,
       sms_verified: true,
       country_code: countryCode,
+    },
+  });
+}
+
+async function userCodeVerifyById(code, userId) {
+  return await users.findOne({
+    where: {
+      id: userId,
+      sms_code: code,
+      sms_verified: true,
     },
   });
 }
@@ -114,6 +125,30 @@ async function findUserById(userId) {
   });
 }
 
+async function userFindByNumber(userId, countryCode, phoneNumber) {
+  return users.findOne({
+    where: {
+      id: userId,
+      country_code: countryCode,
+      phone_number: phoneNumber,
+    },
+  });
+}
+
+async function updatePhoneNumber(userId, countryCode, phoneNumber) {
+  return await users.update(
+    {
+      country_code: countryCode,
+      phone_number: phoneNumber,
+    },
+    {
+      where: {
+        id: userId,
+      },
+    }
+  );
+}
+
 function passwordEncrypt(password) {
   const pwd = crypto.createHash("md5").update(password).digest("hex");
   return pwd;
@@ -131,4 +166,7 @@ module.exports = {
   smsCodeVerified,
   userFindByCodeForReset,
   updatePassword,
+  userFindByNumber,
+  userCodeVerifyById,
+  updatePhoneNumber,
 };

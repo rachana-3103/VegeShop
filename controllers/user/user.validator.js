@@ -13,7 +13,7 @@ exports.signupValidator = async (req, res, next) => {
     countryCode: Joi.string().max(5).required(),
     email: Joi.string().email({
       minDomainSegments: 2,
-      tlds: { allow: ["com", "net", "in"] },
+      tlds: { allow: ["com", "net", "in", "us"] },
     }),
   });
 
@@ -99,10 +99,49 @@ exports.codeVerifyValidator = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
-    code: Joi.string().max(6).required(),
+    code: Joi.string().min(6).required(),
     phoneNumber: Joi.string().required(),
     countryCode: Joi.string().max(5).required(),
   }).with("phoneNumber", "countryCode");
+
+  const error = validateRequest(param, schema);
+
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
+};
+
+exports.updateCodeValidator = async (req, res, next) => {
+  const param = { ...req.body };
+
+  const schema = Joi.object({
+    oldCountyCode: Joi.string().max(5).required(),
+    oldPhoneNumber: Joi.string().required(),
+    newCountryCode: Joi.string().max(5).required(),
+    newPhoneNumber: Joi.string().required(),
+  })
+    .with("oldCountyCode", "oldPhoneNumber")
+    .with("newCountyCode", "newPhoneNumber");
+
+  const error = validateRequest(param, schema);
+
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
+};
+
+exports.updateNumberValidator = async (req, res, next) => {
+  const param = { ...req.body };
+
+  const schema = Joi.object({
+    countryCode: Joi.string().max(5).required(),
+    phoneNumber: Joi.string().required(),
+    code: Joi.string().min(6).required(),
+  }).with("countyCode", "phoneNumber");
 
   const error = validateRequest(param, schema);
 

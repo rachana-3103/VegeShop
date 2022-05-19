@@ -33,4 +33,19 @@ router.post(
   userController.codeVerify
 );
 
+router.post(
+  "/update-code",
+  authorization,
+  userValidator.updateCodeValidator,
+  userController.updateCode
+);
+
+router.put(
+  "/update-number",
+  authorization,
+  userValidator.updateNumberValidator,
+  userController.updateNewNumber
+);
+
+
 module.exports = router;

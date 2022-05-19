@@ -23,3 +23,4 @@ exports.CONTACT_PHONENUMBER_SAME = "Contact Phone Number is the same.";
 exports.SAFETYPLAN_NOT_FOUND = "Safty Plan not found.";
 exports.LOCATION_NOT_FOUND = "Location not found.";
 exports.SAFETYPLAN_ALREADY_EXIST = 'Safety Plan already exist.'
+exports.NEW_PHONENUMBER_EXIST = 'New Phone number already exist.'

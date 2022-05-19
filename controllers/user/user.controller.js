@@ -8,6 +8,8 @@ const {
   forgotPassword,
   resetPassword,
   codeVerify,
+  updateCode,
+  updateNewNumber
 } = require("./user.helper");
 
 exports.signup = async (req, res) => {
@@ -101,6 +103,41 @@ exports.codeVerify = async (req, res) => {
       return errorResponse(req, res, "Something Went Wrong", 400);
     }
     const user = await codeVerify(param);
+
+    if (!isEmpty(user) && user.err) {
+      return errorResponse(req, res, user.msg, 401);
+    }
+    return successResponse(req, res, user.data, user.msg);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+exports.updateCode = async (req, res) => {
+  try {
+    const param = { ...req.body };
+    if (isEmpty(param)) {
+      return errorResponse(req, res, "Something Went Wrong", 400);
+    }
+    const user = await updateCode(param);
+
+    if (!isEmpty(user) && user.err) {
+      return errorResponse(req, res, user.msg, 401);
+    }
+    return successResponse(req, res, user.data, user.msg);
+  } catch (error) {
+    console.log("~ error", error)
+    return errorResponse(req, res, error.message);
+  }
+};
+
+exports.updateNewNumber = async (req, res) => {
+  try {
+    const param = { ...req.body };
+    if (isEmpty(param)) {
+      return errorResponse(req, res, "Something Went Wrong", 400);
+    }
+    const user = await updateNewNumber(param);
 
     if (!isEmpty(user) && user.err) {
       return errorResponse(req, res, user.msg, 401);
