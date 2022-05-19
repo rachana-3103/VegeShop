@@ -1,7 +1,12 @@
 const { successResponse, errorResponse } = require("../../helpers/helpers");
 const { isEmpty } = require("lodash");
 
-const { addSafetyPlan, getSafetyPlan } = require("./safetyplan.helper");
+const {
+  addSafetyPlan,
+  cancelSafetyPlan,
+  completeSafetyPlan,
+  getSafetyPlan,
+} = require("./safetyplan.helper");
 
 exports.addSafetyPlan = async (req, res) => {
   try {
@@ -10,6 +15,38 @@ exports.addSafetyPlan = async (req, res) => {
       return errorResponse(req, res, "Something Went Wrong", 400);
     }
     const safetyplan = await addSafetyPlan(param);
+    if (!isEmpty(safetyplan) && safetyplan.err) {
+      return errorResponse(req, res, safetyplan.msg, 400);
+    }
+    return successResponse(req, res, null, safetyplan.msg);
+  } catch (error) {
+    return errorResponse(req, res, error, 400);
+  }
+};
+
+exports.cancelSafetyPlan = async (req, res) => {
+  try {
+    const param = req.body;
+    if (isEmpty(param)) {
+      return errorResponse(req, res, "Something Went Wrong", 400);
+    }
+    const safetyplan = await cancelSafetyPlan(param);
+    if (!isEmpty(safetyplan) && safetyplan.err) {
+      return errorResponse(req, res, safetyplan.msg, 400);
+    }
+    return successResponse(req, res, null, safetyplan.msg);
+  } catch (error) {
+    return errorResponse(req, res, error, 400);
+  }
+};
+
+exports.completeSafetyPlan = async (req, res) => {
+  try {
+    const param = req.body;
+    if (isEmpty(param)) {
+      return errorResponse(req, res, "Something Went Wrong", 400);
+    }
+    const safetyplan = await completeSafetyPlan(param);
     if (!isEmpty(safetyplan) && safetyplan.err) {
       return errorResponse(req, res, safetyplan.msg, 400);
     }

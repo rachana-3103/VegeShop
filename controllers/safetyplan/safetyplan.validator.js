@@ -33,3 +33,19 @@ exports.safetyPlanValidator = async (req, res, next) => {
     return next();
   }
 };
+
+exports.safetyPlanStatusValidator = async (req, res, next) => {
+  const param = { ...req.body };
+
+  const schema = Joi.object({
+    safetyPlanId: Joi.string().required(),
+  });
+
+  const error = validateRequest(param, schema);
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
+};
+

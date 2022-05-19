@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-    }, 
+    },
     location_id: {
       type: DataTypes.STRING,
     },
@@ -44,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     check_in_out: {
       type: DataTypes.JSON,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   });

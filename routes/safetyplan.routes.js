@@ -12,10 +12,20 @@ router.post(
   safetyPlanController.addSafetyPlan
 );
 
-router.get(
-  "/details/:id",
+router.put(
+  "/cancel",
   authorization,
-  safetyPlanController.getSafetyPlan
+  safetyPlanValidator.safetyPlanStatusValidator,
+  safetyPlanController.cancelSafetyPlan
 );
+
+router.put(
+  "/complete",
+  authorization,
+  safetyPlanValidator.safetyPlanStatusValidator,
+  safetyPlanController.completeSafetyPlan
+);
+
+router.get("/details/:id", authorization, safetyPlanController.getSafetyPlan);
 
 module.exports = router;

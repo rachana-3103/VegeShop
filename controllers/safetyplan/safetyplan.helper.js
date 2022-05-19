@@ -2,10 +2,12 @@ const { safetyplans } = require("../../models/index");
 const {
   SAFETYPLAN_NOT_FOUND,
   SAFETYPLAN_ALREADY_EXIST,
+  STATUS,
 } = require("../../helpers/messages");
 const {
   findSafetyPlanById,
   findSafetyPlanByName,
+  updateStatus,
 } = require("../../Dao/safetyplan");
 
 async function addSafetyPlan(param) {
@@ -30,6 +32,7 @@ async function addSafetyPlan(param) {
       end_time: param.endTime,
       help: param.help,
       check_in_out: param.checkInOut,
+      status: STATUS.INPROGRESS,
     };
 
     await safetyplans.create(safetyPlanObj);
@@ -37,6 +40,60 @@ async function addSafetyPlan(param) {
       err: false,
       data: null,
       msg: "SafetyPlan added Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error.message,
+    };
+  }
+}
+
+async function cancelSafetyPlan(param) {
+  try {
+    const safetyplan = await findSafetyPlanById(
+      param.user.id,
+      param.safetyPlanId
+    );
+
+    if (!safetyplan) {
+      return {
+        err: true,
+        msg: SAFETYPLAN_NOT_FOUND,
+      };
+    }
+    await updateStatus(STATUS.CANCELLED, param.user.id, param.safetyPlanId);
+    return {
+      err: false,
+      data: null,
+      msg: "SafetyPlan Cancelled Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error.message,
+    };
+  }
+}
+
+async function completeSafetyPlan(param) {
+  try {
+    const safetyplan = await findSafetyPlanById(
+      param.user.id,
+      param.safetyPlanId
+    );
+
+    if (!safetyplan) {
+      return {
+        err: true,
+        msg: SAFETYPLAN_NOT_FOUND,
+      };
+    }
+    await updateStatus(STATUS.COMPLETED, param.user.id, param.safetyPlanId);
+    return {
+      err: false,
+      data: null,
+      msg: "SafetyPlan Completed Successfully.",
     };
   } catch (error) {
     return {
@@ -70,5 +127,7 @@ async function getSafetyPlan(param) {
 
 module.exports = {
   addSafetyPlan,
+  cancelSafetyPlan,
+  completeSafetyPlan,
   getSafetyPlan,
 };
