@@ -1,10 +1,9 @@
 const { safetyplans } = require("../models/index");
 const { STATUS } = require("../helpers/messages");
 
-async function findSafetyPlanById(userId, id) {
+async function findSafetyPlan(userId) {
   return await safetyplans.findOne({
     where: {
-      id,
       user_id: userId,
       status: STATUS.INPROGRESS,
     },
@@ -21,12 +20,11 @@ async function findSafetyPlanByLocationId(userId, locationId) {
   });
 }
 
-async function updateStatus(status, userId, id) {
+async function updateStatus(status, userId) {
   return await safetyplans.update(
     { status },
     {
       where: {
-        id,
         user_id: userId,
         status: STATUS.INPROGRESS,
       },
@@ -34,10 +32,9 @@ async function updateStatus(status, userId, id) {
   );
 }
 
-async function updateSafetyplan(safetyplan, id, userId) {
+async function updateSafetyplan(safetyplan, userId) {
   return await safetyplans.update(safetyplan, {
     where: {
-      id,
       user_id: userId,
       status: STATUS.INPROGRESS,
     },
@@ -45,7 +42,7 @@ async function updateSafetyplan(safetyplan, id, userId) {
 }
 
 module.exports = {
-  findSafetyPlanById,
+  findSafetyPlan,
   findSafetyPlanByLocationId,
   updateStatus,
   updateSafetyplan,

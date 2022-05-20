@@ -37,7 +37,7 @@ app.use('/api/user', apiLimiter, userRoutes);
 app.use('/api/group',  apiLimiter, groupRoutes);
 app.use('/api/safetyplan',  apiLimiter, safetyPlanRoutes);
 app.use('/api/location',  apiLimiter, locationRoutes);
-app.use('/api/locationsharing',  apiLimiter, locationSharingRoutes);
+app.use('/api/location-sharing',  apiLimiter, locationSharingRoutes);
 
 app.use(errorHandler);
 

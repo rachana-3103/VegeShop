@@ -44,9 +44,6 @@ exports.updateSafetyPlan = async (req, res) => {
 exports.cancelSafetyPlan = async (req, res) => {
   try {
     const param = req.body;
-    if (isEmpty(param)) {
-      return errorResponse(req, res, "Something Went Wrong", 400);
-    }
     const safetyplan = await cancelSafetyPlan(param);
     if (!isEmpty(safetyplan) && safetyplan.err) {
       return errorResponse(req, res, safetyplan.msg, 400);
@@ -60,9 +57,6 @@ exports.cancelSafetyPlan = async (req, res) => {
 exports.completeSafetyPlan = async (req, res) => {
   try {
     const param = req.body;
-    if (isEmpty(param)) {
-      return errorResponse(req, res, "Something Went Wrong", 400);
-    }
     const safetyplan = await completeSafetyPlan(param);
     if (!isEmpty(safetyplan) && safetyplan.err) {
       return errorResponse(req, res, safetyplan.msg, 400);
@@ -75,7 +69,7 @@ exports.completeSafetyPlan = async (req, res) => {
 
 exports.getSafetyPlan = async (req, res) => {
   try {
-    const param = { ...req.body, ...req.params };
+    const param = req.body;
     const safetyplan = await getSafetyPlan(param);
     if (!isEmpty(safetyplan) && safetyplan.err) {
       return errorResponse(req, res, safetyplan.msg, 400);

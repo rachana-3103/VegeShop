@@ -11,19 +11,20 @@ const {
 const {
   ALLREADY_REGISTER,
   INVALID_PWORD,
-  USER_NOT_EXIST,
   PASSWORD_NOT_MATCH,
   INVALID_PHNUMBER,
   CODE_NOT_VALID,
   OTP_MESSAGE,
   NEW_PHONENUMBER_EXIST,
+  CODE_NOT_VERIFIED,
+  PASSWORD_USED,
 } = require("../../helpers/messages");
 
 const {
   findUserById,
-  userFindByPhoneNumberAndPwd,
-  updateCodeByPhoneNumber,
   userFindByPhoneNumber,
+  usercheckCodeVerifed,
+  updateCodeByPhoneNumber,
   passwordEncrypt,
   findUserByEmail,
   userFindByCodeForLogin,
@@ -98,16 +99,22 @@ async function userSignup(param) {
 
 async function userLogin(param) {
   try {
-    let user = await userFindByPhoneNumberAndPwd(
+    let user = await userFindByPhoneNumber(
       param.phoneNumber,
-      param.countryCode,
-      passwordEncrypt(param.password)
+      param.countryCode
     );
-
     if (!user) {
       return {
         err: true,
-        msg: USER_NOT_EXIST,
+        msg: INVALID_PHNUMBER,
+      };
+    }
+
+    let code = await usercheckCodeVerifed(param.phoneNumber, param.countryCode);
+    if (code) {
+      return {
+        err: true,
+        msg: CODE_NOT_VERIFIED,
       };
     }
 
@@ -124,6 +131,7 @@ async function userLogin(param) {
     const accessToken = generateJWTtoken({
       id: user.id,
       email: user.email,
+      password: user.password,
       phone_number: user.phone_number,
       country_code: user.country_code,
     });
@@ -131,6 +139,7 @@ async function userLogin(param) {
     const refreshToken = generateRefreshtoken({
       id: user.id,
       email: user.email,
+      password: user.password,
       phone_number: user.phone_number,
       country_code: user.country_code,
     });
@@ -159,6 +168,7 @@ async function refreshToken(param) {
     const accessToken = generateJWTtoken({
       id: user.id,
       email: user.email,
+      password: user.password,
       phone_number: user.phone_number,
       country_code: user.country_code,
     });
@@ -220,6 +230,12 @@ async function forgotPassword(param) {
 
 async function resetPassword(newPassword, confirmPassword, user) {
   try {
+    if (user.password == passwordEncrypt(newPassword)) {
+      return {
+        err: true,
+        msg: PASSWORD_USED,
+      };
+    }
     if (newPassword !== confirmPassword) {
       return {
         err: true,
@@ -269,12 +285,14 @@ async function codeVerify(param) {
       const accessToken = generateJWTtoken({
         id: userLogin.id,
         email: userLogin.email,
+        password: user.password,
         phone_number: userLogin.phone_number,
         country_code: userLogin.country_code,
       });
       const refreshToken = generateRefreshtoken({
         id: userLogin.id,
         email: userLogin.email,
+        password: user.password,
         phone_number: userLogin.phone_number,
         country_code: userLogin.country_code,
       });
@@ -286,6 +304,7 @@ async function codeVerify(param) {
       const accessToken = generateJWTtoken({
         id: userResetPwd.id,
         email: userResetPwd.email,
+        password: user.password,
         phone_number: userResetPwd.phone_number,
         country_code: userResetPwd.country_code,
       });
@@ -293,6 +312,7 @@ async function codeVerify(param) {
       const refreshToken = generateRefreshtoken({
         id: userResetPwd.id,
         email: userResetPwd.email,
+        password: user.password,
         phone_number: userResetPwd.phone_number,
         country_code: userResetPwd.country_code,
       });
@@ -325,7 +345,7 @@ async function updateCode(param) {
     if (!user) {
       return {
         err: true,
-        msg: USER_NOT_EXIST,
+        msg: INVALID_PHNUMBER,
       };
     }
     const newNumberCheck = await userFindByNumber(
@@ -359,7 +379,7 @@ async function updateCode(param) {
     });
     await updateCodeByPhoneNumber(
       OTP,
-      param.oldCountyCode,
+      param.oldCountryCode,
       param.oldPhoneNumber
     );
 
@@ -369,6 +389,7 @@ async function updateCode(param) {
       msg: "OTP send in your new phone number.",
     };
   } catch (error) {
+    console.log("~ error", error);
     return {
       err: true,
       msg: error,

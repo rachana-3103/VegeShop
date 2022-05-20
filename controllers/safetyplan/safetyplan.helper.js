@@ -5,7 +5,7 @@ const {
   STATUS,
 } = require("../../helpers/messages");
 const {
-  findSafetyPlanById,
+  findSafetyPlan,
   findSafetyPlanByLocationId,
   updateStatus,
   updateSafetyplan,
@@ -109,10 +109,7 @@ async function updateSafetyPlan(param) {
 
 async function cancelSafetyPlan(param) {
   try {
-    const safetyplan = await findSafetyPlanById(
-      param.user.id,
-      param.safetyPlanId
-    );
+    const safetyplan = await findSafetyPlan(param.user.id);
 
     if (!safetyplan) {
       return {
@@ -120,7 +117,7 @@ async function cancelSafetyPlan(param) {
         msg: SAFETYPLAN_NOT_FOUND,
       };
     }
-    await updateStatus(STATUS.CANCELLED, param.user.id, param.safetyPlanId);
+    await updateStatus(STATUS.CANCELLED, param.user.id);
     return {
       err: false,
       data: null,
@@ -136,10 +133,7 @@ async function cancelSafetyPlan(param) {
 
 async function completeSafetyPlan(param) {
   try {
-    const safetyplan = await findSafetyPlanById(
-      param.user.id,
-      param.safetyPlanId
-    );
+    const safetyplan = await findSafetyPlan(param.user.id);
 
     if (!safetyplan) {
       return {
@@ -147,7 +141,7 @@ async function completeSafetyPlan(param) {
         msg: SAFETYPLAN_NOT_FOUND,
       };
     }
-    await updateStatus(STATUS.COMPLETED, param.user.id, param.safetyPlanId);
+    await updateStatus(STATUS.COMPLETED, param.user.id);
     return {
       err: false,
       data: null,
@@ -163,7 +157,7 @@ async function completeSafetyPlan(param) {
 
 async function getSafetyPlan(param) {
   try {
-    const safetyplan = await findSafetyPlanById(param.user.id, param.id);
+    const safetyplan = await findSafetyPlan(param.user.id);
     if (!safetyplan) {
       return {
         err: true,

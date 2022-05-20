@@ -18,6 +18,16 @@ async function userFindByPhoneNumber(phoneNumber, countryCode) {
   });
 }
 
+async function usercheckCodeVerifed(phoneNumber, countryCode) {
+  return await users.findOne({
+    where: {
+      country_code: countryCode,
+      phone_number: phoneNumber,
+      sms_verified: false,
+    },
+  });
+}
+
 async function updateCodeByPhoneNumber(code, countryCode, phoneNumber) {
   return await users.update(
     {
@@ -30,16 +40,6 @@ async function updateCodeByPhoneNumber(code, countryCode, phoneNumber) {
       },
     }
   );
-}
-
-async function userFindByPhoneNumberAndPwd(phoneNumber, countryCode, password) {
-  return await users.findOne({
-    where: {
-      phone_number: phoneNumber,
-      country_code: countryCode,
-      password: password,
-    },
-  });
 }
 
 async function userFindByResetToken(token) {
@@ -157,8 +157,9 @@ function passwordEncrypt(password) {
 module.exports = {
   findUserById,
   passwordEncrypt,
+  usercheckCodeVerifed,
   findUserByEmail,
-  userFindByPhoneNumberAndPwd,
+  userFindByPhoneNumber,
   userFindByPhoneNumber,
   updateCodeByPhoneNumber,
   userFindByResetToken,
