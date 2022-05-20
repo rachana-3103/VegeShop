@@ -117,7 +117,7 @@ exports.updateCode = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
-    oldCountyCode: Joi.string().max(5).required(),
+    oldCountryCode: Joi.string().max(5).required(),
     oldPhoneNumber: Joi.string().required(),
     newCountryCode: Joi.string().max(5).required(),
     newPhoneNumber: Joi.string().required(),
