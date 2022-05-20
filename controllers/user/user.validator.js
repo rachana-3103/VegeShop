@@ -122,7 +122,7 @@ exports.updateCode = async (req, res, next) => {
     newCountryCode: Joi.string().max(5).required(),
     newPhoneNumber: Joi.string().required(),
   })
-    .with("oldCountyCode", "oldPhoneNumber")
+    .with("oldCountryCode", "oldPhoneNumber")
     .with("newCountyCode", "newPhoneNumber");
 
   const error = validateRequest(param, schema);
