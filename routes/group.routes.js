@@ -3,7 +3,7 @@ const router = express.Router();
 
 const groupController = require("../controllers/group/group.controller");
 const groupValidator = require("../controllers/group/group.validator");
-const { authorization } = require("../middleware/authorization");
+const { authorization } = require("../helpers/helpers");
 
 router.post(
   "/add",

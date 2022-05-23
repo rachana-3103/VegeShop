@@ -3,7 +3,7 @@ const router = express.Router();
 
 const safetyPlanController = require("../controllers/safetyplan/safetyplan.controller");
 const safetyPlanValidator = require("../controllers/safetyplan/safetyplan.validator");
-const { authorization } = require("../middleware/authorization");
+const { authorization } = require("../helpers/helpers");
 
 router.post(
   "/add",

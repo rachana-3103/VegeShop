@@ -9,7 +9,8 @@ const {
   resetPassword,
   codeVerify,
   updateCode,
-  updateNewNumber
+  updateNewNumber,
+  logout,
 } = require("./user.helper");
 
 exports.signup = async (req, res) => {
@@ -142,6 +143,19 @@ exports.updateNewNumber = async (req, res) => {
       return errorResponse(req, res, user.msg, 401);
     }
     return successResponse(req, res, user.data, user.msg);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+exports.logout = async (req, res) => {
+  try {
+    const user = await logout();
+
+    if (!isEmpty(user) && user.err) {
+      return errorResponse(req, res, user.msg, 401);
+    }
+    return successResponse(req, res, null, user.msg);
   } catch (error) {
     return errorResponse(req, res, error.message);
   }

@@ -3,7 +3,7 @@ const router = express.Router();
 
 const locationController = require("../controllers/location/location.controller");
 const locationValidator = require("../controllers/location/location.validator");
-const { authorization } = require("../middleware/authorization");
+const { authorization } = require("../helpers/helpers");
 
 router.post(
   "/add",

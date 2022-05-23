@@ -6,6 +6,7 @@ const {
   comparePassword,
   verifyRefreshtoken,
   generateRefreshtoken,
+  deleteToken,
 } = require("../../helpers/helpers");
 
 const {
@@ -426,6 +427,22 @@ async function updateNewNumber(param) {
   }
 }
 
+async function logout() {
+  try {
+    await deleteToken();
+    return {
+      err: false,
+      data: null,
+      msg: "Logout Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+}
+
 module.exports = {
   userSignup,
   userLogin,
@@ -435,4 +452,5 @@ module.exports = {
   codeVerify,
   updateCode,
   updateNewNumber,
+  logout,
 };

@@ -3,7 +3,7 @@ const router = express.Router();
 
 const userController = require("../controllers/user/user.controller");
 const userValidator = require("../controllers/user/user.validator");
-const { authorization } = require("../middleware/authorization");
+const { authorization } = require("../helpers/helpers");
 
 router.get("/", (req, res) => {
   res.send({ message: "Hello World!!" });
@@ -11,6 +11,8 @@ router.get("/", (req, res) => {
 
 router.post("/signup", userValidator.signup, userController.signup);
 router.post("/login", userValidator.login, userController.login);
+router.get("/logout", authorization, userController.logout);
+
 router.post(
   "/refresh-token",
   userValidator.refresh,
@@ -46,6 +48,5 @@ router.put(
   userValidator.updateNumber,
   userController.updateNewNumber
 );
-
 
 module.exports = router;

@@ -1,6 +1,30 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const { SOMETHING_WENT_WRONG } = require("./messages");
+const {
+  SOMETHING_WENT_WRONG,
+  NO_TOKEN_PROVIDED,
+  UNAUTHORIZED_USER,
+} = require("./messages");
+const nodeCache = require("node-cache");
+const myCache = new nodeCache();
+
+exports.authorization = async (req, res, next) => {
+  try {
+    const value = myCache.get("token");
+    if (!value) {
+      return this.errorResponse(req, res, UNAUTHORIZED_USER, 401);
+    }
+    if (!req.headers && !req.headers.authorization) {
+      return this.errorResponse(req, res, NO_TOKEN_PROVIDED, 401);
+    }
+    const token = req.headers.authorization;
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    req.body.user = user;
+    return next();
+  } catch (e) {
+    return this.errorResponse(req, res, UNAUTHORIZED_USER, 401);
+  }
+};
 
 exports.successResponse = (req, res, data, message, code = 200) => {
   res.status(code);
@@ -28,18 +52,25 @@ exports.errorResponse = (
 };
 
 exports.generateJWTtoken = (object, secretKey = process.env.JWT_SECRET) => {
-  return jwt.sign(object, secretKey, {
+  const token = jwt.sign(object, secretKey, {
     expiresIn: process.env.AUTH_TOKEN_EXPIRED,
   });
+  myCache.set("token", token, process.env.AUTH_TOKEN_EXPIRED);
+  return token;
+};
+
+exports.deleteToken = () => {
+  myCache.del("token");
 };
 
 exports.generateRefreshtoken = (
   object,
   secretKey = process.env.REFRESH_SECRET
 ) => {
-  return jwt.sign(object, secretKey, {
+  const token = jwt.sign(object, secretKey, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRED,
   });
+  return token;
 };
 
 exports.verifyRefreshtoken = (
