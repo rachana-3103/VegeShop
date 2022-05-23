@@ -10,16 +10,18 @@ const myCache = new nodeCache();
 
 exports.authorization = async (req, res, next) => {
   try {
-    const value = myCache.get("token");
+    const token = req.headers.authorization;
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    req.body.user = user;
+
+    const value = myCache.get(req.body.user.id);
     if (!value) {
       return this.errorResponse(req, res, UNAUTHORIZED_USER, 401);
     }
     if (!req.headers && !req.headers.authorization) {
       return this.errorResponse(req, res, NO_TOKEN_PROVIDED, 401);
     }
-    const token = req.headers.authorization;
-    const user = jwt.verify(token, process.env.JWT_SECRET);
-    req.body.user = user;
+   
     return next();
   } catch (e) {
     return this.errorResponse(req, res, UNAUTHORIZED_USER, 401);
@@ -55,7 +57,7 @@ exports.generateJWTtoken = (object, secretKey = process.env.JWT_SECRET) => {
   const token = jwt.sign(object, secretKey, {
     expiresIn: process.env.AUTH_TOKEN_EXPIRED,
   });
-  myCache.set("token", token, process.env.AUTH_TOKEN_EXPIRED);
+  myCache.set(`${object.id}`, token, process.env.NODE_CACHE_EXPIRED);
   return token;
 };
 
@@ -95,7 +97,7 @@ exports.validateRequest = (param, schema) => {
     allowUnknown: true,
     stripUnknown: true,
   };
-  
+
   const { error } = schema.validate(param, options);
   if (error) {
     let object = [];
