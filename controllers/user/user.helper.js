@@ -266,11 +266,13 @@ async function codeVerify(param) {
       param.phoneNumber,
       param.countryCode
     );
+    console.info("~ userLogin", userLogin)
     const userResetPwd = await userFindByCodeForReset(
       param.code,
       param.phoneNumber,
       param.countryCode
     );
+    console.info("~ userResetPwd", userResetPwd)
     if (!userLogin && !userResetPwd) {
       return {
         err: true,
@@ -324,7 +326,8 @@ async function codeVerify(param) {
       userResetPwd.dataValues.token_expired = tokenExpireIn;
       user = userResetPwd;
     }
-
+    
+    console.info("~ user", user)
     return {
       err: false,
       data: user,

@@ -100,6 +100,7 @@ exports.resetPassword = async (req, res) => {
 exports.codeVerify = async (req, res) => {
   try {
     const param = { ...req.body };
+    console.info("~ param", param)
     if (isEmpty(param)) {
       return errorResponse(req, res, "Something Went Wrong", 400);
     }
@@ -110,6 +111,7 @@ exports.codeVerify = async (req, res) => {
     }
     return successResponse(req, res, user.data, user.msg);
   } catch (error) {
+    console.info("~ error", error)
     return errorResponse(req, res, error.message);
   }
 };
