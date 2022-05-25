@@ -305,7 +305,9 @@ async function codeVerify(param) {
       userLogin.dataValues.refresh_token = refreshToken;
       userLogin.dataValues.token_expired = tokenExpireIn;
       user = userLogin;
+      console.info("~ user=============login ", user)
     } else {
+      console.info('.......................else');
       const accessToken = generateJWTtoken({
         id: userResetPwd.id,
         email: userResetPwd.email,
@@ -327,13 +329,14 @@ async function codeVerify(param) {
       user = userResetPwd;
     }
     
-    console.info("~ user", user)
+    console.info("~ user.....................", user)
     return {
       err: false,
       data: user,
       msg: "Code Verified Successfully.",
     };
   } catch (error) {
+    console.info("~ error-----------", error)
     return {
       err: true,
       msg: error,
