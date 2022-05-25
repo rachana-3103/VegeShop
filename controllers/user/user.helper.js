@@ -290,7 +290,7 @@ async function codeVerify(param) {
       const accessToken = generateJWTtoken({
         id: userLogin.id,
         email: userLogin.email,
-        password: user.password,
+        password: userLogin.password,
         phone_number: userLogin.phone_number,
         country_code: userLogin.country_code,
       });
