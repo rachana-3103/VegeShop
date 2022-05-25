@@ -7,6 +7,7 @@ const {
   cancelSafetyPlan,
   completeSafetyPlan,
   getSafetyPlan,
+  alertSafetyPlan
 } = require("./safetyplan.helper");
 
 exports.addSafetyPlan = async (req, res) => {
@@ -79,3 +80,22 @@ exports.getSafetyPlan = async (req, res) => {
     return errorResponse(req, res, error, 400);
   }
 };
+
+
+exports.alertSafetyPlan = async (req, res) => {
+  try {
+    const param = req.body;
+
+    if (isEmpty(param)) {
+      return errorResponse(req, res, "Something Went Wrong", 400);
+    }
+    const safetyplan = await alertSafetyPlan(param);
+    if (!isEmpty(safetyplan) && safetyplan.err) {
+      return errorResponse(req, res, safetyplan.msg, 400);
+    }
+    return successResponse(req, res, null, safetyplan.msg);
+  } catch (error) {
+    return errorResponse(req, res, error, 400);
+  }
+};
+

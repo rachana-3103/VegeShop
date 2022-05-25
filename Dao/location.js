@@ -20,6 +20,17 @@ async function findLocationById(userId, id) {
   });
 }
 
+async function findLocation(obj) {
+  return await locations.findOne({
+    where: {
+      name: obj.name,
+      latitude: obj.latitude,
+      longitude: obj.longitude,
+      user_id: obj.user_id,
+    },
+  });
+}
+
 async function deleteLocations(userId, id) {
   return await locations.destroy({
     where: {
@@ -44,4 +55,5 @@ module.exports = {
   findLocationById,
   deleteLocations,
   updateLocations,
+  findLocation,
 };

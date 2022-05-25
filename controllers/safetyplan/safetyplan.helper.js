@@ -3,6 +3,7 @@ const {
   SAFETYPLAN_NOT_FOUND,
   SAFETYPLAN_ALREADY_EXIST,
   STATUS,
+  LOCATION_EXIST,
 } = require("../../helpers/messages");
 const {
   findSafetyPlan,
@@ -11,7 +12,8 @@ const {
   updateSafetyplan,
 } = require("../../Dao/safetyplan");
 
-const { updateLocations } = require("../../Dao/location");
+const { updateLocations, findLocation } = require("../../Dao/location");
+
 async function addSafetyPlan(param) {
   try {
     let location;
@@ -27,12 +29,26 @@ async function addSafetyPlan(param) {
         };
       }
     } else {
+      const safetyplan = await findSafetyPlan(param.user.id);
+      if (safetyplan) {
+        return {
+          err: true,
+          msg: SAFETYPLAN_ALREADY_EXIST,
+        };
+      }
       const locationObj = {
         user_id: param.user.id,
         latitude: param.latitude,
         longitude: param.longitude,
         name: param.name,
       };
+      location = await findLocation(locationObj);
+      if (location) {
+        return {
+          err: true,
+          msg: LOCATION_EXIST,
+        };
+      }
       location = await locations.create(locationObj);
     }
     const safetyPlanObj = {
@@ -177,10 +193,34 @@ async function getSafetyPlan(param) {
   }
 }
 
+async function alertSafetyPlan(param) {
+  try {
+    const safetyplan = await findSafetyPlan(param.user.id);
+
+    if (!safetyplan) {
+      return {
+        err: true,
+        msg: SAFETYPLAN_NOT_FOUND,
+      };
+    }
+    return {
+      err: false,
+      data: safetyplan.dataValues,
+      msg: "SafetyPlan Details.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error.message,
+    };
+  }
+}
+
 module.exports = {
   addSafetyPlan,
   updateSafetyPlan,
   cancelSafetyPlan,
   completeSafetyPlan,
   getSafetyPlan,
+  alertSafetyPlan,
 };

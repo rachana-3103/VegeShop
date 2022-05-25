@@ -35,4 +35,11 @@ router.put(
 
 router.get("/details/:id", authorization, safetyPlanController.getSafetyPlan);
 
+router.post(
+  "/alert",
+  authorization,
+  safetyPlanValidator.alertSafetyPlan,
+  safetyPlanController.alertSafetyPlan
+);
+
 module.exports = router;

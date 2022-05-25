@@ -26,7 +26,7 @@ exports.SAFETYPLAN_ALREADY_EXIST = "Safety Plan already exist.";
 exports.NEW_PHONENUMBER_EXIST = "New Phone number already exist.";
 exports.CODE_NOT_VERIFIED = "Verification Code Not Verified.";
 exports.PASSWORD_USED = 'New Password has been used before.';
-
+exports.LOCATION_EXIST = "Location already exist."
 exports.STATUS = {
   INPROGRESS: "Inprogress",
   CANCELLED: "Cancelled",

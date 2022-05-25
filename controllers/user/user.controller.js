@@ -150,7 +150,7 @@ exports.updateNewNumber = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    const user = await logout();
+    const user = await logout(req.body.user.id);
 
     if (!isEmpty(user) && user.err) {
       return errorResponse(req, res, user.msg, 401);

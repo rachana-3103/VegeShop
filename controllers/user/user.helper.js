@@ -127,7 +127,8 @@ async function userLogin(param) {
       };
     }
 
-    let tokenExpireIn = moment().add(process.env.AUTH_TOKEN_EXPIRED, "minutes");
+    let date = moment().add(process.env.TOKEN_EXPIRED, "hours");
+    const tokenExpireIn = date.format("YYYY-MM-DDTHH:mm:ss");
 
     const accessToken = generateJWTtoken({
       id: user.id,
@@ -279,7 +280,8 @@ async function codeVerify(param) {
       await smsCodeVerified(param.code, param.phoneNumber, param.countryCode);
     }
 
-    let tokenExpireIn = moment().add(process.env.AUTH_TOKEN_EXPIRED, "minutes");
+    let date = moment().add(process.env.TOKEN_EXPIRED, "hours");
+    const tokenExpireIn = date.format("YYYY-MM-DDTHH:mm:ss");
     let user;
 
     if (userLogin) {
@@ -390,7 +392,6 @@ async function updateCode(param) {
       msg: "OTP send in your new phone number.",
     };
   } catch (error) {
-    console.log("~ error", error);
     return {
       err: true,
       msg: error,
@@ -427,9 +428,9 @@ async function updateNewNumber(param) {
   }
 }
 
-async function logout() {
+async function logout(id) {
   try {
-    await deleteToken();
+    await deleteToken(id);
     return {
       err: false,
       data: null,

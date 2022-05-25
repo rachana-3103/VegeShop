@@ -85,3 +85,18 @@ exports.safetyPlanStatus = async (req, res, next) => {
     return next();
   }
 };
+
+exports.alertSafetyPlan = async (req, res, next) => {
+  const param = { ...req.body };
+
+  const schema = Joi.object({
+    group: Joi.array().required(),
+  });
+
+  const error = validateRequest(param, schema);
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
+};

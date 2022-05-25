@@ -21,7 +21,6 @@ exports.authorization = async (req, res, next) => {
     if (!req.headers && !req.headers.authorization) {
       return this.errorResponse(req, res, NO_TOKEN_PROVIDED, 401);
     }
-   
     return next();
   } catch (e) {
     return this.errorResponse(req, res, UNAUTHORIZED_USER, 401);
@@ -57,12 +56,13 @@ exports.generateJWTtoken = (object, secretKey = process.env.JWT_SECRET) => {
   const token = jwt.sign(object, secretKey, {
     expiresIn: process.env.AUTH_TOKEN_EXPIRED,
   });
-  myCache.set(`${object.id}`, token, process.env.NODE_CACHE_EXPIRED);
+
+  myCache.set(`${object.id}`, token, Number(process.env.NODE_CACHE_EXPIRED));
   return token;
 };
 
-exports.deleteToken = () => {
-  myCache.del("token");
+exports.deleteToken = (id) => {
+  myCache.del(`${id}`);
 };
 
 exports.generateRefreshtoken = (
