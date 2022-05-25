@@ -48,7 +48,6 @@ exports.updateSafetyPlan = async (req, res, next) => {
     );
   }
   const schema = Joi.object({
-    safetyPlanId: Joi.string().required(),
     name: Joi.string().max(30).required(),
     locationId: Joi.string(),
     latitude: Joi.string(),
@@ -90,7 +89,8 @@ exports.alertSafetyPlan = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
-    group: Joi.array().required(),
+    latitude: Joi.string().required(),
+    longitude: Joi.string().required(),
   });
 
   const error = validateRequest(param, schema);

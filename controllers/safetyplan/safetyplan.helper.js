@@ -4,6 +4,8 @@ const {
   SAFETYPLAN_ALREADY_EXIST,
   STATUS,
   LOCATION_EXIST,
+  GROUP_NOT_FOUND_CHECKOUT,
+  GROUP_NOT_FOUND_HELP,
 } = require("../../helpers/messages");
 const {
   findSafetyPlan,
@@ -12,11 +14,34 @@ const {
   updateSafetyplan,
 } = require("../../Dao/safetyplan");
 
+const { findGroupById } = require("../../Dao/group");
 const { updateLocations, findLocation } = require("../../Dao/location");
+const AWS = require("aws-sdk");
+const sns = new AWS.SNS();
 
 async function addSafetyPlan(param) {
   try {
     let location;
+    for (const id of param.help) {
+      const data = await findGroupById(param.user.id, id);
+      if (!data) {
+        return {
+          err: true,
+          msg: GROUP_NOT_FOUND_HELP + id,
+        };
+      }
+    }
+
+    for (const id of param.checkInOut) {
+      const data = await findGroupById(param.user.id, id);
+      if (!data) {
+        return {
+          err: true,
+          msg: GROUP_NOT_FOUND_CHECKOUT + id,
+        };
+      }
+    }
+
     if (param.locationId) {
       const safetyplan = await findSafetyPlanByLocationId(
         param.user.id,
@@ -80,10 +105,7 @@ async function addSafetyPlan(param) {
 
 async function updateSafetyPlan(param) {
   try {
-    const safetyplan = await findSafetyPlanById(
-      param.user.id,
-      param.safetyPlanId
-    );
+    const safetyplan = await findSafetyPlan(param.user.id);
     if (!safetyplan) {
       return {
         err: true,
@@ -109,7 +131,7 @@ async function updateSafetyPlan(param) {
       check_in_out: param.checkInOut,
     };
 
-    await updateSafetyplan(safetyPlanObj, param.safetyPlanId, param.user.id);
+    await updateSafetyplan(safetyPlanObj, param.user.id);
     return {
       err: false,
       data: null,
@@ -203,10 +225,28 @@ async function alertSafetyPlan(param) {
         msg: SAFETYPLAN_NOT_FOUND,
       };
     }
+    for (const id of safetyplan.dataValues.help) {
+      const data = await findGroupById(param.user.id, id);
+      for (const obj of data.dataValues.contacts) {
+        let sendSMS = {
+          Subject: "Aegis24/7 For Help",
+          Message: ` ${(param.latitude, param.longitude)} `,
+          PhoneNumber: obj.phone_number,
+        };
+
+        sns.publish(sendSMS, (err, result) => {
+          if (err) {
+            console.info(err);
+          } else {
+            console.info(result);
+          }
+        });
+      }
+    }
     return {
       err: false,
-      data: safetyplan.dataValues,
-      msg: "SafetyPlan Details.",
+      data: null,
+      msg: "Live location share.",
     };
   } catch (error) {
     return {

@@ -27,6 +27,9 @@ exports.NEW_PHONENUMBER_EXIST = "New Phone number already exist.";
 exports.CODE_NOT_VERIFIED = "Verification Code Not Verified.";
 exports.PASSWORD_USED = 'New Password has been used before.';
 exports.LOCATION_EXIST = "Location already exist."
+exports.GROUP_NOT_FOUND_HELP = "Group not found for help - ";
+exports.GROUP_NOT_FOUND_CHECKOUT = "Group not found for checkout - ";
+
 exports.STATUS = {
   INPROGRESS: "Inprogress",
   CANCELLED: "Cancelled",

@@ -33,7 +33,7 @@ router.put(
   safetyPlanController.completeSafetyPlan
 );
 
-router.get("/details/:id", authorization, safetyPlanController.getSafetyPlan);
+router.get("/details", authorization, safetyPlanController.getSafetyPlan);
 
 router.post(
   "/alert",
