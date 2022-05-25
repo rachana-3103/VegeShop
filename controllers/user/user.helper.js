@@ -266,13 +266,11 @@ async function codeVerify(param) {
       param.phoneNumber,
       param.countryCode
     );
-    console.info("~ userLogin", userLogin)
     const userResetPwd = await userFindByCodeForReset(
       param.code,
       param.phoneNumber,
       param.countryCode
     );
-    console.info("~ userResetPwd", userResetPwd)
     if (!userLogin && !userResetPwd) {
       return {
         err: true,
@@ -297,7 +295,7 @@ async function codeVerify(param) {
       const refreshToken = generateRefreshtoken({
         id: userLogin.id,
         email: userLogin.email,
-        password: user.password,
+        password: userLogin.password,
         phone_number: userLogin.phone_number,
         country_code: userLogin.country_code,
       });
@@ -305,13 +303,11 @@ async function codeVerify(param) {
       userLogin.dataValues.refresh_token = refreshToken;
       userLogin.dataValues.token_expired = tokenExpireIn;
       user = userLogin;
-      console.info("~ user=============login ", user)
     } else {
-      console.info('.......................else');
       const accessToken = generateJWTtoken({
         id: userResetPwd.id,
         email: userResetPwd.email,
-        password: user.password,
+        password: userResetPwd.password,
         phone_number: userResetPwd.phone_number,
         country_code: userResetPwd.country_code,
       });
@@ -319,7 +315,7 @@ async function codeVerify(param) {
       const refreshToken = generateRefreshtoken({
         id: userResetPwd.id,
         email: userResetPwd.email,
-        password: user.password,
+        password: userResetPwd.password,
         phone_number: userResetPwd.phone_number,
         country_code: userResetPwd.country_code,
       });
@@ -328,15 +324,13 @@ async function codeVerify(param) {
       userResetPwd.dataValues.token_expired = tokenExpireIn;
       user = userResetPwd;
     }
-    
-    console.info("~ user.....................", user)
+
     return {
       err: false,
       data: user,
       msg: "Code Verified Successfully.",
     };
   } catch (error) {
-    console.info("~ error-----------", error)
     return {
       err: true,
       msg: error,
