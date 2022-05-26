@@ -35,6 +35,7 @@ const {
   userFindByNumber,
   userCodeVerifyById,
   updatePhoneNumber,
+  deviceTokenUpdates,
 } = require("../../Dao/user");
 const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
@@ -444,6 +445,22 @@ async function logout(id) {
   }
 }
 
+async function deviceTokenUpdate(param) {
+  try {
+    await deviceTokenUpdates(param);
+    return {
+      err: false,
+      data: null,
+      msg: "Device token updated Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+}
+
 module.exports = {
   userSignup,
   userLogin,
@@ -454,4 +471,5 @@ module.exports = {
   updateCode,
   updateNewNumber,
   logout,
+  deviceTokenUpdate,
 };

@@ -41,9 +41,24 @@ async function updateSafetyplan(safetyplan, userId) {
   });
 }
 
+async function updateAlert(userId) {
+  return await safetyplans.update(
+    {
+      alert: true,
+    },
+    {
+      where: {
+        user_id: userId,
+        status: STATUS.INPROGRESS,
+      },
+    }
+  );
+}
+
 module.exports = {
   findSafetyPlan,
   findSafetyPlanByLocationId,
   updateStatus,
   updateSafetyplan,
+  updateAlert,
 };

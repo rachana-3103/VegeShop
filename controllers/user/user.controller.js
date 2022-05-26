@@ -11,6 +11,7 @@ const {
   updateCode,
   updateNewNumber,
   logout,
+  deviceTokenUpdate
 } = require("./user.helper");
 
 exports.signup = async (req, res) => {
@@ -151,6 +152,19 @@ exports.updateNewNumber = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     const user = await logout(req.body.user.id);
+
+    if (!isEmpty(user) && user.err) {
+      return errorResponse(req, res, user.msg, 401);
+    }
+    return successResponse(req, res, null, user.msg);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+exports.deviceTokenUpdate = async (req, res) => {
+  try {
+    const user = await deviceTokenUpdate(req.body);
 
     if (!isEmpty(user) && user.err) {
       return errorResponse(req, res, user.msg, 401);

@@ -151,3 +151,19 @@ exports.updateNumber = async (req, res, next) => {
     return next();
   }
 };
+
+exports.deviceTokenUpdate = async (req, res, next) => {
+  const param = { ...req.body };
+
+  const schema = Joi.object({
+    deviceToken: Joi.string().required(),
+  });
+
+  const error = validateRequest(param, schema);
+
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
+};

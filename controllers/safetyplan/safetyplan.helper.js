@@ -12,12 +12,14 @@ const {
   findSafetyPlanByLocationId,
   updateStatus,
   updateSafetyplan,
+  updateAlert
 } = require("../../Dao/safetyplan");
 
 const { findGroupById } = require("../../Dao/group");
 const { updateLocations, findLocation } = require("../../Dao/location");
 const AWS = require("aws-sdk");
 const sns = new AWS.SNS();
+const moment = require("moment");
 
 async function addSafetyPlan(param) {
   try {
@@ -81,8 +83,8 @@ async function addSafetyPlan(param) {
       location_id: param.locationId || location.dataValues.id,
       cover_radius: param.coverRadius,
       person_name: param.personName,
-      start_time: param.startTime,
-      end_time: param.endTime,
+      start_time: moment(param.startTime).format("YYYY-MM-DDTHH:mm"),
+      end_time: moment(param.endTime).format("YYYY-MM-DDTHH:mm"),
       help: param.help,
       check_in_out: param.checkInOut,
       status: STATUS.INPROGRESS,
@@ -125,8 +127,8 @@ async function updateSafetyPlan(param) {
       location_id: param.locationId || safetyplan.dataValues.location_id,
       cover_radius: param.coverRadius,
       person_name: param.personName,
-      start_time: param.startTime,
-      end_time: param.endTime,
+      start_time: moment(param.startTime).format("YYYY-MM-DDTHH:mm"),
+      end_time: moment(param.endTime).format("YYYY-MM-DDTHH:mm"),
       help: param.help,
       check_in_out: param.checkInOut,
     };
@@ -243,6 +245,7 @@ async function alertSafetyPlan(param) {
         });
       }
     }
+    await updateAlert(param.user.id);
     return {
       err: false,
       data: null,

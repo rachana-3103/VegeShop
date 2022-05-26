@@ -49,4 +49,11 @@ router.put(
   userController.updateNewNumber
 );
 
+router.post(
+  "/token",
+  authorization,
+  userValidator.deviceTokenUpdate,
+  userController.deviceTokenUpdate
+);
+
 module.exports = router;

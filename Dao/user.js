@@ -149,6 +149,19 @@ async function updatePhoneNumber(userId, countryCode, phoneNumber) {
   );
 }
 
+async function deviceTokenUpdates(obj) {
+  return await users.update(
+    {
+      device_token: obj.deviceToken,
+    },
+    {
+      where: {
+        id: obj.user.id,
+      },
+    }
+  );
+}
+
 function passwordEncrypt(password) {
   const pwd = crypto.createHash("md5").update(password).digest("hex");
   return pwd;
@@ -170,4 +183,5 @@ module.exports = {
   userFindByNumber,
   userCodeVerifyById,
   updatePhoneNumber,
+  deviceTokenUpdates,
 };

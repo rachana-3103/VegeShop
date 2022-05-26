@@ -38,6 +38,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    alert: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   });
 
   return safetyplans;
