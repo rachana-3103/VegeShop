@@ -19,6 +19,7 @@ const {
   NEW_PHONENUMBER_EXIST,
   CODE_NOT_VERIFIED,
   PASSWORD_USED,
+  OTP_EXPIRED,
 } = require("../../helpers/messages");
 
 const {
@@ -36,6 +37,7 @@ const {
   userCodeVerifyById,
   updatePhoneNumber,
   deviceTokenUpdates,
+  removeOTP,
 } = require("../../Dao/user");
 const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
@@ -75,6 +77,7 @@ async function userSignup(param) {
         email: param.email.toLowerCase(),
         password: passwordEncrypt(param.password),
         sms_code: OTP,
+        otp_generated_at: moment().format("YYYY-MM-DDTHH:mm"),
       };
 
       const newUser = await users.create(userObj);
@@ -129,7 +132,7 @@ async function userLogin(param) {
     }
 
     let date = moment().add(process.env.TOKEN_EXPIRED, "hours");
-    const tokenExpireIn = date.format("YYYY-MM-DDTHH:mm:ss");
+    const tokenExpireIn = date.format("YYYY-MM-DDTHH:mm");
 
     const accessToken = generateJWTtoken({
       id: user.id,
@@ -278,14 +281,36 @@ async function codeVerify(param) {
         msg: CODE_NOT_VALID,
       };
     } else {
+      const currentDate = moment();
+      let otpGenerateDate;
+      if (userLogin) {
+        otpGenerateDate = moment(userLogin.dataValues.otp_generated_at);
+        const dateDiff = currentDate.diff(otpGenerateDate, "minutes");
+        if (dateDiff >= 5) {
+          return {
+            err: true,
+            msg: OTP_EXPIRED,
+          };
+        }
+      } else {
+        otpGenerateDate = moment(userResetPwd.dataValues.otp_generated_at);
+        const dateDiff = currentDate.diff(otpGenerateDate, "minutes");
+        if (dateDiff >= 5) {
+          return {
+            err: true,
+            msg: OTP_EXPIRED,
+          };
+        }
+      }
       await smsCodeVerified(param.code, param.phoneNumber, param.countryCode);
     }
 
     let date = moment().add(process.env.TOKEN_EXPIRED, "hours");
-    const tokenExpireIn = date.format("YYYY-MM-DDTHH:mm:ss");
+    const tokenExpireIn = date.format("YYYY-MM-DDTHH:mm");
     let user;
 
     if (userLogin) {
+      await removeOTP(userLogin.id);
       const accessToken = generateJWTtoken({
         id: userLogin.id,
         email: userLogin.email,
@@ -305,6 +330,7 @@ async function codeVerify(param) {
       userLogin.dataValues.token_expired = tokenExpireIn;
       user = userLogin;
     } else {
+      await removeOTP(userResetPwd.id);
       const accessToken = generateJWTtoken({
         id: userResetPwd.id,
         email: userResetPwd.email,
@@ -409,12 +435,21 @@ async function updateNewNumber(param) {
         msg: CODE_NOT_VALID,
       };
     }
-
+    const currentDate = moment();
+    const otpGenerateDate = moment(user.dataValues.otp_generated_at);
+    const dateDiff = currentDate.diff(otpGenerateDate, "minutes");
+    if (dateDiff >= 5) {
+      return {
+        err: true,
+        msg: OTP_EXPIRED,
+      };
+    }
     await updatePhoneNumber(
       param.user.id,
       param.countryCode,
       param.phoneNumber
     );
+    await removeOTP(param.user.id);
 
     return {
       err: false,
