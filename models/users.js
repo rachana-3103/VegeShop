@@ -34,6 +34,9 @@ module.exports = (sequelize, DataTypes) => {
     device_token: {
       type: DataTypes.STRING,
     },
+    otp_generated_at: {
+      type: DataTypes.DATE,
+    },
   });
 
   return users;

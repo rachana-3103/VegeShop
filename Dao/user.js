@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const { users } = require("../models/index");
+const moment = require("moment");
 
 async function findUserByEmail(email) {
   return await users.findOne({
@@ -32,6 +33,7 @@ async function updateCodeByPhoneNumber(code, countryCode, phoneNumber) {
   return await users.update(
     {
       sms_code: code,
+      otp_generated_at: moment().format("YYYY-MM-DDTHH:mm"),
     },
     {
       where: {
@@ -93,6 +95,21 @@ async function smsCodeVerified(code, phoneNumber, countryCode) {
         phone_number: phoneNumber,
         sms_verified: false,
         country_code: countryCode,
+      },
+    }
+  );
+}
+
+async function removeOTP(id) {
+  return await users.update(
+    {
+      sms_code: null,
+      otp_generated_at: null,
+    },
+    {
+      where: {
+        id,
+        sms_verified: true,
       },
     }
   );
@@ -184,4 +201,5 @@ module.exports = {
   userCodeVerifyById,
   updatePhoneNumber,
   deviceTokenUpdates,
+  removeOTP,
 };

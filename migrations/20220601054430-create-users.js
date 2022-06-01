@@ -33,6 +33,12 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
+      otp_generated_at:{
+        type: Sequelize.DATE,
+      },
+      device_token:{
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
