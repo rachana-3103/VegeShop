@@ -58,7 +58,6 @@ router.post(
 
 router.post(
   "/notification-send",
-  authorization,
   userController.notificationSend
 );
 
