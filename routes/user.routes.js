@@ -56,4 +56,10 @@ router.post(
   userController.deviceTokenUpdate
 );
 
+router.post(
+  "/notification-send",
+  authorization,
+  userController.notificationSend
+);
+
 module.exports = router;

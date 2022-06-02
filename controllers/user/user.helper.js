@@ -41,12 +41,14 @@ const {
 } = require("../../Dao/user");
 const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
+const admin = require("firebase-admin");
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SECRET_KEY,
   region: process.env.AWS_REGION,
 });
+
 const sns = new AWS.SNS();
 
 async function userSignup(param) {
@@ -496,6 +498,43 @@ async function deviceTokenUpdate(param) {
   }
 }
 
+async function notificationSend(param) {
+  const payload = {
+    data: param.data,
+    notification: param.notification,
+  };
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.PROJECT_ID,
+      clientEmail: process.env.CLIENT_EMAIL,
+      privateKey: process.env.PRIVATE_KEY,
+    }),
+  });
+
+  await admin
+    .messaging()
+    .sendToDevice(param.to, payload)
+    .then((response) => {
+      console.log("~ response", response);
+    })
+    .catch((err) => {
+      console.log("~ err", err);
+    });
+
+  try {
+    return {
+      err: false,
+      data: null,
+      msg: "Notification send Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+}
+
 module.exports = {
   userSignup,
   userLogin,
@@ -507,4 +546,5 @@ module.exports = {
   updateNewNumber,
   logout,
   deviceTokenUpdate,
+  notificationSend,
 };
