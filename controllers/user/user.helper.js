@@ -296,7 +296,7 @@ async function codeVerify(param) {
       if (userLogin) {
         otpGenerateDate = moment(userLogin.dataValues.otp_generated_at);
         const dateDiff = currentDate.diff(otpGenerateDate, "minutes");
-        if (dateDiff >= 5) {
+        if (dateDiff >= 2) {
           return {
             err: true,
             msg: OTP_EXPIRED,
@@ -512,9 +512,14 @@ async function notificationSend(param) {
     notification: param.notification,
   };
 
+  const options = {
+    priority: "high",
+    ttl: 10 * 60 * 1000,
+  };
+
   admin
     .messaging()
-    .sendToDevice(param.to, payload)
+    .sendToDevice(param.to, payload, options)
     .then((response) => {
       console.info("~ response", response);
     })
