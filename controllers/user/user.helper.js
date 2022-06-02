@@ -43,6 +43,14 @@ const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
 const admin = require("firebase-admin");
 
+admin.initializeApp({
+  credential: admin.credential.cert({
+    projectId: process.env.PROJECT_ID,
+    clientEmail: process.env.CLIENT_EMAIL,
+    privateKey: process.env.PRIVATE_KEY,
+  }),
+});
+
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SECRET_KEY,
@@ -503,19 +511,12 @@ async function notificationSend(param) {
     data: param.data,
     notification: param.notification,
   };
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.PROJECT_ID,
-      clientEmail: process.env.CLIENT_EMAIL,
-      privateKey: process.env.PRIVATE_KEY,
-    }),
-  });
 
-  await admin
+  admin
     .messaging()
     .sendToDevice(param.to, payload)
     .then((response) => {
-      console.log("~ response", response);
+      console.info("~ response", response);
     })
     .catch((err) => {
       console.log("~ err", err);
