@@ -12,7 +12,7 @@ const {
   findSafetyPlanByLocationId,
   updateStatus,
   updateSafetyplan,
-  updateAlert
+  updateAlert,
 } = require("../../Dao/safetyplan");
 
 const { findGroupById } = require("../../Dao/group");
@@ -24,7 +24,7 @@ const moment = require("moment");
 async function addSafetyPlan(param) {
   try {
     let location;
-    for (const id of param.help) {
+    for (const id of param.helpGroup) {
       const data = await findGroupById(param.user.id, id);
       if (!data) {
         return {
@@ -34,7 +34,7 @@ async function addSafetyPlan(param) {
       }
     }
 
-    for (const id of param.checkInOut) {
+    for (const id of param.checkInOutGroup) {
       const data = await findGroupById(param.user.id, id);
       if (!data) {
         return {
@@ -78,6 +78,19 @@ async function addSafetyPlan(param) {
       }
       location = await locations.create(locationObj);
     }
+    const helpIndi = [];
+    for (const obj of param.helpIndividuals) {
+      obj.phone_number = obj.phoneNumber;
+      delete obj.phoneNumber;
+      helpIndi.push(obj);
+    }
+    const checkInOutIndi = [];
+    for (const obj of param.checkInOutIndividuals) {
+      obj.phone_number = obj.phoneNumber;
+      delete obj.phoneNumber;
+      checkInOutIndi.push(obj);
+    }
+
     const safetyPlanObj = {
       user_id: param.user.id,
       location_id: param.locationId || location.dataValues.id,
@@ -85,8 +98,10 @@ async function addSafetyPlan(param) {
       person_name: param.personName,
       start_time: moment(param.startTime).format("YYYY-MM-DDTHH:mm"),
       end_time: moment(param.endTime).format("YYYY-MM-DDTHH:mm"),
-      help: param.help,
-      check_in_out: param.checkInOut,
+      help_individuals: helpIndi,
+      checkinout_individuals: checkInOutIndi,
+      help_group: param.helpGroup,
+      checkinout_group: param.checkInOutGroup,
       status: STATUS.INPROGRESS,
     };
 
@@ -129,8 +144,10 @@ async function updateSafetyPlan(param) {
       person_name: param.personName,
       start_time: moment(param.startTime).format("YYYY-MM-DDTHH:mm"),
       end_time: moment(param.endTime).format("YYYY-MM-DDTHH:mm"),
-      help: param.help,
-      check_in_out: param.checkInOut,
+      help_individuals: param.helpIndividuals,
+      checkinout_individuals: param.checkInOutIndividuals,
+      help_group: param.helpGroup,
+      checkinout_group: param.checkInOutGroup,
     };
 
     await updateSafetyplan(safetyPlanObj, param.user.id);

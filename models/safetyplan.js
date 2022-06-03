@@ -26,13 +26,17 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.DATE,
     },
-    help: {
+    help_group: {
       type: DataTypes.JSON,
-      allowNull: false,
     },
-    check_in_out: {
+    checkinout_group: {
       type: DataTypes.JSON,
-      allowNull: false,
+    },
+    help_individuals: {
+      type: DataTypes.JSON,
+    },
+    checkinout_individuals: {
+      type: DataTypes.JSON,
     },
     status: {
       type: DataTypes.STRING,

@@ -10,6 +10,15 @@ async function findUserByEmail(email) {
   });
 }
 
+async function getOldPassword(id, password) {
+  return await users.findOne({
+    where: {
+      id,
+      password,
+    },
+  });
+}
+
 async function userFindByPhoneNumber(phoneNumber, countryCode) {
   return await users.findOne({
     where: {
@@ -202,4 +211,5 @@ module.exports = {
   updatePhoneNumber,
   deviceTokenUpdates,
   removeOTP,
+  getOldPassword,
 };

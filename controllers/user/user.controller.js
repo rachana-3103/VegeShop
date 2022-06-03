@@ -7,6 +7,7 @@ const {
   refreshToken,
   forgotPassword,
   resetPassword,
+  changePassword,
   codeVerify,
   updateCode,
   updateNewNumber,
@@ -88,6 +89,20 @@ exports.resetPassword = async (req, res) => {
       return errorResponse(req, res, "New And Confirm Password is blank");
     }
     const response = await resetPassword(newPassword, confirmPassword, user);
+
+    if (!isEmpty(response) && response.err) {
+      return errorResponse(req, res, response.msg, 400);
+    }
+
+    return successResponse(req, res, null, response.msg);
+  } catch (error) {
+    return errorResponse(req, res, error.message);
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const response = await changePassword(req.body);
 
     if (!isEmpty(response) && response.err) {
       return errorResponse(req, res, response.msg, 400);

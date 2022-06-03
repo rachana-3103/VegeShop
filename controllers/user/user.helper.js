@@ -20,6 +20,7 @@ const {
   CODE_NOT_VERIFIED,
   PASSWORD_USED,
   OTP_EXPIRED,
+  PASSWORD_OLD_WRONG,
 } = require("../../helpers/messages");
 
 const {
@@ -28,6 +29,7 @@ const {
   usercheckCodeVerifed,
   updateCodeByPhoneNumber,
   passwordEncrypt,
+  getOldPassword,
   findUserByEmail,
   userFindByCodeForLogin,
   userFindByCodeForReset,
@@ -264,6 +266,46 @@ async function resetPassword(newPassword, confirmPassword, user) {
     return {
       err: false,
       msg: "Reset Password Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+}
+
+async function changePassword(param) {
+  try {
+    const newPassword = param.newPassword;
+    const confirmPassword = param.confirmPassword;
+    const user = param.user;
+    const checkOldPwd = await getOldPassword(
+      user.id,
+      passwordEncrypt(param.oldPassword)
+    );
+    if (!checkOldPwd) {
+      return {
+        err: true,
+        msg: PASSWORD_OLD_WRONG,
+      };
+    }
+
+    if (isEmpty(newPassword) && isEmpty(confirmPassword)) {
+      return errorResponse(req, res, "New And Confirm Password is blank");
+    }
+    if (user.password == passwordEncrypt(newPassword)) {
+      return {
+        err: true,
+        msg: PASSWORD_USED,
+      };
+    }
+
+    await updatePassword(passwordEncrypt(param.newPassword), user);
+
+    return {
+      err: false,
+      msg: "Password Change Successfully.",
     };
   } catch (error) {
     return {
@@ -524,7 +566,7 @@ async function notificationSend(param) {
       console.info("~ response", response);
     })
     .catch((err) => {
-      console.log("~ err", err);
+      console.info("~ err", err);
     });
 
   try {
@@ -547,6 +589,7 @@ module.exports = {
   refreshToken,
   forgotPassword,
   resetPassword,
+  changePassword,
   codeVerify,
   updateCode,
   updateNewNumber,

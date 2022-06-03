@@ -22,8 +22,6 @@ exports.addSafetyPlan = async (req, res, next) => {
     personName: Joi.array(),
     startTime: Joi.date().required(),
     endTime: Joi.date().required(),
-    help: Joi.array().required(),
-    checkInOut: Joi.array().required(),
   })
     .xor("latitude", "locationId")
     .with("latitude", "longitude");
@@ -56,8 +54,6 @@ exports.updateSafetyPlan = async (req, res, next) => {
     personName: Joi.array(),
     startTime: Joi.date().required(),
     endTime: Joi.date().required(),
-    help: Joi.array().required(),
-    checkInOut: Joi.array().required(),
   })
     .xor("latitude", "locationId")
     .with("latitude", "longitude");

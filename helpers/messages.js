@@ -30,6 +30,7 @@ exports.LOCATION_EXIST = "Location already exist."
 exports.GROUP_NOT_FOUND_HELP = "Group not found for help - ";
 exports.GROUP_NOT_FOUND_CHECKOUT = "Group not found for checkout - ";
 exports.OTP_EXPIRED='OTP Expired';
+exports.PASSWORD_OLD_WRONG = 'old Password wrong.';
 
 exports.STATUS = {
   INPROGRESS: "Inprogress",

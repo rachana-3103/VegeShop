@@ -29,6 +29,14 @@ router.post(
   userValidator.reset,
   userController.resetPassword
 );
+
+router.post(
+  "/change-password",
+  authorization,
+  userValidator.changePassword,
+  userController.changePassword
+);
+
 router.post(
   "/code-verify",
   userValidator.codeVerify,

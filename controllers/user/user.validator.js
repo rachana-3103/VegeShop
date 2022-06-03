@@ -95,6 +95,28 @@ exports.reset = async (req, res, next) => {
   }
 };
 
+exports.changePassword = async (req, res, next) => {
+  const param = { ...req.body };
+
+  const schema = Joi.object({
+    oldPassword: Joi.string()
+      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*]{8,16}$/))
+      .required(),
+    newPassword: Joi.string()
+      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*]{8,16}$/))
+      .required(),
+    confirmPassword: Joi.ref("newPassword"),
+  }).with("newPassword", "confirmPassword");
+
+  const error = validateRequest(param, schema);
+
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
+};
+
 exports.codeVerify = async (req, res, next) => {
   const param = { ...req.body };
 
