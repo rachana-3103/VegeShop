@@ -1,88 +1,58 @@
 const cron = require("node-cron");
 const { safetyplans } = require("./models/index");
 const moment = require("moment");
-const { findGroupById } = require("./Dao/group");
-const AWS = require("aws-sdk");
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_KEY,
-  region: process.env.AWS_REGION,
+const { findUserById } = require("./Dao/user");
+
+const { STATUS } = require("./helpers/messages");
+
+const admin = require("firebase-admin");
+
+admin.initializeApp({
+  credential: admin.credential.cert({
+    projectId: process.env.PROJECT_ID,
+    clientEmail: process.env.CLIENT_EMAIL,
+    privateKey: process.env.PRIVATE_KEY,
+  }),
 });
-const sns = new AWS.SNS();
 
 cron.schedule("* * * * *", async () => {
   try {
-    let helpArray = [];
-    let checkInOutArray = [];
-    const safetyplan = await safetyplans.findAll({});
+    const safetyplan = await safetyplans.findAll({
+      where: {
+        status: STATUS.INPROGRESS,
+      },
+    });
     for (const obj of safetyplan) {
       let date = moment(obj.dataValues.end_time);
-      date = date.subtract(10, "minutes").format("YYYY-MM-DDTHH:mm");
+      date = date.add(10, "minutes").format("YYYY-MM-DDTHH:mm");
+      const user = await findUserById(obj.dataValues.user_id);
 
-      // notification send remain
+      // notification send after 10 min
 
       if (date == moment().format("YYYY-MM-DDTHH:mm")) {
-        for (const data of obj.dataValues.help_group) {
-          const group = await findGroupById(obj.dataValues.user_id, data);
-          helpArray = [...group.contacts];
-          for (const el of obj.dataValues.help_individuals) {
-            if (
-              !helpArray.some((obj) => obj.phone_number === el.phone_number)
-            ) {
-              helpArray.push(el);
-            }
-          }
-          // console.log("~ group.contacts -----help ", helpArray);
-        }
-
-        for (const data of obj.dataValues.checkinout_group) {
-          const group = await findGroupById(obj.dataValues.user_id, data);
-          checkInOutArray = [...group.contacts];
-          for (const element of obj.dataValues.checkinout_individuals) {
-            if (
-              !checkInOutArray.some(
-                (obj) => obj.phone_number === element.phone_number
-              )
-            ) {
-              checkInOutArray.push(element);
-            }
-          }
-          // console.log("~ group.contacts -----check ", checkInOutArray);
-        }
-      }
-    }
-    if (helpArray.length > 0) {
-      for (const groupObj of helpArray) {
-        const sendSMS = {
-          Subject: "Aegis24/7 Notification",
-          Message: "Message for help",
-          PhoneNumber: groupObj.phone_number,
+        const payload = {
+          data: {
+            body: "aegis 24/7 for after 10 min check In/Out",
+            title: "aegis 24/7",
+          },
+          notification: {
+            body: "aegis 24/7 for after 10 min check In/Out",
+            title: "aegis 24/7",
+          },
         };
-
-        sns.publish(sendSMS, (err, result) => {
-          if (err) {
-            console.info(err);
-          } else {
-            console.info(result);
-          }
-        });
-      }
-    }
-    if (checkInOutArray.length > 0) {
-      for (const groupObj of checkInOutArray) {
-        const sendSMS = {
-          Subject: "Aegis24/7 Notification",
-          Message: "Message for check-In-Out",
-          PhoneNumber: groupObj.phone_number,
+        const options = {
+          priority: "high",
+          ttl: 10 * 60 * 1000,
         };
-
-        sns.publish(sendSMS, (err, result) => {
-          if (err) {
-            console.info(err);
-          } else {
-            console.info(result);
-          }
-        });
+        admin
+          .messaging()
+          .sendToDevice(user.device_token, payload, options)
+          .then((response) => {
+            console.info("~ response", response);
+          })
+          .catch((err) => {
+            console.info("~ err", err);
+          });
       }
     }
   } catch (error) {

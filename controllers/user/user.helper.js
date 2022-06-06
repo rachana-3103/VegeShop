@@ -549,27 +549,26 @@ async function deviceTokenUpdate(param) {
 }
 
 async function notificationSend(param) {
-  const payload = {
-    data: param.data,
-    notification: param.notification,
-  };
-
-  const options = {
-    priority: "high",
-    ttl: 10 * 60 * 1000,
-  };
-
-  admin
-    .messaging()
-    .sendToDevice(param.to, payload, options)
-    .then((response) => {
-      console.info("~ response", response);
-    })
-    .catch((err) => {
-      console.info("~ err", err);
-    });
-
   try {
+    const payload = {
+      data: param.data,
+      notification: param.notification,
+    };
+
+    const options = {
+      priority: "high",
+      ttl: 10 * 60 * 1000,
+    };
+    admin
+      .messaging()
+      .sendToDevice(param.to, payload, options)
+      .then((response) => {
+        console.info("~ response", response);
+      })
+      .catch((err) => {
+        console.info("~ err", err);
+      });
+
     return {
       err: false,
       data: null,
