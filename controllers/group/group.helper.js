@@ -24,7 +24,9 @@ async function addGroup(param) {
     let contactArray = [];
     for (const obj of param.contacts) {
       const conatactPhoneNumber = await param.contacts.find(
-        (objNo) => objNo.phone_number == obj.phoneNumber
+        (objNo) =>
+          objNo.phone_number == obj.phoneNumber &&
+          objNo.country_code == obj.countryCode
       );
       if (conatactPhoneNumber) {
         return {
@@ -33,7 +35,10 @@ async function addGroup(param) {
         };
       }
       obj.phone_number = obj.phoneNumber;
+      obj.country_code = obj.countryCode;
+
       delete obj.phoneNumber;
+      delete obj.countryCode;
       contactArray.push(obj);
     }
 
@@ -131,7 +136,9 @@ async function updateGroup(param) {
     let contactArray = [];
     for (const obj of param.contacts) {
       const conatactPhoneNumber = await param.contacts.find(
-        (objNo) => objNo.phone_number == obj.phoneNumber
+        (objNo) =>
+          objNo.phone_number == obj.phoneNumber &&
+          objNo.country_code == obj.countryCode
       );
       if (conatactPhoneNumber) {
         return {
@@ -140,7 +147,10 @@ async function updateGroup(param) {
         };
       }
       obj.phone_number = obj.phoneNumber;
+      obj.country_code = obj.countryCode;
+
       delete obj.phoneNumber;
+      delete obj.countryCode;
       contactArray.push(obj);
     }
 

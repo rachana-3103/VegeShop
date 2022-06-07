@@ -10,6 +10,15 @@ async function findSafetyPlan(userId) {
   });
 }
 
+async function findSafetyPlanAlert(userId) {
+  return await safetyplans.findOne({
+    where: {
+      user_id: userId,
+      alert: false,
+    },
+  });
+}
+
 async function findSafetyPlanByLocationId(userId, locationId) {
   return await safetyplans.findOne({
     where: {
@@ -61,4 +70,5 @@ module.exports = {
   updateStatus,
   updateSafetyplan,
   updateAlert,
+  findSafetyPlanAlert,
 };

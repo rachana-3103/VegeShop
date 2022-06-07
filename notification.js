@@ -2,11 +2,8 @@ const cron = require("node-cron");
 const { safetyplans } = require("./models/index");
 const moment = require("moment");
 const { findUserById } = require("./Dao/user");
-
 const { STATUS } = require("./helpers/messages");
-
 const admin = require("firebase-admin");
-
 admin.initializeApp({
   credential: admin.credential.cert({
     projectId: process.env.PROJECT_ID,
@@ -56,6 +53,9 @@ cron.schedule("* * * * *", async () => {
       }
     }
   } catch (error) {
-    console.log("~ error======", error);
+    return {
+      err: true,
+      msg: error,
+    };
   }
 });

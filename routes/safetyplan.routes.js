@@ -42,4 +42,17 @@ router.post(
   safetyPlanController.alertSafetyPlan
 );
 
+router.post(
+  "/check-in-out",
+  authorization,
+  safetyPlanController.checkInOut
+);
+
+router.post(
+  "/extend",
+  authorization,
+  safetyPlanValidator.extend,
+  safetyPlanController.extend
+);
+
 module.exports = router;

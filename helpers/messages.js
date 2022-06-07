@@ -31,7 +31,7 @@ exports.GROUP_NOT_FOUND_HELP = "Group not found for help - ";
 exports.GROUP_NOT_FOUND_CHECKOUT = "Group not found for checkout - ";
 exports.OTP_EXPIRED='OTP Expired';
 exports.PASSWORD_OLD_WRONG = 'old Password wrong.';
-
+exports.NOTIFIED_CONTACT = 'You are already notified of their help.'
 exports.STATUS = {
   INPROGRESS: "Inprogress",
   CANCELLED: "Cancelled",

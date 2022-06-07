@@ -6,6 +6,8 @@ const {
   LOCATION_EXIST,
   GROUP_NOT_FOUND_CHECKOUT,
   GROUP_NOT_FOUND_HELP,
+  LOCATION_NOT_FOUND,
+  NOTIFIED_CONTACT,
 } = require("../../helpers/messages");
 const {
   findSafetyPlan,
@@ -13,11 +15,21 @@ const {
   updateStatus,
   updateSafetyplan,
   updateAlert,
+  findSafetyPlanAlert,
 } = require("../../Dao/safetyplan");
 
 const { findGroupById } = require("../../Dao/group");
-const { updateLocations, findLocation } = require("../../Dao/location");
+const {
+  updateLocations,
+  findLocation,
+  findLocationById,
+} = require("../../Dao/location");
 const AWS = require("aws-sdk");
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+  region: process.env.AWS_REGION,
+});
 const sns = new AWS.SNS();
 const moment = require("moment");
 
@@ -81,13 +93,17 @@ async function addSafetyPlan(param) {
     const helpIndi = [];
     for (const obj of param.helpIndividuals) {
       obj.phone_number = obj.phoneNumber;
+      obj.country_code = obj.countryCode;
       delete obj.phoneNumber;
+      delete obj.countryCode;
       helpIndi.push(obj);
     }
     const checkInOutIndi = [];
     for (const obj of param.checkInOutIndividuals) {
       obj.phone_number = obj.phoneNumber;
+      obj.country_code = obj.countryCode;
       delete obj.phoneNumber;
+      delete obj.countryCode;
       checkInOutIndi.push(obj);
     }
 
@@ -130,22 +146,52 @@ async function updateSafetyPlan(param) {
       };
     }
 
+    const location = await findLocationById(
+      safetyplan.dataValues.user_id,
+      param.locationId
+    );
+
+    if (!location) {
+      return {
+        err: true,
+        msg: LOCATION_NOT_FOUND,
+      };
+    }
     const locationObj = {
-      id: safetyplan.dataValues.location_id,
+      id: location.dataValues.id,
       user_id: param.user.id,
       latitude: param.latitude,
       longitude: param.longitude,
       name: param.name,
     };
     await updateLocations(locationObj);
+
+    const helpIndi = [];
+    const checkInOutIndi = [];
+
+    for (const obj of param.helpIndividuals) {
+      obj.phone_number = obj.phoneNumber;
+      obj.country_code = obj.countryCode;
+      delete obj.phoneNumber;
+      delete obj.countryCode;
+      helpIndi.push(obj);
+    }
+    for (const obj of param.checkInOutIndividuals) {
+      obj.phone_number = obj.phoneNumber;
+      obj.country_code = obj.countryCode;
+      delete obj.phoneNumber;
+      delete obj.countryCode;
+      checkInOutIndi.push(obj);
+    }
+
     const safetyPlanObj = {
-      location_id: param.locationId || safetyplan.dataValues.location_id,
+      location_id: param.locationId || location.dataValues.id,
       cover_radius: param.coverRadius,
       person_name: param.personName,
       start_time: moment(param.startTime).format("YYYY-MM-DDTHH:mm"),
       end_time: moment(param.endTime).format("YYYY-MM-DDTHH:mm"),
-      help_individuals: param.helpIndividuals,
-      checkinout_individuals: param.checkInOutIndividuals,
+      help_individuals: helpIndi,
+      checkinout_individuals: checkInOutIndi,
       help_group: param.helpGroup,
       checkinout_group: param.checkInOutGroup,
     };
@@ -155,6 +201,29 @@ async function updateSafetyPlan(param) {
       err: false,
       data: null,
       msg: "SafetyPlan updated Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error.message,
+    };
+  }
+}
+
+async function extend(param) {
+  try {
+    const safetyplan = await findSafetyPlan(param.user.id);
+    if (!safetyplan) {
+      return {
+        err: true,
+        msg: SAFETYPLAN_NOT_FOUND,
+      };
+    }
+
+    return {
+      err: false,
+      data: null,
+      msg: "SafetyPlan extend Successfully.",
     };
   } catch (error) {
     return {
@@ -237,20 +306,41 @@ async function getSafetyPlan(param) {
 async function alertSafetyPlan(param) {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
-
+    const safetyplanAlert = await findSafetyPlanAlert(param.user.id);
     if (!safetyplan) {
       return {
         err: true,
         msg: SAFETYPLAN_NOT_FOUND,
       };
     }
-    for (const id of safetyplan.dataValues.help) {
-      const data = await findGroupById(param.user.id, id);
-      for (const obj of data.dataValues.contacts) {
+    if (!safetyplanAlert) {
+      return {
+        err: true,
+        msg: NOTIFIED_CONTACT,
+      };
+    }
+    let helpArray = [];
+    let number;
+    for (const id of safetyplan.dataValues.help_group) {
+      const group = await findGroupById(safetyplan.dataValues.user_id, id);
+      helpArray = [...group.contacts];
+      for (const element of safetyplan.dataValues.help_individuals) {
+        if (
+          !helpArray.some(
+            (obj) =>
+              obj.phone_number == element.phone_number &&
+              obj.country_code == element.country_code
+          )
+        ) {
+          helpArray.push(element);
+        }
+      }
+      for (const obj of helpArray) {
+        number = obj.country_code + obj.phone_number;
         let sendSMS = {
           Subject: "Aegis24/7 For Help",
-          Message: ` ${(param.latitude, param.longitude)} `,
-          PhoneNumber: obj.phone_number,
+          Message: ` ${param.latitude + param.longitude} `,
+          PhoneNumber: number,
         };
 
         sns.publish(sendSMS, (err, result) => {
@@ -276,6 +366,64 @@ async function alertSafetyPlan(param) {
   }
 }
 
+async function checkInOut(param) {
+  try {
+    const safetyplan = await findSafetyPlan(param.user.id);
+    if (!safetyplan) {
+      return {
+        err: true,
+        msg: SAFETYPLAN_NOT_FOUND,
+      };
+    }
+
+    let checkInOutrray = [];
+    let number;
+    if (moment().format("YYYY-MM-DDTHH:mm") > safetyplan.dataValues.endTime) {
+      for (const id of safetyplan.dataValues.checkinout_group) {
+        const group = await findGroupById(safetyplan.dataValues.user_id, id);
+        checkInOutrray = [...group.contacts];
+        for (const element of safetyplan.dataValues.checkinout_individuals) {
+          if (
+            !checkInOutrray.some(
+              (obj) =>
+                obj.phone_number == element.phone_number &&
+                obj.country_code == element.country_code
+            )
+          ) {
+            checkInOutrray.push(element);
+          }
+        }
+
+        for (const obj of checkInOutrray) {
+          number = obj.country_code + obj.phone_number;
+          let sendSMS = {
+            Subject: "Aegis24/7 For Safety plan check out",
+            Message: "Your customer has already checked out their safety plan.",
+            PhoneNumber: number,
+          };
+          sns.publish(sendSMS, (err, result) => {
+            if (err) {
+              console.info(err);
+            } else {
+              console.info(result);
+            }
+          });
+        }
+      }
+    }
+    return {
+      err: false,
+      data: null,
+      msg: "Contact informed successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error.message,
+    };
+  }
+}
+
 module.exports = {
   addSafetyPlan,
   updateSafetyPlan,
@@ -283,4 +431,6 @@ module.exports = {
   completeSafetyPlan,
   getSafetyPlan,
   alertSafetyPlan,
+  checkInOut,
+  extend,
 };
