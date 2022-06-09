@@ -64,9 +64,13 @@ router.post(
   userController.deviceTokenUpdate
 );
 
-router.post(
-  "/notification-send",
-  userController.notificationSend
+router.post("/notification-send", userController.notificationSend);
+
+router.put(
+  "/update-profile",
+  authorization,
+  userValidator.updateProfile,
+  userController.updateProfile
 );
 
 module.exports = router;

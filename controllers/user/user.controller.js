@@ -13,7 +13,8 @@ const {
   updateNewNumber,
   logout,
   deviceTokenUpdate,
-  notificationSend
+  notificationSend,
+  updateProfile
 } = require("./user.helper");
 
 exports.signup = async (req, res) => {
@@ -203,3 +204,20 @@ exports.notificationSend = async (req, res) => {
     return errorResponse(req, res, error.message);
   }
 };
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const param = req.body;
+    if (isEmpty(param)) {
+      return errorResponse(req, res, "Something Went Wrong", 400);
+    }
+    const user = await updateProfile(param);
+    if (!isEmpty(user) && user.err) {
+      return errorResponse(req, res, user.msg, 400);
+    }
+    return successResponse(req, res, user.data, user.msg);
+  } catch (error) {
+    return errorResponse(req, res, error, 400);
+  }
+};
+

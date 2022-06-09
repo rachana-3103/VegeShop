@@ -21,6 +21,7 @@ const {
   PASSWORD_USED,
   OTP_EXPIRED,
   PASSWORD_OLD_WRONG,
+  USER_NOT_EXIST,
 } = require("../../helpers/messages");
 
 const {
@@ -40,6 +41,7 @@ const {
   updatePhoneNumber,
   deviceTokenUpdates,
   removeOTP,
+  updateProfiles,
 } = require("../../Dao/user");
 const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
@@ -582,6 +584,31 @@ async function notificationSend(param) {
   }
 }
 
+async function updateProfile(param) {
+  try {
+    const user = await findUserById(param.user.id);
+    if (!user) {
+      return {
+        err: true,
+        msg: USER_NOT_EXIST,
+      };
+    }
+
+    await updateProfiles(param.name, param.email, param.user.id);
+
+    return {
+      err: false,
+      data: null,
+      msg: "Profile updated Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+}
+
 module.exports = {
   userSignup,
   userLogin,
@@ -595,4 +622,5 @@ module.exports = {
   logout,
   deviceTokenUpdate,
   notificationSend,
+  updateProfile,
 };

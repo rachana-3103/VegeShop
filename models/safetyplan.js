@@ -46,6 +46,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    extend_plan: {
+      type: DataTypes.INTEGER,
+    },
   });
 
   return safetyplans;

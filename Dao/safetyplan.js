@@ -1,5 +1,6 @@
 const { safetyplans } = require("../models/index");
 const { STATUS } = require("../helpers/messages");
+const moment = require("moment");
 
 async function findSafetyPlan(userId) {
   return await safetyplans.findOne({
@@ -64,7 +65,23 @@ async function updateAlert(userId) {
   );
 }
 
+async function updateExtend(userId, extendPlan, endTime) {
+  return await safetyplans.update(
+    {
+      extend_plan: extendPlan,
+      end_time: moment(endTime).add(10, "minutes").format("YYYY-MM-DDTHH:mm"),
+    },
+    {
+      where: {
+        user_id: userId,
+        status: STATUS.INPROGRESS,
+      },
+    }
+  );
+}
+
 module.exports = {
+  updateExtend,
   findSafetyPlan,
   findSafetyPlanByLocationId,
   updateStatus,

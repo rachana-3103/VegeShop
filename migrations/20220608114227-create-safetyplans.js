@@ -37,13 +37,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      help: {
+      help_group: {
         type: Sequelize.JSON,
-        allowNull: false,
       },
-      check_in_out: {
+      checkinout_group: {
         type: Sequelize.JSON,
-        allowNull: false,
       },
       status: {
         type: Sequelize.STRING,
@@ -51,6 +49,15 @@ module.exports = {
       },
       alert: {
         type: Sequelize.BOOLEAN,
+      },
+      help_individuals: {
+        type: Sequelize.JSON,
+      },
+      checkinout_individuals: {
+        type: Sequelize.JSON,
+      },
+      extend_plan: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,

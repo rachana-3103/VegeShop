@@ -189,3 +189,20 @@ exports.deviceTokenUpdate = async (req, res, next) => {
     return next();
   }
 };
+
+exports.updateProfile = async (req, res, next) => {
+  const param = { ...req.body };
+  const schema = Joi.object({
+    name: Joi.string().alphanum().min(3).max(15).required(),
+    email: Joi.string().email({
+      minDomainSegments: 2,
+      tlds: { allow: ["com", "net", "in", "us"] },
+    }),
+  });
+  const error = validateRequest(param, schema);
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
+};

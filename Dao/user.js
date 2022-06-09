@@ -188,6 +188,20 @@ async function deviceTokenUpdates(obj) {
   );
 }
 
+async function updateProfiles(name, email, userId) {
+  return await users.update(
+    {
+      name,
+      email,
+    },
+    {
+      where: {
+        id: userId,
+      },
+    }
+  );
+}
+
 function passwordEncrypt(password) {
   const pwd = crypto.createHash("md5").update(password).digest("hex");
   return pwd;
@@ -212,4 +226,5 @@ module.exports = {
   deviceTokenUpdates,
   removeOTP,
   getOldPassword,
+  updateProfiles,
 };

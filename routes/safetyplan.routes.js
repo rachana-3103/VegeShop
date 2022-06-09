@@ -51,7 +51,6 @@ router.post(
 router.post(
   "/extend",
   authorization,
-  safetyPlanValidator.extend,
   safetyPlanController.extend
 );
 

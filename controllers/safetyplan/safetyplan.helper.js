@@ -8,6 +8,7 @@ const {
   GROUP_NOT_FOUND_HELP,
   LOCATION_NOT_FOUND,
   NOTIFIED_CONTACT,
+  NO_MORE_EXTEND,
 } = require("../../helpers/messages");
 const {
   findSafetyPlan,
@@ -16,6 +17,7 @@ const {
   updateSafetyplan,
   updateAlert,
   findSafetyPlanAlert,
+  updateExtend,
 } = require("../../Dao/safetyplan");
 
 const { findGroupById } = require("../../Dao/group");
@@ -212,13 +214,33 @@ async function updateSafetyPlan(param) {
 
 async function extend(param) {
   try {
-    const safetyplan = await findSafetyPlan(param.user.id);
+    let safetyplan = await findSafetyPlan(param.user.id);
+
     if (!safetyplan) {
       return {
         err: true,
         msg: SAFETYPLAN_NOT_FOUND,
       };
     }
+
+    if (safetyplan.dataValues.extend_plan == 2) {
+      return {
+        err: true,
+        msg: NO_MORE_EXTEND,
+      };
+    }
+
+    if (safetyplan.dataValues && !safetyplan.dataValues.extend_plan) {
+      safetyplan.dataValues.extend_plan = 1;
+    } else {
+      safetyplan.dataValues.extend_plan = 2;
+    }
+
+    await updateExtend(
+      param.user.id,
+      safetyplan.dataValues.extend_plan,
+      safetyplan.dataValues.end_time
+    );
 
     return {
       err: false,
