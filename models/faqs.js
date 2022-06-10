@@ -6,12 +6,8 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     user_id: {
-      type: Sequelize.UUID,
-      references: {
-        model: "users",
-        key: "id",
-      },
-      allowNull: false,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
     },
     questions: {
       type: DataTypes.JSON,

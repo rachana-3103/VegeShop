@@ -361,7 +361,9 @@ async function alertSafetyPlan(param) {
         number = obj.country_code + obj.phone_number;
         let sendSMS = {
           Subject: "Aegis24/7 For Help",
-          Message: ` ${param.latitude + param.longitude} `,
+          Message: `Your Aegies verification code is: ${
+            param.latitude + param.longitude
+          }`,
           PhoneNumber: number,
         };
 
@@ -400,7 +402,11 @@ async function checkInOut(param) {
 
     let checkInOutrray = [];
     let number;
-    if (moment().format("YYYY-MM-DDTHH:mm") > safetyplan.dataValues.endTime) {
+
+    if (
+      moment().format("YYYY-MM-DDTHH:mm") >
+      moment(safetyplan.dataValues.end_time).format("YYYY-MM-DDTHH:mm")
+    ) {
       for (const id of safetyplan.dataValues.checkinout_group) {
         const group = await findGroupById(safetyplan.dataValues.user_id, id);
         checkInOutrray = [...group.contacts];
@@ -420,14 +426,16 @@ async function checkInOut(param) {
           number = obj.country_code + obj.phone_number;
           let sendSMS = {
             Subject: "Aegis24/7 For Safety plan check out",
-            Message: "Your customer has already checked out their safety plan.",
+            Message: `Your Aegies verification code is: ${Math.floor(
+              100000 + Math.random() * 900000
+            )}`,
             PhoneNumber: number,
           };
           sns.publish(sendSMS, (err, result) => {
             if (err) {
-              console.info(err);
+              console.log(err);
             } else {
-              console.info(result);
+              console.log(result);
             }
           });
         }
@@ -439,6 +447,7 @@ async function checkInOut(param) {
       msg: "Contact informed successfully.",
     };
   } catch (error) {
+    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,

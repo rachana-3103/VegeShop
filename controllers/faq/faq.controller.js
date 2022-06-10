@@ -9,11 +9,11 @@ exports.sendFaq = async (req, res) => {
     if (isEmpty(param)) {
       return errorResponse(req, res, "Something Went Wrong", 400);
     }
-    const group = await sendFaq(param);
-    if (!isEmpty(group) && group.err) {
-      return errorResponse(req, res, group.msg, 400);
+    const faq = await sendFaq(param);
+    if (!isEmpty(faq) && faq.err) {
+      return errorResponse(req, res, faq.msg, 400);
     }
-    return successResponse(req, res, group.data, group.msg);
+    return successResponse(req, res, faq.data, faq.msg);
   } catch (error) {
     return errorResponse(req, res, error, 400);
   }
