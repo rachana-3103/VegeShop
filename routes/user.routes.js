@@ -73,4 +73,10 @@ router.put(
   userController.updateProfile
 );
 
+router.delete(
+  "/delete-account",
+  authorization,
+  userController.deleteAccount
+);
+
 module.exports = router;

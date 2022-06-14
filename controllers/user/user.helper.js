@@ -42,7 +42,15 @@ const {
   deviceTokenUpdates,
   removeOTP,
   updateProfiles,
+  userDelete,
 } = require("../../Dao/user");
+
+const { userGroupDelete } = require("../../Dao/group");
+const { userLocationDelete } = require("../../Dao/location");
+const { userSafetyplanDelete } = require("../../Dao/safetyplan");
+const { userFaqDelete } = require("../../Dao/faq");
+const { userLocationSharingDelete } = require("../../Dao/locationsharing");
+
 const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
 const admin = require("firebase-admin");
@@ -609,6 +617,37 @@ async function updateProfile(param) {
   }
 }
 
+async function deleteAccount(param) {
+  try {
+    const userId = param.user.id;
+    const user = await findUserById(userId);
+    if (!user) {
+      return {
+        err: true,
+        msg: USER_NOT_EXIST,
+      };
+    }
+
+    await userGroupDelete(userId);
+    await userSafetyplanDelete(userId);
+    await userLocationDelete(userId);
+    await userLocationSharingDelete(userId);
+    await userFaqDelete(userId);
+    await userDelete(userId);
+
+    return {
+      err: false,
+      data: null,
+      msg: "Account delete Successfully.",
+    };
+  } catch (error) {
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+}
+
 module.exports = {
   userSignup,
   userLogin,
@@ -623,4 +662,5 @@ module.exports = {
   deviceTokenUpdate,
   notificationSend,
   updateProfile,
+  deleteAccount,
 };

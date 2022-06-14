@@ -37,6 +37,13 @@ module.exports = (sequelize, DataTypes) => {
     otp_generated_at: {
       type: DataTypes.DATE,
     },
+    unit: {
+      type: DataTypes.STRING,
+    },
+    notification: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
   });
 
   return users;

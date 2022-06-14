@@ -33,9 +33,17 @@ async function updateFaq(faqObj, userId) {
   });
 }
 
+async function userFaqDelete(userId) {
+  return await faqs.destroy({
+    where: { user_id: userId },
+    force: true,
+  });
+}
+
 module.exports = {
   findByUserId,
   createFaqs,
   updateCount,
   updateFaq,
+  userFaqDelete,
 };

@@ -50,10 +50,18 @@ async function updateLocations(obj) {
   });
 }
 
+async function userLocationDelete(userId) {
+  return await locations.destroy({
+    where: { user_id: userId },
+    force: true,
+  });
+}
+
 module.exports = {
   findAllLocation,
   findLocationById,
   deleteLocations,
   updateLocations,
   findLocation,
+  userLocationDelete,
 };

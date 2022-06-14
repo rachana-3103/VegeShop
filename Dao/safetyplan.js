@@ -80,6 +80,13 @@ async function updateExtend(userId, extendPlan, endTime) {
   );
 }
 
+async function userSafetyplanDelete(userId) {
+  return await safetyplans.destroy({
+    where: { user_id: userId },
+    force: true,
+  });
+}
+
 module.exports = {
   updateExtend,
   findSafetyPlan,
@@ -88,4 +95,5 @@ module.exports = {
   updateSafetyplan,
   updateAlert,
   findSafetyPlanAlert,
+  userSafetyplanDelete,
 };

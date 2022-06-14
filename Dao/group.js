@@ -41,9 +41,17 @@ async function updateGroups(userId, id, contacts, name) {
   );
 }
 
+async function userGroupDelete(userId) {
+  return await groups.destroy({
+    where: { user_id: userId },
+    force: true,
+  });
+}
+
 module.exports = {
   findGroupByName,
   findGroupById,
   deleteGroups,
   updateGroups,
+  userGroupDelete,
 };

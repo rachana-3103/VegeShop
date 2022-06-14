@@ -14,7 +14,8 @@ const {
   logout,
   deviceTokenUpdate,
   notificationSend,
-  updateProfile
+  updateProfile,
+  deleteAccount
 } = require("./user.helper");
 
 exports.signup = async (req, res) => {
@@ -221,3 +222,15 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
+exports.deleteAccount = async (req, res) => {
+  try {
+    const param = req.body;
+    const user = await deleteAccount(param);
+    if (!isEmpty(user) && user.err) {
+      return errorResponse(req, res, user.msg, 400);
+    }
+    return successResponse(req, res, user.data, user.msg);
+  } catch (error) {
+    return errorResponse(req, res, error, 400);
+  }
+};

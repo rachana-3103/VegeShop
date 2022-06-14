@@ -207,6 +207,13 @@ function passwordEncrypt(password) {
   return pwd;
 }
 
+async function userDelete(userId) {
+  return await users.destroy({
+    where: { id: userId },
+    force: true,
+  });
+}
+
 module.exports = {
   findUserById,
   passwordEncrypt,
@@ -227,4 +234,5 @@ module.exports = {
   removeOTP,
   getOldPassword,
   updateProfiles,
+  userDelete,
 };
