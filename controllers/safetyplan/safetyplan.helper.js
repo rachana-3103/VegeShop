@@ -82,6 +82,7 @@ async function addSafetyPlan(param) {
         latitude: param.latitude,
         longitude: param.longitude,
         name: param.name,
+        address: param.address,
       };
       location = await findLocation(locationObj);
       if (location) {
@@ -165,6 +166,7 @@ async function updateSafetyPlan(param) {
       latitude: param.latitude,
       longitude: param.longitude,
       name: param.name,
+      address: param.address,
     };
     await updateLocations(locationObj);
 

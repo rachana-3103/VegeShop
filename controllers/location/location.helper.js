@@ -14,6 +14,7 @@ async function addLocation(param) {
       latitude: param.latitude,
       longitude: param.longitude,
       name: param.name,
+      address: param.address,
     };
 
     await locations.create(locationObj);
@@ -93,6 +94,7 @@ async function updateLocation(param) {
       latitude: param.latitude,
       longitude: param.longitude,
       name: param.name,
+      address: param.address,
     };
     await updateLocations(locationObj);
     return {
