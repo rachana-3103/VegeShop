@@ -27,27 +27,22 @@ exports.authorization = async (req, res, next) => {
   }
 };
 
-exports.successResponse = (req, res, data, message, code = 200) => {
+exports.successResponse = (req, res, data, msg, code = 200) => {
   res.status(code);
   res.send({
     code,
-    success: true,
-    message,
+    err: false,
+    msg,
     data,
   });
 };
 
-exports.errorResponse = (
-  req,
-  res,
-  message = SOMETHING_WENT_WRONG,
-  code = 500
-) => {
+exports.errorResponse = (req, res, msg = SOMETHING_WENT_WRONG, code = 500) => {
   res.status(code);
   res.send({
     code,
-    success: false,
-    message,
+    err: true,
+    msg,
     data: null,
   });
 };

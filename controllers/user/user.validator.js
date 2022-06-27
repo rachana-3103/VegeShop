@@ -11,10 +11,12 @@ exports.signup = async (req, res, next) => {
       .required(),
     phoneNumber: Joi.number().required(),
     countryCode: Joi.string().max(5).required(),
-    email: Joi.string().email({
-      minDomainSegments: 2,
-      tlds: { allow: ["com", "net", "in", "us"] },
-    }),
+    email: Joi.string()
+      .email({
+        minDomainSegments: 2,
+        tlds: { allow: ["com", "net", "in", "us"] },
+      })
+      .lowercase(),
   });
 
   const error = validateRequest(param, schema);

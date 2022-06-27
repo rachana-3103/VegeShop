@@ -73,6 +73,7 @@ const sns = new AWS.SNS();
 
 async function userSignup(param) {
   try {
+    param = param.body;
     let user = await findUserByEmail(param.email);
     const OTP = Math.floor(100000 + Math.random() * 900000);
     const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
@@ -96,7 +97,7 @@ async function userSignup(param) {
         name: param.name,
         country_code: param.countryCode,
         phone_number: param.phoneNumber,
-        email: param.email.toLowerCase(),
+        email: param.email,
         password: passwordEncrypt(param.password),
         sms_code: OTP,
         otp_generated_at: moment().format("YYYY-MM-DDTHH:mm"),
@@ -107,12 +108,15 @@ async function userSignup(param) {
 
       return {
         err: false,
+        code: 200,
         data: user,
         msg: "Signup Successfully.",
       };
     } else {
       return {
         err: true,
+        code: 400,
+        data: null,
         msg: ALLREADY_REGISTER,
       };
     }

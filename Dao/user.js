@@ -5,7 +5,7 @@ const moment = require("moment");
 async function findUserByEmail(email) {
   return await users.findOne({
     where: {
-      email: email.toLowerCase(),
+      email,
     },
   });
 }

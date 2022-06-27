@@ -15,7 +15,7 @@ const {
   deviceTokenUpdate,
   notificationSend,
   updateProfile,
-  deleteAccount
+  deleteAccount,
 } = require("./user.helper");
 
 exports.signup = async (req, res) => {
@@ -24,9 +24,9 @@ exports.signup = async (req, res) => {
     if (isEmpty(param)) {
       return errorResponse(req, res, "Something Went Wrong", 400);
     }
-    const user = await userSignup(param);
+    const user = await userSignup(req);
     if (!isEmpty(user) && user.err) {
-      return errorResponse(req, res, user.msg, 400);
+      return errorResponse(req, res, user.data, user.code);
     }
     return successResponse(req, res, user.data, user.msg);
   } catch (error) {
