@@ -77,13 +77,12 @@ exports.userSignup = async (param) => {
     if (user) {
       return {
         err: true,
-        data: null,
         msg: ALLREADY_REGISTER,
       };
     }
     const OTP = Math.floor(100000 + Math.random() * 900000);
     const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
-  
+
     if (isEmpty(user)) {
       let sendSMS = {
         Subject: "Aegis24/7 Verification Code",
@@ -121,6 +120,7 @@ exports.userSignup = async (param) => {
       }
     }
   } catch (error) {
+    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,

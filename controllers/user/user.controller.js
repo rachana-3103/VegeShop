@@ -26,7 +26,7 @@ exports.signup = async (req, res) => {
     }
     const user = await userSignup(param);
     if (!isEmpty(user) && user.err) {
-      return errorResponse(req, res, user.data, user.code);
+      return errorResponse(req, res, user.msg, 400);
     }
     return successResponse(req, res, user.data, user.msg);
   } catch (error) {
