@@ -10,6 +10,16 @@ exports.findUserByEmail = async (email) => {
   return await users.findOne({
     where: {
       email,
+      sms_verified: true,
+    },
+  });
+};
+
+exports.findUserNotVerified = async (email) => {
+  return await users.findOne({
+    where: {
+      email,
+      sms_verified: false,
     },
   });
 };

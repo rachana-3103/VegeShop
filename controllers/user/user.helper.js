@@ -43,6 +43,7 @@ const {
   updateProfiles,
   userDelete,
   userCreate,
+  findUserNotVerified,
 } = require("../../Dao/user");
 
 const { userGroupDelete } = require("../../Dao/group");
@@ -83,6 +84,22 @@ exports.userSignup = async (param) => {
     const OTP = Math.floor(100000 + Math.random() * 900000);
     const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
 
+    let userNotVerified = await findUserNotVerified(param.email);
+    if (userNotVerified) {
+      let sendSMS = {
+        Subject: "Aegis24/7 Verification Code",
+        Message: `${OTP_MESSAGE} ${OTP} `,
+        PhoneNumber: mobile,
+      };
+
+      sns.publish(sendSMS, (err, result) => {
+        if (err) {
+          console.info(err);
+        } else {
+          console.info(result);
+        }
+      });
+    }
     if (isEmpty(user)) {
       let sendSMS = {
         Subject: "Aegis24/7 Verification Code",
