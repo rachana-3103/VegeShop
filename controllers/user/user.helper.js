@@ -77,7 +77,6 @@ exports.userSignup = async (param) => {
     if (user) {
       return {
         err: true,
-        code: 400,
         data: null,
         msg: ALLREADY_REGISTER,
       };
