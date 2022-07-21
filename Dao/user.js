@@ -6,6 +6,16 @@ exports.userCreate = async (obj) => {
   return await users.create(obj);
 };
 
+exports.findUserRegistered = async (countryCode, phoneNumber) => {
+  return await users.findOne({
+    where: {
+      country_code: countryCode,
+      phone_number: phoneNumber,
+      sms_verified: false,
+    },
+  });
+};
+
 exports.findUserByEmail = async (email) => {
   return await users.findOne({
     where: {
