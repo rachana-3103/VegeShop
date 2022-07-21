@@ -141,53 +141,59 @@ exports.userLogin = async (param) => {
         err: true,
         msg: INVALID_PHNUMBER,
       };
+    } else {
+      let code = await usercheckCodeVerifed(
+        param.phoneNumber,
+        param.countryCode
+      );
+      if (code) {
+        return {
+          err: true,
+          msg: CODE_NOT_VERIFIED,
+        };
+      }
     }
+    if (user) {
+      const password = comparePassword(param.password, user.password);
+      if (!password) {
+        return {
+          err: true,
+          msg: INVALID_PWORD,
+        };
+      }
 
-    let code = await usercheckCodeVerifed(param.phoneNumber, param.countryCode);
-    if (code) {
+      let date = moment().add(process.env.TOKEN_EXPIRED, "hours");
+      const tokenExpireIn = date.format("YYYY-MM-DDTHH:mm");
+
+      const accessToken = generateJWTtoken({
+        id: user.id,
+        email: user.email,
+        password: user.password,
+        phone_number: user.phone_number,
+        country_code: user.country_code,
+      });
+
+      const refreshToken = generateRefreshtoken({
+        id: user.id,
+        email: user.email,
+        password: user.password,
+        phone_number: user.phone_number,
+        country_code: user.country_code,
+      });
+
+      user = await findUserById(user.id);
+      if (user) {
+        user.dataValues.access_token = accessToken;
+        user.dataValues.refresh_token = refreshToken;
+        user.dataValues.token_expired = tokenExpireIn;
+      }
+
       return {
-        err: true,
-        msg: CODE_NOT_VERIFIED,
+        err: false,
+        data: user,
+        msg: "Login Successfully.",
       };
     }
-
-    const password = comparePassword(param.password, user.password);
-    if (!password) {
-      return {
-        err: true,
-        msg: INVALID_PWORD,
-      };
-    }
-
-    let date = moment().add(process.env.TOKEN_EXPIRED, "hours");
-    const tokenExpireIn = date.format("YYYY-MM-DDTHH:mm");
-
-    const accessToken = generateJWTtoken({
-      id: user.id,
-      email: user.email,
-      password: user.password,
-      phone_number: user.phone_number,
-      country_code: user.country_code,
-    });
-
-    const refreshToken = generateRefreshtoken({
-      id: user.id,
-      email: user.email,
-      password: user.password,
-      phone_number: user.phone_number,
-      country_code: user.country_code,
-    });
-
-    user = await findUserById(user.id);
-    user.dataValues.access_token = accessToken;
-    user.dataValues.refresh_token = refreshToken;
-    user.dataValues.token_expired = tokenExpireIn;
-
-    return {
-      err: false,
-      data: user,
-      msg: "Login Successfully.",
-    };
   } catch (error) {
     return {
       err: true,

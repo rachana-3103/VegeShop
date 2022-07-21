@@ -142,7 +142,7 @@ exports.updateCode = async (req, res) => {
     const user = await updateCode(param);
 
     if (!isEmpty(user) && user.err) {
-      return errorResponse(req, res, user.msg, 401);
+      return errorResponse(req, res, user.msg, 400);
     }
     return successResponse(req, res, user.data, user.msg);
   } catch (error) {
@@ -159,7 +159,7 @@ exports.updateNewNumber = async (req, res) => {
     const user = await updateNewNumber(param);
 
     if (!isEmpty(user) && user.err) {
-      return errorResponse(req, res, user.msg, 401);
+      return errorResponse(req, res, user.msg, 400);
     }
     return successResponse(req, res, user.data, user.msg);
   } catch (error) {
