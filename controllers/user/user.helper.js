@@ -99,6 +99,7 @@ exports.userSignup = async (param) => {
           console.info(result);
         }
       });
+      await updateCodeByPhoneNumber(OTP, param.countryCode, param.phoneNumber);
     }
     if (isEmpty(user)) {
       let sendSMS = {
@@ -137,7 +138,6 @@ exports.userSignup = async (param) => {
       }
     }
   } catch (error) {
-    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,
