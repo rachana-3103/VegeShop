@@ -35,7 +35,7 @@ AWS.config.update({
 const sns = new AWS.SNS();
 const moment = require("moment");
 
-async function addSafetyPlan(param) {
+exports.addSafetyPlan = async (param) => {
   try {
     let location;
     for (const id of param.helpGroup) {
@@ -137,9 +137,9 @@ async function addSafetyPlan(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function updateSafetyPlan(param) {
+exports.updateSafetyPlan = async (param) => {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
     if (!safetyplan) {
@@ -212,9 +212,9 @@ async function updateSafetyPlan(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function extend(param) {
+exports.extend = async (param) => {
   try {
     let safetyplan = await findSafetyPlan(param.user.id);
 
@@ -255,9 +255,9 @@ async function extend(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function cancelSafetyPlan(param) {
+exports.cancelSafetyPlan = async (param) => {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
 
@@ -279,9 +279,9 @@ async function cancelSafetyPlan(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function completeSafetyPlan(param) {
+exports.completeSafetyPlan = async (param) => {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
 
@@ -303,9 +303,9 @@ async function completeSafetyPlan(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function getSafetyPlan(param) {
+exports.getSafetyPlan = async (param) => {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
     if (!safetyplan) {
@@ -325,9 +325,9 @@ async function getSafetyPlan(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function alertSafetyPlan(param) {
+exports.alertSafetyPlan = async (param) => {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
     const safetyplanAlert = await findSafetyPlanAlert(param.user.id);
@@ -390,9 +390,9 @@ async function alertSafetyPlan(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function checkInOut(param) {
+exports.checkInOut = async (param) => {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
     if (!safetyplan) {
@@ -455,15 +455,4 @@ async function checkInOut(param) {
       msg: error.message,
     };
   }
-}
-
-module.exports = {
-  addSafetyPlan,
-  updateSafetyPlan,
-  cancelSafetyPlan,
-  completeSafetyPlan,
-  getSafetyPlan,
-  alertSafetyPlan,
-  checkInOut,
-  extend,
 };

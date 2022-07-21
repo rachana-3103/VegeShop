@@ -1,6 +1,6 @@
 const { locations } = require("../models/index");
 
-async function findAllLocation(userId) {
+exports.findAllLocation = async (userId) => {
   return await locations.findAll({
     where: {
       user_id: userId,
@@ -9,18 +9,18 @@ async function findAllLocation(userId) {
       exclude: ["createdAt", "updatedAt"],
     },
   });
-}
+};
 
-async function findLocationById(userId, id) {
+exports.findLocationById = async (userId, id) => {
   return await locations.findOne({
     where: {
       id,
       user_id: userId,
     },
   });
-}
+};
 
-async function findLocation(obj) {
+exports.findLocation = async (obj) => {
   return await locations.findOne({
     where: {
       name: obj.name,
@@ -29,9 +29,9 @@ async function findLocation(obj) {
       user_id: obj.user_id,
     },
   });
-}
+};
 
-async function deleteLocations(userId, id) {
+exports.deleteLocations = async (userId, id) => {
   return await locations.destroy({
     where: {
       id,
@@ -39,29 +39,20 @@ async function deleteLocations(userId, id) {
     },
     force: true,
   });
-}
+};
 
-async function updateLocations(obj) {
+exports.updateLocations = async (obj) => {
   return await locations.update(obj, {
     where: {
       id: obj.id,
       user_id: obj.user_id,
     },
   });
-}
+};
 
-async function userLocationDelete(userId) {
+exports.userLocationDelete = async (userId) => {
   return await locations.destroy({
     where: { user_id: userId },
     force: true,
   });
-}
-
-module.exports = {
-  findAllLocation,
-  findLocationById,
-  deleteLocations,
-  updateLocations,
-  findLocation,
-  userLocationDelete,
 };

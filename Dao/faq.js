@@ -1,18 +1,18 @@
 const { faqs } = require("../models/index");
 
-async function findByUserId(userId) {
+exports.findByUserId = async (userId) => {
   return await faqs.findOne({
     where: {
       user_id: userId,
     },
   });
-}
+};
 
-async function createFaqs(obj) {
+exports.createFaqs = async (obj) => {
   return await faqs.create(obj);
-}
+};
 
-async function updateCount(userId, count) {
+exports.updateCount = async (userId, count) => {
   return await faqs.update(
     {
       count,
@@ -23,27 +23,20 @@ async function updateCount(userId, count) {
       },
     }
   );
-}
+};
 
-async function updateFaq(faqObj, userId) {
+exports.updateFaq = async (faqObj, userId) => {
   return await faqs.update(faqObj, {
     where: {
       user_id: userId,
     },
   });
-}
+};
 
-async function userFaqDelete(userId) {
+exports.userFaqDelete = async (userId) => {
   return await faqs.destroy({
     where: { user_id: userId },
     force: true,
   });
-}
-
-module.exports = {
-  findByUserId,
-  createFaqs,
-  updateCount,
-  updateFaq,
-  userFaqDelete,
 };
+

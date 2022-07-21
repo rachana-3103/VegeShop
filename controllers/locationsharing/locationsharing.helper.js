@@ -1,6 +1,6 @@
 const { locationsharings } = require("../../models/index");
 
-async function locationSharing(param) {
+exports.locationSharing = async (param) => {
   try {
     const locationSharing = {
       user_id: param.user.id,
@@ -23,8 +23,4 @@ async function locationSharing(param) {
       msg: error.message,
     };
   }
-}
-
-module.exports = {
-  locationSharing,
 };

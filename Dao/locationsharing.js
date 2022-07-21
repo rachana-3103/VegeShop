@@ -1,12 +1,8 @@
 const { locationsharings } = require("../models/index");
 
-async function userLocationSharingDelete(userId) {
+exports.userLocationSharingDelete = async (userId) => {
   return await locationsharings.destroy({
     where: { user_id: userId },
     force: true,
-  });
-}
-
-module.exports = {
-  userLocationSharingDelete,
+  })
 };

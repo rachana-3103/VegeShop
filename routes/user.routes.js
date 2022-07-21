@@ -5,10 +5,6 @@ const userController = require("../controllers/user/user.controller");
 const userValidator = require("../controllers/user/user.validator");
 const { authorization } = require("../helpers/helpers");
 
-router.get("/", (req, res) => {
-  res.send({ message: "Hello World!!" });
-});
-
 router.post("/signup", userValidator.signup, userController.signup);
 router.post("/login", userValidator.login, userController.login);
 router.get("/logout", authorization, userController.logout);

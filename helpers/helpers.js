@@ -19,7 +19,7 @@ exports.authorization = async (req, res, next) => {
       return this.errorResponse(req, res, UNAUTHORIZED_USER, 401);
     }
     if (!req.headers && !req.headers.authorization) {
-      return this.errorResponse(req, res, NO_TOKEN_PROVIDED, 401);
+      return this.errorResponse(req, res, NO_TOKEN_PROVIDED, 400);
     }
     return next();
   } catch (e) {

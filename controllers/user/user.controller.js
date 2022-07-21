@@ -24,7 +24,7 @@ exports.signup = async (req, res) => {
     if (isEmpty(param)) {
       return errorResponse(req, res, "Something Went Wrong", 400);
     }
-    const user = await userSignup(req);
+    const user = await userSignup(param);
     if (!isEmpty(user) && user.err) {
       return errorResponse(req, res, user.data, user.code);
     }
@@ -42,7 +42,7 @@ exports.login = async (req, res) => {
     }
     const user = await userLogin(param);
     if (!isEmpty(user) && user.err) {
-      return errorResponse(req, res, user.msg, 401);
+      return errorResponse(req, res, user.msg, 400);
     }
     return successResponse(req, res, user.data, user.msg);
   } catch (error) {
@@ -73,7 +73,7 @@ exports.forgotPassword = async (req, res) => {
     const user = await forgotPassword(param);
 
     if (!isEmpty(user) && user.err) {
-      return errorResponse(req, res, user.msg, 401);
+      return errorResponse(req, res, user.msg, 400);
     }
     return successResponse(req, res, null, user.msg);
   } catch (error) {
@@ -88,7 +88,7 @@ exports.resetPassword = async (req, res) => {
     const user = req.body.user;
 
     if (isEmpty(newPassword) && isEmpty(confirmPassword)) {
-      return errorResponse(req, res, "New And Confirm Password is blank");
+      return errorResponse(req, res, "New And Confirm Password is blank", 400);
     }
     const response = await resetPassword(newPassword, confirmPassword, user);
 
@@ -125,7 +125,7 @@ exports.codeVerify = async (req, res) => {
     const user = await codeVerify(param);
 
     if (!isEmpty(user) && user.err) {
-      return errorResponse(req, res, user.msg, 401);
+      return errorResponse(req, res, user.msg, 400);
     }
     return successResponse(req, res, user.data, user.msg);
   } catch (error) {
@@ -172,7 +172,7 @@ exports.logout = async (req, res) => {
     const user = await logout(req.body.user.id);
 
     if (!isEmpty(user) && user.err) {
-      return errorResponse(req, res, user.msg, 401);
+      return errorResponse(req, res, user.msg, 400);
     }
     return successResponse(req, res, null, user.msg);
   } catch (error) {
@@ -185,7 +185,7 @@ exports.deviceTokenUpdate = async (req, res) => {
     const user = await deviceTokenUpdate(req.body);
 
     if (!isEmpty(user) && user.err) {
-      return errorResponse(req, res, user.msg, 401);
+      return errorResponse(req, res, user.msg, 400);
     }
     return successResponse(req, res, null, user.msg);
   } catch (error) {
@@ -198,7 +198,7 @@ exports.notificationSend = async (req, res) => {
     const user = await notificationSend(req.body);
 
     if (!isEmpty(user) && user.err) {
-      return errorResponse(req, res, user.msg, 401);
+      return errorResponse(req, res, user.msg, 400);
     }
     return successResponse(req, res, null, user.msg);
   } catch (error) {

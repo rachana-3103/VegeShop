@@ -1,4 +1,3 @@
-const { users } = require("../../models");
 const moment = require("moment");
 
 const {
@@ -43,6 +42,7 @@ const {
   removeOTP,
   updateProfiles,
   userDelete,
+  userCreate,
 } = require("../../Dao/user");
 
 const { userGroupDelete } = require("../../Dao/group");
@@ -50,16 +50,16 @@ const { userLocationDelete } = require("../../Dao/location");
 const { userSafetyplanDelete } = require("../../Dao/safetyplan");
 const { userFaqDelete } = require("../../Dao/faq");
 const { userLocationSharingDelete } = require("../../Dao/locationsharing");
-
 const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
 const admin = require("firebase-admin");
 
 admin.initializeApp({
   credential: admin.credential.cert({
-    projectId: process.env.PROJECT_ID,
-    clientEmail: process.env.CLIENT_EMAIL,
-    privateKey: process.env.PRIVATE_KEY,
+    projectId: "Aegis24/7",
+    clientEmail: "firebase-adminsdk-teazy@ages247.iam.gserviceaccount.com",
+    privateKey:
+      "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDLVLFdyUW0nhbt\no3es8cKu4woupchKn8G7wEkVibWpfmXBhktrcI0a9BI+gHs1x9M6QU2Elum6Trk7\nMRSzcqaxqFhzP7qhsfbNtZbIaIEpKFYrCZtCPm7gnMCjPYC0jnyTHhRzlGGPWg7n\n4kTMdO49GOMRWV6gGg6MLtQgUafgdZFOE6lqTcihEwF5/eS6o7AkBRNq7ik9mEgk\n2asz5hX1ujmuKP29d6J5kXoGQIi6nAm5ORcbdejU5Ppu4Tm365qovoomkAIoHRY9\nFyJWdbu8B74VFc7oNkuPasSwS0eWHUUr+v6+Q8FlHXbGqsqnuhlmigAwcl9NYVVu\n3s5p9lhBAgMBAAECggEAW//dJNdN79RcAXgmTR0yflkCIWsnfgRc7yuopdMiXCdx\nuSefdmR9pAVtP9R4azQX8dLcVTLHXGIEU7D4cd1daSMHqlXahxDz383bBKCsWEgE\n/QIius1u87hZPUM1ufyChzpj/IvVvLv95JOvl2cM6J4bF519QCmqDWme12S69cbM\ntG5aSoTIvcmmpsQ4xwBYWie7P9J1mSrWncAbkxXMh80GX9LpX/DwPYtvZ4xqZ2rX\nViTTXYmToKGLhw69vFOCtBXxoxxvCWq/bqhV5Ejwlsd4ciGUv4tPr8XQjsQGdGMl\n3iXXCEHkN7X2CtOdqdiqxfzVOmXBUYyu5b1JDUzkZQKBgQD9iZ7ekeamNneoBLW0\nf+WOLUwuU3g3G/0dQO81gz4oETG+zdQZQihdhWxKMrgOKOjeHz3iTHjgKDJHeT4B\n7bOohuqjbPd7+sj2mr94zC2UFMuwFuHy6/L78RvZZHqSjbVFoJUMChSGnnopUCN6\nVvwUBDZm39L71dMjBkPVyKG9KwKBgQDNTj3PWluOGhcepS4V56oZwgZHgVc3d7fq\n/bA1cuZID6sbL/P7tMuck49XSevu/TliT2XSYN9goLR+TyKyiTnLBvtHlsKgfgiV\nntbgT/mIlJy+lGcQVgNYgE/vW3z0ZZrfFMfdOT+esy1ZdNJ4Vbq5968ktFYLHMBl\nIjM6W7aCQwKBgQDAhJOiJd+iLpHFf24KVWOWBkdmlfMexZ35bKk3VSUJf6TqYZjA\nZUAJY5rK7KBeACpzH/35rF/MtjkXlLTE+h4Fxgy9c6yo89FNkEv8Ce5CF1hjqbyA\nnTGwpXCkLmv0hK405K7IqY7UedoBLN0DtLFM8bXtf9/RYpgkbEluOB64aQKBgQDH\nx5Q0GywuaksHIhtna2hF6l0r5buWGSRaQgTe7fESPFT3fsE/tR3RPnHkseUpSTY2\n6SYfAu87WwZoRt9vtkMLwr5wWk8H17zIw6k62/fpJRwmA8kKx3g3/ZxLQc6lD94V\nqGYYaqXy605810YbnOi4IEJJSEbWR2Mcxpvs9OPzewKBgER8LzTkA82mGu+A6ltC\nVsf2J5urlWP3EN1aXfk1j186WkGP9rvh6QNywO5FkraI4ftnmY6lAE+8h/goCteP\n5wjEeA4UxNKWOtbZVFJVD7VFHOL9zjPvut887qQ1ZGKEUYBtL1V84gDF+sNJ/t6Z\naq8zTNH5bZ4Ux7yiyPI/fzOT\n-----END PRIVATE KEY-----\n",
   }),
 });
 
@@ -71,26 +71,34 @@ AWS.config.update({
 
 const sns = new AWS.SNS();
 
-async function userSignup(param) {
+exports.userSignup = async (param) => {
   try {
-    param = param.body;
     let user = await findUserByEmail(param.email);
+    if (user) {
+      return {
+        err: true,
+        code: 400,
+        data: null,
+        msg: ALLREADY_REGISTER,
+      };
+    }
     const OTP = Math.floor(100000 + Math.random() * 900000);
     const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
+    if (!user) {
+      let sendSMS = {
+        Subject: "Aegis24/7 Verification Code",
+        Message: `${OTP_MESSAGE} ${OTP} `,
+        PhoneNumber: mobile,
+      };
 
-    let sendSMS = {
-      Subject: "Aegis24/7 Verification Code",
-      Message: `${OTP_MESSAGE} ${OTP} `,
-      PhoneNumber: mobile,
-    };
-
-    sns.publish(sendSMS, (err, result) => {
-      if (err) {
-        console.info(err);
-      } else {
-        console.info(result);
-      }
-    });
+      sns.publish(sendSMS, (err, result) => {
+        if (err) {
+          console.info(err);
+        } else {
+          console.info(result);
+        }
+      });
+    }
 
     if (isEmpty(user)) {
       const userObj = {
@@ -103,22 +111,16 @@ async function userSignup(param) {
         otp_generated_at: moment().format("YYYY-MM-DDTHH:mm"),
       };
 
-      const newUser = await users.create(userObj);
-      user = await findUserById(newUser.id);
-
-      return {
-        err: false,
-        code: 200,
-        data: user,
-        msg: "Signup Successfully.",
-      };
-    } else {
-      return {
-        err: true,
-        code: 400,
-        data: null,
-        msg: ALLREADY_REGISTER,
-      };
+      const newUser = await userCreate(userObj);
+      if (newUser) {
+        user = await findUserById(newUser.id);
+        return {
+          err: false,
+          code: 200,
+          data: user,
+          msg: "Signup Successfully.",
+        };
+      }
     }
   } catch (error) {
     return {
@@ -126,9 +128,9 @@ async function userSignup(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function userLogin(param) {
+exports.userLogin = async (param) => {
   try {
     let user = await userFindByPhoneNumber(
       param.phoneNumber,
@@ -192,9 +194,9 @@ async function userLogin(param) {
       msg: error,
     };
   }
-}
+};
 
-async function refreshToken(param) {
+exports.refreshToken = async (param) => {
   try {
     const user = verifyRefreshtoken(param.refreshToken);
     const accessToken = generateJWTtoken({
@@ -215,9 +217,9 @@ async function refreshToken(param) {
       msg: error,
     };
   }
-}
+};
 
-async function forgotPassword(param) {
+exports.forgotPassword = async (param) => {
   try {
     let user = await userFindByPhoneNumber(
       param.phoneNumber,
@@ -258,9 +260,9 @@ async function forgotPassword(param) {
       msg: error,
     };
   }
-}
+};
 
-async function resetPassword(newPassword, confirmPassword, user) {
+exports.resetPassword = async (newPassword, confirmPassword, user) => {
   try {
     if (user.password == passwordEncrypt(newPassword)) {
       return {
@@ -287,9 +289,9 @@ async function resetPassword(newPassword, confirmPassword, user) {
       msg: error,
     };
   }
-}
+};
 
-async function changePassword(param) {
+exports.changePassword = async (param) => {
   try {
     const newPassword = param.newPassword;
     const confirmPassword = param.confirmPassword;
@@ -327,9 +329,9 @@ async function changePassword(param) {
       msg: error,
     };
   }
-}
+};
 
-async function codeVerify(param) {
+exports.codeVerify = async (param) => {
   try {
     const userLogin = await userFindByCodeForLogin(
       param.code,
@@ -429,9 +431,9 @@ async function codeVerify(param) {
       msg: error,
     };
   }
-}
+};
 
-async function updateCode(param) {
+exports.updateCode = async (param) => {
   try {
     const user = await userFindByNumber(
       param.user.id,
@@ -490,9 +492,9 @@ async function updateCode(param) {
       msg: error,
     };
   }
-}
+};
 
-async function updateNewNumber(param) {
+exports.updateNewNumber = async (param) => {
   try {
     const user = await userCodeVerifyById(param.code, param.user.id);
     if (!user) {
@@ -528,9 +530,9 @@ async function updateNewNumber(param) {
       msg: error,
     };
   }
-}
+};
 
-async function logout(id) {
+exports.logout = async (id) => {
   try {
     await deleteToken(id);
     return {
@@ -544,9 +546,9 @@ async function logout(id) {
       msg: error,
     };
   }
-}
+};
 
-async function deviceTokenUpdate(param) {
+exports.deviceTokenUpdate = async (param) => {
   try {
     await deviceTokenUpdates(param);
     return {
@@ -560,9 +562,9 @@ async function deviceTokenUpdate(param) {
       msg: error,
     };
   }
-}
+};
 
-async function notificationSend(param) {
+exports.notificationSend = async (param) => {
   try {
     const payload = {
       data: param.data,
@@ -594,9 +596,9 @@ async function notificationSend(param) {
       msg: error,
     };
   }
-}
+};
 
-async function updateProfile(param) {
+exports.updateProfile = async (param) => {
   try {
     const user = await findUserById(param.user.id);
     if (!user) {
@@ -619,9 +621,9 @@ async function updateProfile(param) {
       msg: error,
     };
   }
-}
+};
 
-async function deleteAccount(param) {
+exports.deleteAccount = async (param) => {
   try {
     const userId = param.user.id;
     const user = await findUserById(userId);
@@ -650,21 +652,4 @@ async function deleteAccount(param) {
       msg: error,
     };
   }
-}
-
-module.exports = {
-  userSignup,
-  userLogin,
-  refreshToken,
-  forgotPassword,
-  resetPassword,
-  changePassword,
-  codeVerify,
-  updateCode,
-  updateNewNumber,
-  logout,
-  deviceTokenUpdate,
-  notificationSend,
-  updateProfile,
-  deleteAccount,
 };

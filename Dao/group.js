@@ -1,31 +1,31 @@
 const { groups } = require("../models/index");
 
-async function findGroupByName(userId, name) {
+exports.findGroupByName = async (userId, name) => {
   return await groups.findOne({
     where: {
       name,
       user_id: userId,
     },
   });
-}
+};
 
-async function findGroupById(userId, id) {
+exports.findGroupById = async (userId, id) => {
   return await groups.findOne({
     where: {
       id,
       user_id: userId,
     },
   });
-}
+};
 
-async function deleteGroups(userId, id) {
+exports.deleteGroups = async (userId, id) => {
   return await groups.destroy({
     where: { id, user_id: userId },
     force: true,
   });
-}
+};
 
-async function updateGroups(userId, id, contacts, name) {
+exports.updateGroups = async (userId, id, contacts, name) => {
   return await groups.update(
     {
       contacts,
@@ -39,19 +39,12 @@ async function updateGroups(userId, id, contacts, name) {
       },
     }
   );
-}
+};
 
-async function userGroupDelete(userId) {
+exports.userGroupDelete = async (userId) => {
   return await groups.destroy({
     where: { user_id: userId },
     force: true,
   });
-}
-
-module.exports = {
-  findGroupByName,
-  findGroupById,
-  deleteGroups,
-  updateGroups,
-  userGroupDelete,
 };
+

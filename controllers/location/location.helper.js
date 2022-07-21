@@ -7,7 +7,7 @@ const {
   updateLocations,
 } = require("../../Dao/location");
 
-async function addLocation(param) {
+exports.addLocation = async (param) => {
   try {
     const locationObj = {
       user_id: param.user.id,
@@ -29,9 +29,9 @@ async function addLocation(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function getLocation(param) {
+exports.getLocation = async (param) => {
   try {
     const location = await findAllLocation(param.user.id);
     if (!location) {
@@ -51,9 +51,9 @@ async function getLocation(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function deleteLocation(param) {
+exports.deleteLocation = async (param) => {
   try {
     const location = await findLocationById(param.user.id, param.locationId);
     if (!location) {
@@ -76,9 +76,9 @@ async function deleteLocation(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function updateLocation(param) {
+exports.updateLocation = async (param) => {
   try {
     const location = await findLocationById(param.user.id, param.locationId);
     if (!location) {
@@ -108,9 +108,9 @@ async function updateLocation(param) {
       msg: error.message,
     };
   }
-}
+};
 
-async function getLocationDetails(param) {
+exports.getLocationDetails = async (param) => {
   try {
     const location = await findLocationById(param.user.id, param.id);
     return {
@@ -124,12 +124,4 @@ async function getLocationDetails(param) {
       msg: error.message,
     };
   }
-}
-
-module.exports = {
-  addLocation,
-  getLocation,
-  deleteLocation,
-  updateLocation,
-  getLocationDetails,
 };

@@ -2,33 +2,37 @@ const crypto = require("crypto");
 const { users } = require("../models/index");
 const moment = require("moment");
 
-async function findUserByEmail(email) {
+exports.userCreate = async (obj) => {
+  return await users.create(obj);
+};
+
+exports.findUserByEmail = async (email) => {
   return await users.findOne({
     where: {
       email,
     },
   });
-}
+};
 
-async function getOldPassword(id, password) {
+exports.getOldPassword = async (id, password) => {
   return await users.findOne({
     where: {
       id,
       password,
     },
   });
-}
+};
 
-async function userFindByPhoneNumber(phoneNumber, countryCode) {
+exports.userFindByPhoneNumber = async (phoneNumber, countryCode) => {
   return await users.findOne({
     where: {
       country_code: countryCode,
       phone_number: phoneNumber,
     },
   });
-}
+};
 
-async function usercheckCodeVerifed(phoneNumber, countryCode) {
+exports.usercheckCodeVerifed = async (phoneNumber, countryCode) => {
   return await users.findOne({
     where: {
       country_code: countryCode,
@@ -36,9 +40,9 @@ async function usercheckCodeVerifed(phoneNumber, countryCode) {
       sms_verified: false,
     },
   });
-}
+};
 
-async function updateCodeByPhoneNumber(code, countryCode, phoneNumber) {
+exports.updateCodeByPhoneNumber = async (code, countryCode, phoneNumber) => {
   return await users.update(
     {
       sms_code: code,
@@ -51,17 +55,17 @@ async function updateCodeByPhoneNumber(code, countryCode, phoneNumber) {
       },
     }
   );
-}
+};
 
-async function userFindByResetToken(token) {
+exports.userFindByResetToken = async (token) => {
   return await users.findOne({
     where: {
       reset_token: token,
     },
   });
-}
+};
 
-async function userFindByCodeForLogin(code, phoneNumber, countryCode) {
+exports.userFindByCodeForLogin = async (code, phoneNumber, countryCode) => {
   return await users.findOne({
     where: {
       sms_code: code,
@@ -70,9 +74,9 @@ async function userFindByCodeForLogin(code, phoneNumber, countryCode) {
       country_code: countryCode,
     },
   });
-}
+};
 
-async function userFindByCodeForReset(code, phoneNumber, countryCode) {
+exports.userFindByCodeForReset = async (code, phoneNumber, countryCode) => {
   return await users.findOne({
     where: {
       sms_code: code,
@@ -81,9 +85,9 @@ async function userFindByCodeForReset(code, phoneNumber, countryCode) {
       country_code: countryCode,
     },
   });
-}
+};
 
-async function userCodeVerifyById(code, userId) {
+exports.userCodeVerifyById = async (code, userId) => {
   return await users.findOne({
     where: {
       id: userId,
@@ -91,9 +95,9 @@ async function userCodeVerifyById(code, userId) {
       sms_verified: true,
     },
   });
-}
+};
 
-async function smsCodeVerified(code, phoneNumber, countryCode) {
+exports.smsCodeVerified = async (code, phoneNumber, countryCode) => {
   return await users.update(
     {
       sms_verified: true,
@@ -107,9 +111,9 @@ async function smsCodeVerified(code, phoneNumber, countryCode) {
       },
     }
   );
-}
+};
 
-async function removeOTP(id) {
+exports.removeOTP = async (id) => {
   return await users.update(
     {
       sms_code: null,
@@ -122,9 +126,9 @@ async function removeOTP(id) {
       },
     }
   );
-}
+};
 
-async function updatePassword(password, user) {
+exports.updatePassword = async (password, user) => {
   return await users.update(
     {
       password: password,
@@ -138,9 +142,9 @@ async function updatePassword(password, user) {
       },
     }
   );
-}
+};
 
-async function findUserById(userId) {
+exports.findUserById = async (userId) => {
   return users.findOne({
     where: {
       id: userId,
@@ -149,9 +153,9 @@ async function findUserById(userId) {
       exclude: ["password", "sms_code"],
     },
   });
-}
+};
 
-async function userFindByNumber(userId, countryCode, phoneNumber) {
+exports.userFindByNumber = async (userId, countryCode, phoneNumber) => {
   return users.findOne({
     where: {
       id: userId,
@@ -159,9 +163,9 @@ async function userFindByNumber(userId, countryCode, phoneNumber) {
       phone_number: phoneNumber,
     },
   });
-}
+};
 
-async function updatePhoneNumber(userId, countryCode, phoneNumber) {
+exports.updatePhoneNumber = async (userId, countryCode, phoneNumber) => {
   return await users.update(
     {
       country_code: countryCode,
@@ -173,9 +177,9 @@ async function updatePhoneNumber(userId, countryCode, phoneNumber) {
       },
     }
   );
-}
+};
 
-async function deviceTokenUpdates(obj) {
+exports.deviceTokenUpdates = async (obj) => {
   return await users.update(
     {
       device_token: obj.deviceToken,
@@ -186,9 +190,9 @@ async function deviceTokenUpdates(obj) {
       },
     }
   );
-}
+};
 
-async function updateProfiles(name, email, userId) {
+exports.updateProfiles = async (name, email, userId) => {
   return await users.update(
     {
       name,
@@ -200,39 +204,16 @@ async function updateProfiles(name, email, userId) {
       },
     }
   );
-}
+};
 
-function passwordEncrypt(password) {
+exports.passwordEncrypt = (password) => {
   const pwd = crypto.createHash("md5").update(password).digest("hex");
   return pwd;
-}
+};
 
-async function userDelete(userId) {
+exports.userDelete = async (userId) => {
   return await users.destroy({
     where: { id: userId },
     force: true,
   });
-}
-
-module.exports = {
-  findUserById,
-  passwordEncrypt,
-  usercheckCodeVerifed,
-  findUserByEmail,
-  userFindByPhoneNumber,
-  userFindByPhoneNumber,
-  updateCodeByPhoneNumber,
-  userFindByResetToken,
-  userFindByCodeForLogin,
-  smsCodeVerified,
-  userFindByCodeForReset,
-  updatePassword,
-  userFindByNumber,
-  userCodeVerifyById,
-  updatePhoneNumber,
-  deviceTokenUpdates,
-  removeOTP,
-  getOldPassword,
-  updateProfiles,
-  userDelete,
 };

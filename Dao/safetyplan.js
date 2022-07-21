@@ -2,25 +2,25 @@ const { safetyplans } = require("../models/index");
 const { STATUS } = require("../helpers/messages");
 const moment = require("moment");
 
-async function findSafetyPlan(userId) {
+exports.findSafetyPlan = async (userId) => {
   return await safetyplans.findOne({
     where: {
       user_id: userId,
       status: STATUS.INPROGRESS,
     },
   });
-}
+};
 
-async function findSafetyPlanAlert(userId) {
+exports.findSafetyPlanAlert = async (userId) => {
   return await safetyplans.findOne({
     where: {
       user_id: userId,
       alert: false,
     },
   });
-}
+};
 
-async function findSafetyPlanByLocationId(userId, locationId) {
+exports.findSafetyPlanByLocationId = async (userId, locationId) => {
   return await safetyplans.findOne({
     where: {
       location_id: locationId,
@@ -28,9 +28,9 @@ async function findSafetyPlanByLocationId(userId, locationId) {
       status: STATUS.INPROGRESS,
     },
   });
-}
+};
 
-async function updateStatus(status, userId) {
+exports.updateStatus = async (status, userId) => {
   return await safetyplans.update(
     { status },
     {
@@ -40,18 +40,18 @@ async function updateStatus(status, userId) {
       },
     }
   );
-}
+};
 
-async function updateSafetyplan(safetyplan, userId) {
+exports.updateSafetyplan = async (safetyplan, userId) => {
   return await safetyplans.update(safetyplan, {
     where: {
       user_id: userId,
       status: STATUS.INPROGRESS,
     },
   });
-}
+};
 
-async function updateAlert(userId) {
+exports.updateAlert = async (userId) => {
   return await safetyplans.update(
     {
       alert: true,
@@ -63,9 +63,9 @@ async function updateAlert(userId) {
       },
     }
   );
-}
+};
 
-async function updateExtend(userId, extendPlan, endTime) {
+exports.updateExtend = async (userId, extendPlan, endTime) => {
   return await safetyplans.update(
     {
       extend_plan: extendPlan,
@@ -78,22 +78,11 @@ async function updateExtend(userId, extendPlan, endTime) {
       },
     }
   );
-}
+};
 
-async function userSafetyplanDelete(userId) {
+exports.userSafetyplanDelete = async (userId) => {
   return await safetyplans.destroy({
     where: { user_id: userId },
     force: true,
   });
-}
-
-module.exports = {
-  updateExtend,
-  findSafetyPlan,
-  findSafetyPlanByLocationId,
-  updateStatus,
-  updateSafetyplan,
-  updateAlert,
-  findSafetyPlanAlert,
-  userSafetyplanDelete,
 };
