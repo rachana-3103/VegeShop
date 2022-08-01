@@ -7,7 +7,7 @@ exports.signup = async (req, res, next) => {
   const schema = Joi.object({
     name: Joi.string().min(3).max(15).required(),
     password: Joi.string()
-      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*]{8,16}$/))
+      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
       .required(),
     phoneNumber: Joi.number().required(),
     countryCode: Joi.string().max(5).required(),
