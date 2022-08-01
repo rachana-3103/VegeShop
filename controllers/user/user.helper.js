@@ -74,7 +74,7 @@ const sns = new AWS.SNS();
 
 exports.userSignup = async (param) => {
   try {
-    let user = await findUserByEmail(param.email);
+    let user = await findUserByEmail(param.email, param.phoneNumber, param.countryCode);
     if (user) {
       return {
         err: true,
@@ -104,8 +104,9 @@ exports.userSignup = async (param) => {
           console.info(result);
         }
       });
-      await updateCodeByPhoneNumber(OTP, param.countryCode, param.phoneNumber);
-      
+      await updateCodeByPhoneNumber(OTP, param);
+
+      userRegistered = await findUserById(userRegistered.id);
       return {
         err: false,
         code: 200,
