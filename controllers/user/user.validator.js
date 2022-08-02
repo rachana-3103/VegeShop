@@ -83,7 +83,7 @@ exports.reset = async (req, res, next) => {
 
   const schema = Joi.object({
     newPassword: Joi.string()
-      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*]{8,16}$/))
+    .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
       .required(),
     confirmPassword: Joi.ref("newPassword"),
   }).with("newPassword", "confirmPassword");
@@ -102,10 +102,10 @@ exports.changePassword = async (req, res, next) => {
 
   const schema = Joi.object({
     oldPassword: Joi.string()
-      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*]{8,16}$/))
+      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
       .required(),
     newPassword: Joi.string()
-      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*]{8,16}$/))
+      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
       .required(),
     confirmPassword: Joi.ref("newPassword"),
   }).with("newPassword", "confirmPassword");
