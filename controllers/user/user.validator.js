@@ -31,7 +31,9 @@ exports.login = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
-    password: Joi.string().required(),
+    password: Joi.string()
+      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
+      .required(),
     phoneNumber: Joi.string().required(),
     countryCode: Joi.string().max(5).required(),
   }).with("phoneNumber", "countryCode");
@@ -83,7 +85,7 @@ exports.reset = async (req, res, next) => {
 
   const schema = Joi.object({
     newPassword: Joi.string()
-    .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
+      .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
       .required(),
     confirmPassword: Joi.ref("newPassword"),
   }).with("newPassword", "confirmPassword");

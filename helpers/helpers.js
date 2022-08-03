@@ -95,17 +95,10 @@ exports.validateRequest = (param, schema) => {
 
   const { error } = schema.validate(param, options);
   if (error) {
-    let object = [];
-    `${error.details.map((x) => {
-      if (
-        (x.path[0] == "password" || x.path[0] == "newPassword") &&
-        x.type == "string.pattern.base"
-      ) {
-        x.message =
-          "Password must have 8 characters including capital letters and symbols.";
-      }
-      object.push({ error: x.message });
-    })}`;
+    let object = error.details[0].message;
+    if(error.details[0].type == 'string.pattern.base'){
+      object =  "Password must have 8 characters including capital letters and symbols.";
+    }
     return object;
   }
 };
