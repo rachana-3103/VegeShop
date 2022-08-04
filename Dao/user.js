@@ -19,7 +19,6 @@ exports.findUserRegistered = async (countryCode, phoneNumber) => {
 exports.findUserByEmail = async (email, phoneNumber, countryCode) => {
   return await users.findOne({
     where: {
-      email,
       phone_number: phoneNumber,
       country_code: countryCode,
       sms_verified: true,
