@@ -74,7 +74,7 @@ const sns = new AWS.SNS();
 
 exports.userSignup = async (param) => {
   try {
-    let user = await findUserByEmail(param.email, param.phoneNumber, param.countryCode);
+    let user = await findUserByEmail(param.phoneNumber, param.countryCode);
     if (user) {
       return {
         err: true,
