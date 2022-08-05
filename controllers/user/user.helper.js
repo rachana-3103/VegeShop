@@ -280,7 +280,7 @@ exports.forgotPassword = async (param) => {
           console.info(result);
         }
       });
-      await updateCodeByPhoneNumber(OTP, param.countryCode, param.phoneNumber);
+      await updateCodeByPhoneNumber(OTP, param);
     }
 
     return {
@@ -508,11 +508,9 @@ exports.updateCode = async (param) => {
         console.info(result);
       }
     });
-    await updateCodeByPhoneNumber(
-      OTP,
-      param.oldCountryCode,
-      param.oldPhoneNumber
-    );
+    param.countryCode = param.oldCountryCode;
+    param.phoneNumber = param.oldPhoneNumber;
+    await updateCodeByPhoneNumber(OTP, param);
 
     return {
       err: false,
@@ -520,6 +518,7 @@ exports.updateCode = async (param) => {
       msg: "OTP send in your new phone number.",
     };
   } catch (error) {
+    console.log("~ error", error);
     return {
       err: true,
       msg: error,
@@ -558,6 +557,7 @@ exports.updateNewNumber = async (param) => {
       msg: "New Phone Number Updated Successfully.",
     };
   } catch (error) {
+    console.log("~ error", error);
     return {
       err: true,
       msg: error,

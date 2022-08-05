@@ -66,9 +66,6 @@ exports.usercheckCodeVerifed = async (phoneNumber, countryCode) => {
 exports.updateCodeByPhoneNumber = async (code, param) => {
   return await users.update(
     {
-      name: param.name,
-      email: param.email,
-      password: this.passwordEncrypt(param.password),
       sms_code: code,
       otp_generated_at: moment().format("YYYY-MM-DDTHH:mm"),
     },
