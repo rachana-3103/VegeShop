@@ -48,6 +48,7 @@ async function addGroup(param) {
       contacts: contactArray,
       no_of_contact: param.contacts.length,
     };
+    console.info("~ groupObj", groupObj);
 
     await groups.create(groupObj);
     return {

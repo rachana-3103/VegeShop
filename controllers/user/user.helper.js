@@ -239,6 +239,7 @@ exports.refreshToken = async (param) => {
       phone_number: user.phone_number,
       country_code: user.country_code,
     });
+    console.info("~ accessToken", accessToken);
     return {
       err: false,
       data: { access_token: accessToken },
