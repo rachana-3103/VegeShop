@@ -1,5 +1,5 @@
 const moment = require("moment");
-
+const path = require("path");
 const {
   generateJWTtoken,
   comparePassword,
@@ -44,6 +44,7 @@ const {
   userDelete,
   userCreate,
   findUserRegistered,
+  settingCreate,
 } = require("../../Dao/user");
 
 const { userGroupDelete } = require("../../Dao/group");
@@ -54,6 +55,7 @@ const { userLocationSharingDelete } = require("../../Dao/locationsharing");
 const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
 const admin = require("firebase-admin");
+const { param } = require("../../routes/user.routes");
 
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -681,6 +683,42 @@ exports.deleteAccount = async (param) => {
       msg: "Account delete Successfully.",
     };
   } catch (error) {
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+};
+
+exports.settings = async (req, res) => {
+  try {
+    let config = path.join(
+      __dirname,
+      "../../documents/terms-and-conditions.html"
+    );
+    console.log("~ config", config);
+    res.sendFile(
+      path.join(
+        __dirname,
+        "http://34.227.59.13:5000/home/bacancy/Documents/aegis-24-7/documents/terms-and-conditions.html"
+      )
+    );
+    // await settingCreate(req.body);
+    // await settings(id);
+    const data = {
+      html_type: req.body.htmlType,
+      url: `http://34.227.59.13:5000/documents/terms-and-conditions.html`,
+      // path.join(
+      //   "/home/bacancy/Documents/aegis-24-7/documents/terms-and-conditions.html"
+      // ),
+    };
+    return {
+      err: false,
+      data,
+      msg: "Logout Successfully.",
+    };
+  } catch (error) {
+    console.log("~ error", error);
     return {
       err: true,
       msg: error,

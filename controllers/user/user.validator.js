@@ -210,3 +210,17 @@ exports.updateProfile = async (req, res, next) => {
     return next();
   }
 };
+
+exports.settings = async (req, res, next) => {
+  const param = { ...req.body };
+  const schema = Joi.object({
+    htmlType: Joi.string().required(),
+    value: Joi.string(),
+  });
+  const error = validateRequest(param, schema);
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
+};

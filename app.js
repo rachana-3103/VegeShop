@@ -31,6 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "50mb" }));
 app.use(logger("common"));
 app.set("templates", path.join(__dirname, "templates"));
+app.use('documents',express.static('documents'))
+
 
 //set view engine
 app.set("view engine", "ejs");

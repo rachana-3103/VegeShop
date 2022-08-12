@@ -75,4 +75,11 @@ router.delete(
   userController.deleteAccount
 );
 
+router.post(
+  "/settings",
+  userValidator.settings,
+  userController.settings
+);
+
+
 module.exports = router;

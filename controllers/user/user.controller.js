@@ -16,6 +16,7 @@ const {
   notificationSend,
   updateProfile,
   deleteAccount,
+  settings
 } = require("./user.helper");
 
 exports.signup = async (req, res) => {
@@ -234,3 +235,15 @@ exports.deleteAccount = async (req, res) => {
     return errorResponse(req, res, error, 400);
   }
 };
+
+exports.settings = async (req, res) => {
+  try {
+    const user = await settings(req, res);
+    if (!isEmpty(user) && user.err) {
+      return errorResponse(req, res, user.msg, 400);
+    }
+    return successResponse(req, res, user.data, user.msg);
+  } catch (error) {
+    return errorResponse(req, res, error, 400);
+  }
+}

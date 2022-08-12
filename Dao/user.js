@@ -1,9 +1,13 @@
 const crypto = require("crypto");
-const { users } = require("../models/index");
+const { users, settings } = require("../models/index");
 const moment = require("moment");
 
 exports.userCreate = async (obj) => {
   return await users.create(obj);
+};
+
+exports.settingCreate = async (obj) => {
+  return await settings.create(obj);
 };
 
 exports.findUserRegistered = async (countryCode, phoneNumber) => {
