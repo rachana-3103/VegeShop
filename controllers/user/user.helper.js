@@ -44,7 +44,6 @@ const {
   userDelete,
   userCreate,
   findUserRegistered,
-  settingCreate,
 } = require("../../Dao/user");
 
 const { userGroupDelete } = require("../../Dao/group");
@@ -690,32 +689,22 @@ exports.deleteAccount = async (param) => {
   }
 };
 
-exports.settings = async (req, res) => {
+exports.settings = async (req) => {
   try {
-    let config = path.join(
-      __dirname,
-      "../../documents/terms-and-conditions.html"
-    );
-    console.log("~ config", config);
-    res.sendFile(
-      path.join(
-        __dirname,
-        "http://34.227.59.13:5000/home/bacancy/Documents/aegis-24-7/documents/terms-and-conditions.html"
-      )
-    );
-    // await settingCreate(req.body);
-    // await settings(id);
+    let url = "";
+    if (req.body.htmlType === "term_and_condition") {
+      url = `http://34.227.59.13:5000/documents/terms-and-conditions.html`;
+    } else {
+      url = `http://34.227.59.13:5000/documents/privacy-policy.html`;
+    }
     const data = {
       html_type: req.body.htmlType,
-      url: `http://34.227.59.13:5000/documents/terms-and-conditions.html`,
-      // path.join(
-      //   "/home/bacancy/Documents/aegis-24-7/documents/terms-and-conditions.html"
-      // ),
+      url,
     };
     return {
       err: false,
       data,
-      msg: "Logout Successfully.",
+      msg: "",
     };
   } catch (error) {
     console.log("~ error", error);

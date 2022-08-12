@@ -238,7 +238,7 @@ exports.deleteAccount = async (req, res) => {
 
 exports.settings = async (req, res) => {
   try {
-    const user = await settings(req, res);
+    const user = await settings(req);
     if (!isEmpty(user) && user.err) {
       return errorResponse(req, res, user.msg, 400);
     }
