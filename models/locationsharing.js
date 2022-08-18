@@ -9,13 +9,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
     },
-    latitude: {
+    current_latitude: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
-    longitude: {
+    current_longitude: {
       type: DataTypes.STRING,
-      allowNull: false,
+    },
+    destination_latitude: {
+      type: DataTypes.STRING,
+    },
+    destination_longitude: {
+      type: DataTypes.STRING,
     },
     sms_message: {
       type: DataTypes.STRING,

@@ -29,6 +29,7 @@ exports.findSafetyPlanByLocationId = async (userId, locationId) => {
     },
   });
 };
+
 exports.updateSafetyplan = async (safetyplan, userId) => {
   return await safetyplans.update(safetyplan, {
     where: {
