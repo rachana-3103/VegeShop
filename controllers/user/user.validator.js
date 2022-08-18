@@ -5,7 +5,7 @@ const { validateRequest } = require("../../helpers/helpers");
 exports.signup = async (req, res, next) => {
   const param = { ...req.body };
   const schema = Joi.object({
-    name: Joi.string().min(3).max(15).required(),
+    name: Joi.string().min(3).max(30).required(),
     password: Joi.string()
       .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
       .required(),
@@ -197,7 +197,7 @@ exports.deviceTokenUpdate = async (req, res, next) => {
 exports.updateProfile = async (req, res, next) => {
   const param = { ...req.body };
   const schema = Joi.object({
-    name: Joi.string().min(3).max(15).required(),
+    name: Joi.string().min(3).max(30).required(),
     email: Joi.string().email({
       minDomainSegments: 2,
       tlds: { allow: ["com", "net", "in", "us"] },

@@ -36,6 +36,7 @@ const sns = new AWS.SNS();
 const moment = require("moment");
 
 exports.addSafetyPlan = async (param) => {
+  console.log("~ param", param);
   try {
     let location;
     for (const id of param.helpGroup) {
@@ -123,6 +124,7 @@ exports.addSafetyPlan = async (param) => {
       checkinout_group: param.checkInOutGroup,
       status: STATUS.INPROGRESS,
     };
+    console.log("~ safetyPlanObj", safetyPlanObj);
 
     await safetyplans.create(safetyPlanObj);
 
@@ -132,6 +134,7 @@ exports.addSafetyPlan = async (param) => {
       msg: "SafetyPlan added Successfully.",
     };
   } catch (error) {
+    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,

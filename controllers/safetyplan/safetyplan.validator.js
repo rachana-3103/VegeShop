@@ -20,8 +20,8 @@ exports.addSafetyPlan = async (req, res, next) => {
     longitude: Joi.string(),
     coverRadius: Joi.number().integer(),
     personName: Joi.array(),
-    startTime: Joi.date().required(),
-    endTime: Joi.date().required(),
+    startTime: Joi.string().required(),
+    endTime: Joi.string().required(),
   })
     .xor("latitude", "locationId")
     .with("latitude", "longitude");
@@ -52,8 +52,8 @@ exports.updateSafetyPlan = async (req, res, next) => {
     longitude: Joi.string(),
     coverRadius: Joi.number().integer(),
     personName: Joi.array(),
-    startTime: Joi.date().required(),
-    endTime: Joi.date().required(),
+    startTime: Joi.string().required(),
+    endTime: Joi.string().required(),
   })
     .xor("latitude", "locationId")
     .with("latitude", "longitude");
