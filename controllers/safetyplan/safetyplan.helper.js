@@ -446,6 +446,8 @@ exports.checkInOut = async (param) => {
         }
       }
     }
+
+    
     return {
       err: false,
       data: null,

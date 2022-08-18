@@ -70,7 +70,7 @@ exports.safetyPlanStatus = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
-    safetyPlanId: Joi.string().required(),
+    safetyPlanId: Joi.string()
   });
 
   const error = validateRequest(param, schema);
