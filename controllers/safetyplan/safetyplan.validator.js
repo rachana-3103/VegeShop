@@ -66,21 +66,6 @@ exports.updateSafetyPlan = async (req, res, next) => {
   }
 };
 
-exports.safetyPlanStatus = async (req, res, next) => {
-  const param = { ...req.body };
-
-  const schema = Joi.object({
-    safetyPlanId: Joi.string()
-  });
-
-  const error = validateRequest(param, schema);
-  if (error) {
-    return errorResponse(req, res, error, 400);
-  } else {
-    return next();
-  }
-};
-
 exports.alertSafetyPlan = async (req, res, next) => {
   const param = { ...req.body };
 

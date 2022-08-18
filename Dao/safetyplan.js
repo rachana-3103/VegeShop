@@ -29,10 +29,18 @@ exports.findSafetyPlanByLocationId = async (userId, locationId) => {
     },
   });
 };
+exports.updateSafetyplan = async (safetyplan, userId) => {
+  return await safetyplans.update(safetyplan, {
+    where: {
+      user_id: userId,
+      status: STATUS.INPROGRESS,
+    },
+  });
+};
 
 exports.updateStatus = async (status, userId) => {
   return await safetyplans.update(
-    { status },
+    { status, location_id: null },
     {
       where: {
         user_id: userId,

@@ -22,14 +22,12 @@ router.put(
 router.put(
   "/cancel",
   authorization,
-  safetyPlanValidator.safetyPlanStatus,
   safetyPlanController.cancelSafetyPlan
 );
 
 router.put(
   "/complete",
   authorization,
-  safetyPlanValidator.safetyPlanStatus,
   safetyPlanController.completeSafetyPlan
 );
 

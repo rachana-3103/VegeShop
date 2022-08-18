@@ -25,6 +25,7 @@ const {
   updateLocations,
   findLocation,
   findLocationById,
+  deleteLocations,
 } = require("../../Dao/location");
 const AWS = require("aws-sdk");
 AWS.config.update({
@@ -36,7 +37,6 @@ const sns = new AWS.SNS();
 const moment = require("moment");
 
 exports.addSafetyPlan = async (param) => {
-  console.log("~ param", param);
   try {
     let location;
     for (const id of param.helpGroup) {
@@ -124,7 +124,6 @@ exports.addSafetyPlan = async (param) => {
       checkinout_group: param.checkInOutGroup,
       status: STATUS.INPROGRESS,
     };
-    console.log("~ safetyPlanObj", safetyPlanObj);
 
     await safetyplans.create(safetyPlanObj);
 
@@ -294,7 +293,10 @@ exports.completeSafetyPlan = async (param) => {
         msg: SAFETYPLAN_NOT_FOUND,
       };
     }
+
     await updateStatus(STATUS.COMPLETED, param.user.id);
+    await deleteLocations(param.user.id, safetyplan.location_id);
+
     return {
       err: false,
       data: null,
@@ -447,7 +449,6 @@ exports.checkInOut = async (param) => {
       }
     }
 
-    
     return {
       err: false,
       data: null,
