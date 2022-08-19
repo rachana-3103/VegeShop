@@ -23,6 +23,14 @@ module.exports = {
       queryInterface.removeColumn("locationsharings", "longitude", {
         type: Sequelize.STRING,
       });
+      queryInterface.removeColumn("locations", "name", {
+        type: Sequelize.STRING,
+        allowNull: false,
+      }),
+      queryInterface.addColumn("locations", "name", {
+        type: Sequelize.STRING,
+        allowNull: true,
+      })
   },
   down: async (queryInterface, Sequelize) => {
     queryInterface.addColumn("safetyplans", "location_id");
@@ -32,5 +40,8 @@ module.exports = {
     queryInterface.addColumn("locationsharings", "destination_longitude");
     queryInterface.removeColumn("locationsharings", "latitude");
     queryInterface.removeColumn("locationsharings", "longitude");
+    queryInterface.removeColumn("locations", "name");
+    queryInterface.addColumn("locations", "name");
+
   },
 };
