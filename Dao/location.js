@@ -31,16 +31,6 @@ exports.findLocation = async (obj) => {
   });
 };
 
-exports.deleteLocations = async (userId, id) => {
-  return await locations.destroy({
-    where: {
-      id,
-      user_id: userId,
-    },
-    force: true,
-  });
-};
-
 exports.updateLocations = async (obj) => {
   return await locations.update(obj, {
     where: {

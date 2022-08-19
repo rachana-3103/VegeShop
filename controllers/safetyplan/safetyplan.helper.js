@@ -25,7 +25,6 @@ const {
   updateLocations,
   findLocation,
   findLocationById,
-  deleteLocations,
 } = require("../../Dao/location");
 const AWS = require("aws-sdk");
 AWS.config.update({
@@ -86,13 +85,9 @@ exports.addSafetyPlan = async (param) => {
         address: param.address,
       };
       location = await findLocation(locationObj);
-      if (location) {
-        return {
-          err: true,
-          msg: LOCATION_EXIST,
-        };
+      if(!location){
+        location = await locations.create(locationObj);
       }
-      location = await locations.create(locationObj);
     }
     const helpIndi = [];
     for (const obj of param.helpIndividuals) {
@@ -113,7 +108,7 @@ exports.addSafetyPlan = async (param) => {
 
     const safetyPlanObj = {
       user_id: param.user.id,
-      location_id: param.locationId || location.dataValues.id,
+      location_id: location.dataValues.id,
       cover_radius: param.coverRadius,
       person_name: param.personName,
       start_time: moment(param.startTime).format("YYYY-MM-DDTHH:mm"),
@@ -133,7 +128,6 @@ exports.addSafetyPlan = async (param) => {
       msg: "SafetyPlan added Successfully.",
     };
   } catch (error) {
-    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,
@@ -153,7 +147,7 @@ exports.updateSafetyPlan = async (param) => {
 
     const location = await findLocationById(
       safetyplan.dataValues.user_id,
-      param.locationId
+      safetyplan.dataValues.locationId
     );
 
     if (!location) {
@@ -191,7 +185,7 @@ exports.updateSafetyPlan = async (param) => {
     }
 
     const safetyPlanObj = {
-      location_id: param.locationId || location.dataValues.id,
+      location_id: location.dataValues.id,
       cover_radius: param.coverRadius,
       person_name: param.personName,
       start_time: moment(param.startTime).format("YYYY-MM-DDTHH:mm"),
@@ -293,9 +287,7 @@ exports.completeSafetyPlan = async (param) => {
         msg: SAFETYPLAN_NOT_FOUND,
       };
     }
-
     await updateStatus(STATUS.COMPLETED, param.user.id);
-    await deleteLocations(param.user.id, safetyplan.location_id);
 
     return {
       err: false,

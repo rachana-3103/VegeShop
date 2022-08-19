@@ -15,7 +15,6 @@ exports.addSafetyPlan = async (req, res, next) => {
   }
   const schema = Joi.object({
     name: Joi.string().max(30).required(),
-    locationId: Joi.string(),
     latitude: Joi.string(),
     longitude: Joi.string(),
     coverRadius: Joi.number().integer(),
@@ -47,7 +46,6 @@ exports.updateSafetyPlan = async (req, res, next) => {
   }
   const schema = Joi.object({
     name: Joi.string().max(30).required(),
-    locationId: Joi.string(),
     latitude: Joi.string(),
     longitude: Joi.string(),
     coverRadius: Joi.number().integer(),
