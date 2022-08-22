@@ -14,6 +14,7 @@ const {
   PASSWORD_NOT_MATCH,
   INVALID_PHNUMBER,
   CODE_NOT_VALID,
+  STATUS,
   OTP_MESSAGE,
   NEW_PHONENUMBER_EXIST,
   CODE_NOT_VERIFIED,
@@ -48,7 +49,11 @@ const {
 
 const { userGroupDelete } = require("../../Dao/group");
 const { userLocationDelete } = require("../../Dao/location");
-const { userSafetyplanDelete } = require("../../Dao/safetyplan");
+const {
+  userSafetyplanDelete,
+  findSafetyPlan,
+  updateStatus,
+} = require("../../Dao/safetyplan");
 const { userFaqDelete } = require("../../Dao/faq");
 const { userLocationSharingDelete } = require("../../Dao/locationsharing");
 const AWS = require("aws-sdk");
@@ -569,6 +574,14 @@ exports.updateNewNumber = async (param) => {
 
 exports.logout = async (id) => {
   try {
+    const safetyplan = await findSafetyPlan(id);
+    if (!safetyplan) {
+      return {
+        err: true,
+        msg: SAFETYPLAN_NOT_FOUND,
+      };
+    }
+    await updateStatus(STATUS.COMPLETED, id);
     await deleteToken(id);
     return {
       err: false,

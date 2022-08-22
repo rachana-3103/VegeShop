@@ -15,6 +15,7 @@ exports.addLocation = async (param) => {
       longitude: param.longitude,
       name: param.name,
       address: param.address,
+      is_favourite: true,
     };
 
     await locations.create(locationObj);
@@ -33,7 +34,7 @@ exports.addLocation = async (param) => {
 
 exports.getLocation = async (param) => {
   try {
-    const location = await findAllLocation(param.user.id);
+    const location = await findAllLocation(param.isFavourite, param.user.id);
     if (!location) {
       return {
         err: true,

@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
     address: {
       type: DataTypes.STRING,
     },
+    is_favourite: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   });
 
   return locations;

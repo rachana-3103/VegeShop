@@ -1,8 +1,9 @@
 const { locations } = require("../models/index");
 
-exports.findAllLocation = async (userId) => {
+exports.findAllLocation = async (isFavourite, userId) => {
   return await locations.findAll({
     where: {
+      is_favourite: isFavourite,
       user_id: userId,
     },
     attributes: {
