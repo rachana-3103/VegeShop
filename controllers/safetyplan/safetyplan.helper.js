@@ -57,36 +57,24 @@ exports.addSafetyPlan = async (param) => {
       }
     }
 
-    if (param.locationId) {
-      const safetyplan = await findSafetyPlanByLocationId(
-        param.user.id,
-        param.locationId
-      );
-      if (safetyplan) {
-        return {
-          err: true,
-          msg: SAFETYPLAN_ALREADY_EXIST,
-        };
-      }
-    } else {
-      const safetyplan = await findSafetyPlan(param.user.id);
-      if (safetyplan) {
-        return {
-          err: true,
-          msg: SAFETYPLAN_ALREADY_EXIST,
-        };
-      }
-      const locationObj = {
-        user_id: param.user.id,
-        latitude: param.latitude,
-        longitude: param.longitude,
-        name: param.name,
-        address: param.address,
+    const safetyplan = await findSafetyPlan(param.user.id);
+    if (safetyplan) {
+      return {
+        err: true,
+        msg: SAFETYPLAN_ALREADY_EXIST,
       };
-      location = await findLocation(locationObj);
-      if(!location){
-        location = await locations.create(locationObj);
-      }
+    }
+    const locationObj = {
+      user_id: param.user.id,
+      latitude: param.latitude,
+      longitude: param.longitude,
+      name: param.name,
+      address: param.address,
+      more_address: param.moreAddress,
+    };
+    location = await findLocation(locationObj);
+    if (!location) {
+      location = await locations.create(locationObj);
     }
     const helpIndi = [];
     for (const obj of param.helpIndividuals) {
@@ -162,6 +150,7 @@ exports.updateSafetyPlan = async (param) => {
       longitude: param.longitude,
       name: param.name,
       address: param.address,
+      more_address: moreAddress,
     };
     await updateLocations(locationObj);
 

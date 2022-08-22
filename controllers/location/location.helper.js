@@ -15,6 +15,7 @@ exports.addLocation = async (param) => {
       longitude: param.longitude,
       name: param.name,
       address: param.address,
+      more_address: moreAddress,
       is_favourite: true,
     };
 
@@ -96,6 +97,8 @@ exports.updateLocation = async (param) => {
       longitude: param.longitude,
       name: param.name,
       address: param.address,
+      more_address: moreAddress,
+      is_favourite: param.isFavourite,
     };
     await updateLocations(locationObj);
     return {
