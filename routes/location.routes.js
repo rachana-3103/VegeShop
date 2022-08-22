@@ -12,7 +12,7 @@ router.post(
   locationController.addLocation
 );
 
-router.get("/list", authorization, locationController.getLocation);
+router.post("/list", authorization, locationController.getLocation);
 
 router.delete("/delete", authorization, locationController.deleteLocation);
 
