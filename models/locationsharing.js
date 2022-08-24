@@ -21,10 +21,6 @@ module.exports = (sequelize, DataTypes) => {
     destination_longitude: {
       type: DataTypes.STRING,
     },
-    sms_message: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     type: {
       type: DataTypes.STRING,
       allowNull: false,

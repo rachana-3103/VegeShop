@@ -15,7 +15,7 @@ exports.locationSharing = async (req, res) => {
     if (!isEmpty(safetyplan) && safetyplan.err) {
       return errorResponse(req, res, safetyplan.msg, 400);
     }
-    return successResponse(req, res, null, safetyplan.msg);
+    return successResponse(req, res, safetyplan.data, safetyplan.msg);
   } catch (error) {
     return errorResponse(req, res, error, 400);
   }

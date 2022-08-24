@@ -8,9 +8,13 @@ module.exports = {
     queryInterface.addColumn("locations", "more_address", {
       type: Sequelize.STRING,
     });
+    queryInterface.removeColumn("locationsharings", "sms_message", {
+      type: Sequelize.STRING,
+    });
   },
   down: async (queryInterface, Sequelize) => {
     queryInterface.removeColumn("locations", "is_favourite");
     queryInterface.removeColumn("locations", "more_address");
+    queryInterface.removeColumn("locationsharings", "sms_message");
   },
 };
