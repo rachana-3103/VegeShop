@@ -18,7 +18,7 @@ const {
   findSafetyPlanAlert,
   updateExtend,
 } = require("../../Dao/safetyplan");
-
+const axios = require("axios");
 const { findGroupById } = require("../../Dao/group");
 const {
   updateLocations,
@@ -364,9 +364,33 @@ exports.alertSafetyPlan = async (param) => {
       }
     }
     await updateAlert(param.user.id);
+    const data = JSON.stringify({
+      dynamicLinkInfo: {
+        domainUriPrefix: "https://ages.page.link",
+        link: `https://www.example.com/?lat=${param.latitude}&long=${
+          param.longitude
+        }&type=help`,
+        androidInfo: {
+          androidPackageName: process.env.ANDROID_PACKAGE_NAME,
+        },
+        iosInfo: {
+          iosBundleId: process.env.IOS_PACKAGE_NAME,
+        },
+      },
+    });
+    const config = {
+      method: "POST",
+      url: `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${process.env.KEY}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+    const linkShare = await axios(config);
+
     return {
       err: false,
-      data: null,
+      data: linkShare.data.shortLink,
       msg: "Live location share.",
     };
   } catch (error) {

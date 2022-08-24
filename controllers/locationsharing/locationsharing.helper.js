@@ -3,8 +3,8 @@ const axios = require("axios");
 const uuid = require("uuid");
 exports.locationSharing = async (param) => {
   try {
+    let obj = {};
     let msg;
-    let linkShare;
     let locationSharing = {
       user_id: param.user.id,
       current_latitude: param.currentLatitude,
@@ -22,9 +22,7 @@ exports.locationSharing = async (param) => {
       const data = JSON.stringify({
         dynamicLinkInfo: {
           domainUriPrefix: "https://ages.page.link",
-          link: `https://www.example.com/?lat=${param.currentLatitude}&long=${
-            param.currentLongitude
-          }&type=static&uniqueId=${uuid.v4()}`,
+          link: `https://www.example.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&type=static`,
           androidInfo: {
             androidPackageName: process.env.ANDROID_PACKAGE_NAME,
           },
@@ -42,6 +40,7 @@ exports.locationSharing = async (param) => {
         data: data,
       };
       linkShare = await axios(config);
+      obj.link = linkShare.data.shortLink;
       msg = "Static Loction Sharing Successfully.";
     } else if (
       param.currentLatitude &&
@@ -49,6 +48,7 @@ exports.locationSharing = async (param) => {
       param.destinationLatitude &&
       param.destinationLongitude
     ) {
+      const uniqueId = uuid.v4();
       Object.assign(locationSharing, {
         type: "live",
         destination_latitude: param.destinationLatitude,
@@ -57,11 +57,7 @@ exports.locationSharing = async (param) => {
       const data = JSON.stringify({
         dynamicLinkInfo: {
           domainUriPrefix: "https://ages.page.link",
-          link: `https://www.example.com/?clat=${param.currentLatitude}&clong=${
-            param.currentLongitude
-          }&dlat=${param.destinationLatitude}&dlong=${
-            param.destinationLongitude
-          }&type=live&uniqueId=${uuid.v4()}`,
+          link: `https://www.example.com/?clat=${param.currentLatitude}&clong=${param.currentLongitude}&dlat=${param.destinationLatitude}&dlong=${param.destinationLongitude}&type=live&uniqueId=${uniqueId}`,
           androidInfo: {
             androidPackageName: process.env.ANDROID_PACKAGE_NAME,
           },
@@ -79,16 +75,15 @@ exports.locationSharing = async (param) => {
         data: data,
       };
       linkShare = await axios(config);
+      obj.link = linkShare.data.shortLink;
       msg = "Live Loction Sharing Successfully.";
+      obj.uniqueID = uniqueId;
     }
 
     await locationsharings.create(locationSharing);
     return {
       err: false,
-      data: {
-        link: linkShare.data.shortLink,
-        uniqueID: uuid.v4(),
-      },
+      data: obj,
       msg,
     };
   } catch (error) {
