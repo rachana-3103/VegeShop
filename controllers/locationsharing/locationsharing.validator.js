@@ -6,7 +6,6 @@ exports.locationSharing = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
-    message: Joi.string().max(100).required(),
     currentLatitude: Joi.string().required(),
     currentLongitude: Joi.string().required(),
     contacts: Joi.array().required(),
