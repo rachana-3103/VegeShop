@@ -19,6 +19,7 @@ const {
   updateExtend,
 } = require("../../Dao/safetyplan");
 const axios = require("axios");
+const uuid = require("uuid");
 const { findGroupById } = require("../../Dao/group");
 const {
   updateLocations,
@@ -314,6 +315,7 @@ exports.getSafetyPlan = async (param) => {
 
 exports.alertSafetyPlan = async (param) => {
   try {
+    let obj = {};
     const safetyplan = await findSafetyPlan(param.user.id);
     const safetyplanAlert = await findSafetyPlanAlert(param.user.id);
     if (!safetyplan) {
@@ -393,10 +395,12 @@ exports.alertSafetyPlan = async (param) => {
       data: data,
     };
     const linkShare = await axios(config);
-
+    const uniqueId = uuid.v4();
+    obj.link = linkShare.data.shortLink;
+    obj.uniqueID = uniqueId;
     return {
       err: false,
-      data: linkShare.data.shortLink,
+      data: obj,
       msg: "Live location share.",
     };
   } catch (error) {

@@ -732,7 +732,7 @@ exports.settings = async (req) => {
     if (req.body.htmlType === "term_and_condition") {
       url = `http://34.227.59.13:5000/documents/terms.html`;
     } else if (req.body.htmlType === "help") {
-      url = `http://34.227.59.13:5000/documents/index.html`;
+      url = `http://34.227.59.13:5000/documents/help.html`;
     } else {
       url = `http://34.227.59.13:5000/documents/policy.html`;
     }
