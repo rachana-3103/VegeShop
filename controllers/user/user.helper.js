@@ -598,14 +598,11 @@ exports.updateNewNumber = async (param) => {
 
 exports.logout = async (id) => {
   try {
+    console.log("~ id", id);
     const safetyplan = await findSafetyPlan(id);
-    if (!safetyplan) {
-      return {
-        err: true,
-        msg: SAFETYPLAN_NOT_FOUND,
-      };
+    if (safetyplan) {
+      await updateStatus(STATUS.COMPLETED, id);
     }
-    await updateStatus(STATUS.COMPLETED, id);
     await deleteToken(id);
     return {
       err: false,
@@ -613,6 +610,7 @@ exports.logout = async (id) => {
       msg: "Logout Successfully.",
     };
   } catch (error) {
+    console.log("~ error", error);
     return {
       err: true,
       msg: error,
