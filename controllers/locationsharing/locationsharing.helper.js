@@ -81,6 +81,20 @@ exports.locationSharing = async (param) => {
     }
 
     await locationsharings.create(locationSharing);
+
+    // let sendSMS = {
+    //   Subject: "Aegis24/7 For Help",
+    //   Message: `Your Aegies link is: ${obj.link}`,
+    //   PhoneNumber: number,
+    // };
+
+    // sns.publish(sendSMS, (err, result) => {
+    //   if (err) {
+    //     console.info(err);
+    //   } else {
+    //     console.info(result);
+    //   }
+    // });
     return {
       err: false,
       data: obj,

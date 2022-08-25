@@ -352,6 +352,12 @@ exports.alertSafetyPlan = async (param) => {
             param.latitude + param.longitude
           }`,
           PhoneNumber: number,
+          MessageAttributes: {
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
+              StringValue: process.env.TEN_DLC,
+            },
+          },
         };
 
         sns.publish(sendSMS, (err, result) => {
@@ -441,6 +447,12 @@ exports.checkInOut = async (param) => {
               100000 + Math.random() * 900000
             )}`,
             PhoneNumber: number,
+            MessageAttributes: {
+              "AWS.MM.SMS.OriginationNumber": {
+                DataType: "String",
+                StringValue: process.env.TEN_DLC,
+              },
+            },
           };
           sns.publish(sendSMS, (err, result) => {
             if (err) {

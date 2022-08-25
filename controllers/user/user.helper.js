@@ -101,6 +101,12 @@ exports.userSignup = async (param) => {
         Subject: "Aegis24/7 Verification Code",
         Message: `${OTP_MESSAGE} ${OTP} `,
         PhoneNumber: mobile,
+        MessageAttributes: {
+          "AWS.MM.SMS.OriginationNumber": {
+            DataType: "String",
+            StringValue: process.env.TEN_DLC,
+          },
+        },
       };
 
       sns.publish(sendSMS, (err, result) => {
@@ -124,6 +130,12 @@ exports.userSignup = async (param) => {
         Subject: "Aegis24/7 Verification Code",
         Message: `${OTP_MESSAGE} ${OTP} `,
         PhoneNumber: mobile,
+        MessageAttributes: {
+          "AWS.MM.SMS.OriginationNumber": {
+            DataType: "String",
+            StringValue: process.env.TEN_DLC,
+          },
+        },
       };
 
       sns.publish(sendSMS, (err, result) => {
@@ -279,6 +291,12 @@ exports.forgotPassword = async (param) => {
         Subject: "Aegis24/7 Verification Code",
         Message: `${OTP_MESSAGE} ${OTP} `,
         PhoneNumber: mobile,
+        MessageAttributes: {
+          "AWS.MM.SMS.OriginationNumber": {
+            DataType: "String",
+            StringValue: process.env.TEN_DLC,
+          },
+        },
       };
       sns.publish(sendSMS, (err, result) => {
         if (err) {
@@ -506,6 +524,12 @@ exports.updateCode = async (param) => {
       Subject: "Aegis24/7 Verification Code",
       Message: `${OTP_MESSAGE} ${OTP} `,
       PhoneNumber: mobile,
+      MessageAttributes: {
+        "AWS.MM.SMS.OriginationNumber": {
+          DataType: "String",
+          StringValue: process.env.TEN_DLC,
+        },
+      },
     };
 
     sns.publish(sendSMS, (err, result) => {
