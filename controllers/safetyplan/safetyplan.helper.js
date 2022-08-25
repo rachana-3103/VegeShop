@@ -372,12 +372,12 @@ exports.alertSafetyPlan = async (param) => {
       }
     }
     await updateAlert(param.user.id);
+    const uniqueId = uuid.v4();
+
     const data = JSON.stringify({
       dynamicLinkInfo: {
         domainUriPrefix: "https://ages.page.link",
-        link: `https://www.example.com/?lat=${param.latitude}&long=${
-          param.longitude
-        }&type=help`,
+        link: `https://www.example.com/?lat=${param.latitude}&long=${param.longitude}&type=help&uniqueId=${uniqueId}`,
         androidInfo: {
           androidPackageName: process.env.ANDROID_PACKAGE_NAME,
         },
@@ -395,7 +395,6 @@ exports.alertSafetyPlan = async (param) => {
       data: data,
     };
     const linkShare = await axios(config);
-    const uniqueId = uuid.v4();
     obj.link = linkShare.data.shortLink;
     obj.uniqueID = uniqueId;
     return {
