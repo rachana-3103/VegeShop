@@ -82,28 +82,28 @@ exports.locationSharing = async (param) => {
     }
 
     await locationsharings.create(locationSharing);
-    // for (const contact of param.contacts){
-    //   const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
-    //   let sendSMS = {
-    //     Subject: "Aegis24/7 For Help",
-    //     Message: `Your Aegies link is: ${obj.link}`,
-    //     PhoneNumber: mobile,
-    //     MessageAttributes: {
-    //       "AWS.MM.SMS.OriginationNumber": {
-    //         DataType: "String",
-    //         StringValue: process.env.TEN_DLC,
-    //       },
-    //     },
-    //   };
+    for (const contact of param.contacts){
+      const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
+      let sendSMS = {
+        Subject: "Aegis24/7 For Help",
+        Message: `Your Aegis24/7 link is: ${obj.link}`,
+        PhoneNumber: mobile,
+        MessageAttributes: {
+          "AWS.MM.SMS.OriginationNumber": {
+            DataType: "String",
+            StringValue: process.env.TEN_DLC,
+          },
+        },
+      };
   
-    //   sns.publish(sendSMS, (err, result) => {
-    //     if (err) {
-    //       console.info(err);
-    //     } else {
-    //       console.info(result);
-    //     }
-    //   });
-    // }
+      sns.publish(sendSMS, (err, result) => {
+        if (err) {
+          console.info(err);
+        } else {
+          console.info(result);
+        }
+      });
+    }
    
     return {
       err: false,
