@@ -1,6 +1,7 @@
 const { locationsharings } = require("../../models/index");
 const axios = require("axios");
 const uuid = require("uuid");
+const sns = new AWS.SNS();
 
 exports.locationSharing = async (param) => {
   try {
