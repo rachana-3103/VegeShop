@@ -349,7 +349,7 @@ exports.alertSafetyPlan = async (param) => {
       for (const obj of helpArray) {
         number = obj.country_code + obj.phone_number;
         let sendSMS = {
-          Subject: "Aegis24/7 For Help",
+          Subject: "Aegis247 For Help",
           Message: `Your Aegies verification code is: ${
             param.latitude + param.longitude
           }`,
@@ -445,7 +445,7 @@ exports.checkInOut = async (param) => {
         for (const obj of checkInOutrray) {
           number = obj.country_code + obj.phone_number;
           let sendSMS = {
-            Subject: "Aegis24/7 For Safety plan check out",
+            Subject: "Aegis247 For Safety plan check out",
             Message: `Your Aegies verification code is: ${Math.floor(
               100000 + Math.random() * 900000
             )}`,

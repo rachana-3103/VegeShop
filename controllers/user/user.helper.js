@@ -98,7 +98,7 @@ exports.userSignup = async (param) => {
 
     if (userRegistered) {
       let sendSMS = {
-        Subject: "Aegis24/7 Verification Code",
+        Subject: "Aegis247 Verification Code",
         Message: `${OTP_MESSAGE} ${OTP} `,
         PhoneNumber: mobile,
         MessageAttributes: {
@@ -127,7 +127,7 @@ exports.userSignup = async (param) => {
       };
     } else {
       let sendSMS = {
-        Subject: "Aegis24/7 Verification Code",
+        Subject: "Aegis247 Verification Code",
         Message: `${OTP_MESSAGE} ${OTP} `,
         PhoneNumber: mobile,
         MessageAttributes: {
@@ -288,7 +288,7 @@ exports.forgotPassword = async (param) => {
       const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
 
       let sendSMS = {
-        Subject: "Aegis24/7 Verification Code",
+        Subject: "Aegis247 Verification Code",
         Message: `${OTP_MESSAGE} ${OTP} `,
         PhoneNumber: mobile,
         MessageAttributes: {
@@ -521,7 +521,7 @@ exports.updateCode = async (param) => {
     const mobile = "+" + Number(param.newCountryCode) + param.newPhoneNumber;
 
     let sendSMS = {
-      Subject: "Aegis24/7 Verification Code",
+      Subject: "Aegis247 Verification Code",
       Message: `${OTP_MESSAGE} ${OTP} `,
       PhoneNumber: mobile,
       MessageAttributes: {

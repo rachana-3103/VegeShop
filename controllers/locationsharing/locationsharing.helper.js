@@ -92,8 +92,8 @@ exports.locationSharing = async (param) => {
     for (const contact of param.contacts){
       const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
       let sendSMS = {
-        Subject: "Aegis24/7 For Help",
-        Message: `Your Aegis24/7 link is: ${obj.link}`,
+        Subject: "Aegis247 For Help",
+        Message: `Your Aegis247 link is: ${obj.link}`,
         PhoneNumber: mobile,
         MessageAttributes: {
           "AWS.MM.SMS.OriginationNumber": {
