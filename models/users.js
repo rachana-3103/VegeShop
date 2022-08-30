@@ -44,10 +44,6 @@ module.exports = (sequelize, DataTypes) => {
     unit: {
       type: DataTypes.STRING,
     },
-    notification: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
   });
 
   return users;
