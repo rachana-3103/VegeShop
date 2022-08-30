@@ -210,7 +210,7 @@ exports.extend = async (param) => {
       };
     }
 
-    if (safetyplan.dataValues.extend_plan == 4) {
+    if (safetyplan.dataValues.extend_plan == 3) {
       return {
         err: true,
         msg: NO_MORE_EXTEND,
