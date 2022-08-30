@@ -210,7 +210,7 @@ exports.extend = async (param) => {
       };
     }
 
-    if (safetyplan.dataValues.extend_plan == 2) {
+    if (safetyplan.dataValues.extend_plan == 4) {
       return {
         err: true,
         msg: NO_MORE_EXTEND,
@@ -220,7 +220,7 @@ exports.extend = async (param) => {
     if (safetyplan.dataValues && !safetyplan.dataValues.extend_plan) {
       safetyplan.dataValues.extend_plan = 1;
     } else {
-      safetyplan.dataValues.extend_plan = 2;
+      safetyplan.dataValues.extend_plan += 1;
     }
 
     await updateExtend(

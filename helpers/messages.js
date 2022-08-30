@@ -32,7 +32,7 @@ exports.GROUP_NOT_FOUND_CHECKOUT = "Group not found for checkout - ";
 exports.OTP_EXPIRED='OTP Expired';
 exports.PASSWORD_OLD_WRONG = 'old Password wrong.';
 exports.NOTIFIED_CONTACT = 'You are already notified of their help.';
-exports.NO_MORE_EXTEND='No more extends possible need to update safety plan for more time change.'
+exports.NO_MORE_EXTEND='Max 3 +10 mins extensions. Edit safety plan to extend timer.'
 
 exports.STATUS = {
   INPROGRESS: "Inprogress",
