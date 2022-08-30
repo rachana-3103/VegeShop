@@ -45,6 +45,7 @@ const {
   userDelete,
   userCreate,
   findUserRegistered,
+  updateNotification,
 } = require("../../Dao/user");
 
 const { userGroupDelete } = require("../../Dao/group");
@@ -745,6 +746,30 @@ exports.settings = async (req) => {
     };
   } catch (error) {
     console.log("~ error", error);
+    return {
+      err: true,
+      msg: error,
+    };
+  }
+};
+
+exports.notification = async (req) => {
+  try {
+    let msg = "";
+    const user = await findUserById(req.body.user.id);
+    if (user.is_notification) {
+      updateNotification(user.id, false);
+      msg = "Notification off.";
+    } else {
+      updateNotification(user.id, true);
+      msg = "Notification on.";
+    }
+
+    return {
+      err: false,
+      msg,
+    };
+  } catch (error) {
     return {
       err: true,
       msg: error,

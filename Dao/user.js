@@ -82,6 +82,19 @@ exports.updateCodeByPhoneNumber = async (code, param) => {
   );
 };
 
+exports.updateNotification = async (id, data) => {
+  return await users.update(
+    {
+      is_notification: data,
+    },
+    {
+      where: {
+        id,
+      },
+    }
+  );
+};
+
 exports.userFindByResetToken = async (token) => {
   return await users.findOne({
     where: {

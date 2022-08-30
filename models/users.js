@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    is_notification: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
     device_token: {
       type: DataTypes.STRING,
     },

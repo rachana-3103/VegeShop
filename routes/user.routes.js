@@ -81,5 +81,10 @@ router.post(
   userController.settings
 );
 
+router.post(
+  "/notification",
+  authorization,
+  userController.notification
+);
 
 module.exports = router;
