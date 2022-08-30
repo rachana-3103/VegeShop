@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    is_notification: {
+    notification: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
