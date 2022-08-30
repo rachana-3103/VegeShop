@@ -757,7 +757,7 @@ exports.notification = async (req) => {
   try {
     let msg = "";
     const user = await findUserById(req.body.user.id);
-    if (user.is_notification) {
+    if (user.notification) {
       updateNotification(user.id, false);
       msg = "Notification off.";
     } else {
