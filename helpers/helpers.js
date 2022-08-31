@@ -99,6 +99,9 @@ exports.validateRequest = (param, schema) => {
     if(error.details[0].type == 'string.pattern.base'){
       object =  "Password must have 8 characters including capital letters and symbols.";
     }
+    if(error.details[0].type == 'string.email'){
+      object = 'Enter a valid email address.'
+    }
     return object;
   }
 };
