@@ -2,6 +2,9 @@ const { locationsharings } = require("../../models/index");
 const axios = require("axios");
 const uuid = require("uuid");
 const AWS = require("aws-sdk");
+const { findLiveLocation } = require("../../Dao/locationsharing");
+const { LOCATION_NOT_FOUND } = require("../../helpers/messages");
+const { updateStatus } = require("../../Dao/locationsharing");
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SECRET_KEY,
@@ -18,6 +21,7 @@ exports.locationSharing = async (param) => {
       current_latitude: param.currentLatitude,
       current_longitude: param.currentLongitude,
       contacts: param.contacts,
+      status: "SHARED",
     };
     if (
       !param.destinationLatitude &&
@@ -49,7 +53,29 @@ exports.locationSharing = async (param) => {
       };
       linkShare = await axios(config);
       obj.link = linkShare.data.shortLink;
-      msg = `${param.user.name} shared a static loction with you.`;
+      msg = "Static Loction Sharing Successfully.";
+      for (const contact of param.contacts) {
+        const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
+        let sendSMS = {
+          Subject: "Aegis247 For Help",
+          Message: `${param.user.name} shared a static loction with you. ${obj.link}  Aegis 24/7.`,
+          PhoneNumber: mobile,
+          MessageAttributes: {
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
+              StringValue: process.env.TEN_DLC,
+            },
+          },
+        };
+
+        sns.publish(sendSMS, (err, result) => {
+          if (err) {
+            console.info(err);
+          } else {
+            console.info(result);
+          }
+        });
+      }
     } else if (
       param.currentLatitude &&
       param.currentLongitude &&
@@ -84,37 +110,93 @@ exports.locationSharing = async (param) => {
       };
       linkShare = await axios(config);
       obj.link = linkShare.data.shortLink;
-      msg = `${param.user.name} has shared their live loction and end destination with you.`;
+      msg = "Live Loction Sharing Successfully.";
       obj.uniqueID = uniqueId;
+      for (const contact of param.contacts) {
+        const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
+        console.log("~ mobile", mobile);
+        let sendSMS = {
+          Subject: "Aegis247 For Help",
+          Message: `${param.user.name} has shared their live loction and end destination with you. ${obj.link}  Aegis 24/7.`,
+          PhoneNumber: mobile,
+          MessageAttributes: {
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
+              StringValue: process.env.TEN_DLC,
+            },
+          },
+        };
+
+        sns.publish(sendSMS, (err, result) => {
+          if (err) {
+            console.info(err);
+          } else {
+            console.info(result);
+          }
+        });
+      }
     }
 
     await locationsharings.create(locationSharing);
-    for (const contact of param.contacts){
-      const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
-      let sendSMS = {
-        Subject: "Aegis247 For Help",
-        Message: `Your Aegis247 link is: ${obj.link}`,
-        PhoneNumber: mobile,
-        MessageAttributes: {
-          "AWS.MM.SMS.OriginationNumber": {
-            DataType: "String",
-            StringValue: process.env.TEN_DLC,
-          },
-        },
-      };
-  
-      sns.publish(sendSMS, (err, result) => {
-        if (err) {
-          console.info(err);
-        } else {
-          console.info(result);
-        }
-      });
-    }
-   
     return {
       err: false,
       data: obj,
+      msg,
+    };
+  } catch (error) {
+    console.log("~ error", error);
+    return {
+      err: true,
+      msg: error.message,
+    };
+  }
+};
+
+exports.status = async (param) => {
+  try {
+    let msg;
+    let message;
+    const location = await findLiveLocation(param.user.id);
+    if (!location) {
+      return {
+        err: true,
+        msg: LOCATION_NOT_FOUND,
+      };
+    }
+    if (param.status == "Cancel") {
+      await updateStatus("CANCELLED", param.user.id, "live");
+      msg='status has been cancelled.'
+      message= `${param.user.name} has cancelled their live location sharing prior to arriving at their location. Aegis 24/7`
+    }
+
+    if (param.status == "stop") {
+      await updateStatus("STOPPED", param.user.id, "live");
+      msg='status has been stopped.'
+      message= `${param.user.name} has arrived at their destination. Live location sharing stopped. Aegis 24/7`
+    }
+    const mobile = "+" + Number(param.user.country_code) + param.user.phone_number;
+    let sendSMS = {
+      Subject: "Aegis247 For Help",
+      Message: message,
+      PhoneNumber: mobile,
+      MessageAttributes: {
+        "AWS.MM.SMS.OriginationNumber": {
+          DataType: "String",
+          StringValue: process.env.TEN_DLC,
+        },
+      },
+    };
+
+    sns.publish(sendSMS, (err, result) => {
+      if (err) {
+        console.info(err);
+      } else {
+        console.info(result);
+      }
+    });
+
+    return {
+      err: false,
       msg,
     };
   } catch (error) {

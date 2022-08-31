@@ -12,4 +12,11 @@ router.post(
   locationSharingController.locationSharing
 );
 
+router.post(
+  "/status",
+  authorization,
+  locationSharingValidator.status,
+  locationSharingController.status
+);
+
 module.exports = router;
