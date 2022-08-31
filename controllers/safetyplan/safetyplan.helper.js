@@ -413,6 +413,7 @@ exports.alertSafetyPlan = async (param) => {
 exports.checkInOut = async (param) => {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
+    console.log("~ safetyplan", safetyplan);
     if (!safetyplan) {
       return {
         err: true,
@@ -423,49 +424,53 @@ exports.checkInOut = async (param) => {
     let checkInOutrray = [];
     let number;
 
-    if (
-      moment().format("YYYY-MM-DDTHH:mm") >
-      moment(safetyplan.dataValues.end_time).format("YYYY-MM-DDTHH:mm")
-    ) {
+    // if (
+    //   moment().format("YYYY-MM-DDTHH:mm") >
+    //   moment(safetyplan.dataValues.end_time).format("YYYY-MM-DDTHH:mm")
+    // ) {
+    if (safetyplan.dataValues.checkinout_group.length > 0) {
       for (const id of safetyplan.dataValues.checkinout_group) {
         const group = await findGroupById(safetyplan.dataValues.user_id, id);
+        console.log("~ group", group);
         checkInOutrray = [...group.contacts];
-        for (const element of safetyplan.dataValues.checkinout_individuals) {
-          if (
-            !checkInOutrray.some(
-              (obj) =>
-                obj.phone_number == element.phone_number &&
-                obj.country_code == element.country_code
-            )
-          ) {
-            checkInOutrray.push(element);
-          }
-        }
-
-        for (const obj of checkInOutrray) {
-          number = obj.country_code + obj.phone_number;
-          let sendSMS = {
-            Subject: "Aegis247 For Safety plan check out",
-            Message: `Your Aegies verification code is: ${Math.floor(
-              100000 + Math.random() * 900000
-            )}`,
-            PhoneNumber: number,
-            MessageAttributes: {
-              "AWS.MM.SMS.OriginationNumber": {
-                DataType: "String",
-                StringValue: process.env.TEN_DLC,
-              },
-            },
-          };
-          sns.publish(sendSMS, (err, result) => {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log(result);
-            }
-          });
+      }
+    }
+    if (safetyplan.dataValues.checkinout_individuals.length > 0) {
+      for (const element of safetyplan.dataValues.checkinout_individuals) {
+        if (
+          !checkInOutrray.some(
+            (obj) =>
+              obj.phone_number == element.phone_number &&
+              obj.country_code == element.country_code
+          )
+        ) {
+          checkInOutrray.push(element);
         }
       }
+    }
+
+    for (const obj of checkInOutrray) {
+      number = obj.country_code + obj.phone_number;
+      let sendSMS = {
+        Subject: "Aegis247 For Safety plan check out",
+        Message: `Your Aegies verification code is: ${Math.floor(
+          100000 + Math.random() * 900000
+        )}`,
+        PhoneNumber: number,
+        MessageAttributes: {
+          "AWS.MM.SMS.OriginationNumber": {
+            DataType: "String",
+            StringValue: process.env.TEN_DLC,
+          },
+        },
+      };
+      sns.publish(sendSMS, (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(result);
+        }
+      });
     }
 
     return {
