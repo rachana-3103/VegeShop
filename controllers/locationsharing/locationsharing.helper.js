@@ -49,7 +49,7 @@ exports.locationSharing = async (param) => {
       };
       linkShare = await axios(config);
       obj.link = linkShare.data.shortLink;
-      msg = "Static Loction Sharing Successfully.";
+      msg = `${param.user.name} shared a static loction with you.`;
     } else if (
       param.currentLatitude &&
       param.currentLongitude &&
@@ -84,7 +84,7 @@ exports.locationSharing = async (param) => {
       };
       linkShare = await axios(config);
       obj.link = linkShare.data.shortLink;
-      msg = "Live Loction Sharing Successfully.";
+      msg = `${param.user.name} has shared their live loction and end destination with you.`;
       obj.uniqueID = uniqueId;
     }
 

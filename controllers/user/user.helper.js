@@ -215,6 +215,7 @@ exports.userLogin = async (param) => {
         id: user.id,
         email: user.email,
         password: user.password,
+        name: user.name,
         phone_number: user.phone_number,
         country_code: user.country_code,
       });
@@ -222,6 +223,7 @@ exports.userLogin = async (param) => {
       const refreshToken = generateRefreshtoken({
         id: user.id,
         email: user.email,
+        name: user.name,
         password: user.password,
         phone_number: user.phone_number,
         country_code: user.country_code,
@@ -254,11 +256,11 @@ exports.refreshToken = async (param) => {
     const accessToken = generateJWTtoken({
       id: user.id,
       email: user.email,
+      name: user.name,
       password: user.password,
       phone_number: user.phone_number,
       country_code: user.country_code,
     });
-    console.info("~ accessToken", accessToken);
     return {
       err: false,
       data: { access_token: accessToken },
@@ -441,6 +443,7 @@ exports.codeVerify = async (param) => {
       const accessToken = generateJWTtoken({
         id: userLogin.id,
         email: userLogin.email,
+        name: user.name,
         password: userLogin.password,
         phone_number: userLogin.phone_number,
         country_code: userLogin.country_code,
@@ -461,6 +464,7 @@ exports.codeVerify = async (param) => {
       const accessToken = generateJWTtoken({
         id: userResetPwd.id,
         email: userResetPwd.email,
+        name: user.name,
         password: userResetPwd.password,
         phone_number: userResetPwd.phone_number,
         country_code: userResetPwd.country_code,
@@ -469,6 +473,7 @@ exports.codeVerify = async (param) => {
       const refreshToken = generateRefreshtoken({
         id: userResetPwd.id,
         email: userResetPwd.email,
+        name: user.name,
         password: userResetPwd.password,
         phone_number: userResetPwd.phone_number,
         country_code: userResetPwd.country_code,
