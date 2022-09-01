@@ -95,6 +95,19 @@ exports.updateNotification = async (id, data) => {
   );
 };
 
+exports.updateBattery = async (id, battery) => {
+  return await users.update(
+    {
+      battery,
+    },
+    {
+      where: {
+        id,
+      },
+    }
+  );
+};
+
 exports.userFindByResetToken = async (token) => {
   return await users.findOne({
     where: {

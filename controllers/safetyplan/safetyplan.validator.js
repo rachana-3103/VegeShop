@@ -78,3 +78,17 @@ exports.alertSafetyPlan = async (req, res, next) => {
   }
 };
 
+exports.alertHelpSafetyPlan = async (req, res, next) => {
+  const param = { ...req.body };
+
+  const schema = Joi.object({
+    type: Joi.boolean().required(),
+  });
+
+  const error = validateRequest(param, schema);
+  if (error) {
+    return errorResponse(req, res, error, 400);
+  } else {
+    return next();
+  }
+};

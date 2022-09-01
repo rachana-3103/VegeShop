@@ -7,10 +7,15 @@ module.exports = {
     }),
       queryInterface.addColumn("locationsharings", "status", {
         type: Sequelize.STRING,
+      }),
+      queryInterface.addColumn("users", "battery", {
+        type: Sequelize.STRING,
       });
   },
   down: async (queryInterface, Sequelize) => {
     queryInterface.removeColumn("users", "notification");
     queryInterface.removeColumn("locationsharings", "status");
+    queryInterface.removeColumn("users", "battery");
+
   },
 };

@@ -29,6 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.JSON,
       allowNull: false,
     },
+    status:{
+      type: DataTypes.STRING,
+    }
   });
 
   return locationsharings;

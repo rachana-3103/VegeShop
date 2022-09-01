@@ -44,6 +44,9 @@ module.exports = (sequelize, DataTypes) => {
     unit: {
       type: DataTypes.STRING,
     },
+    battery: {
+      type: DataTypes.STRING,
+    },
   });
 
   return users;
