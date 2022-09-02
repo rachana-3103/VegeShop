@@ -10,7 +10,8 @@ const {
   alertSafetyPlan,
   checkInOut,
   extend,
-  alertHelpSafetyPlan
+  responded,
+  okay
 } = require("./safetyplan.helper");
 
 exports.addSafetyPlan = async (req, res) => {
@@ -101,14 +102,14 @@ exports.alertSafetyPlan = async (req, res) => {
   }
 };
 
-exports.alertHelpSafetyPlan = async (req, res) => {
+exports.responded = async (req, res) => {
   try {
     const param = req.body;
 
     if (isEmpty(param)) {
       return errorResponse(req, res, "Something Went Wrong", 400);
     }
-    const safetyplan = await alertHelpSafetyPlan(param);
+    const safetyplan = await responded(param);
     if (!isEmpty(safetyplan) && safetyplan.err) {
       return errorResponse(req, res, safetyplan.msg, 400);
     }
@@ -117,6 +118,24 @@ exports.alertHelpSafetyPlan = async (req, res) => {
     return errorResponse(req, res, error, 400);
   }
 };
+
+exports.okay = async (req, res) => {
+  try {
+    const param = req.body;
+
+    if (isEmpty(param)) {
+      return errorResponse(req, res, "Something Went Wrong", 400);
+    }
+    const safetyplan = await okay(param);
+    if (!isEmpty(safetyplan) && safetyplan.err) {
+      return errorResponse(req, res, safetyplan.msg, 400);
+    }
+    return successResponse(req, res, safetyplan.data, safetyplan.msg);
+  } catch (error) {
+    return errorResponse(req, res, error, 400);
+  }
+};
+
 
 
 exports.checkInOut = async (req, res) => {
@@ -130,7 +149,7 @@ exports.checkInOut = async (req, res) => {
     if (!isEmpty(safetyplan) && safetyplan.err) {
       return errorResponse(req, res, safetyplan.msg, 400);
     }
-    return successResponse(req, res, null, safetyplan.msg);
+    return successResponse(req, res, safetyplan.data, safetyplan.msg);
   } catch (error) {
     return errorResponse(req, res, error, 400);
   }

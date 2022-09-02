@@ -41,11 +41,17 @@ router.post(
 );
 
 router.post(
-  "/alert-help",
+  "/responded",
   authorization,
-  safetyPlanValidator.alertHelpSafetyPlan,
-  safetyPlanController.alertHelpSafetyPlan
+  safetyPlanController.responded
 );
+
+router.post(
+  "/okay",
+  authorization,
+  safetyPlanController.okay
+);
+
 
 router.post(
   "/check-in-out",
