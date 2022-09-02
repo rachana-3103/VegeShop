@@ -731,27 +731,24 @@ exports.checkInOut = async (param) => {
         // const linkShare = await axios(config);
         // response.link = linkShare.data.shortLink;
         // // obj.uniqueID = uniqueId;
-        // sendSMS = {
-        //   Subject: "Aegis247 For Safety plan check in",
-        //   Message: `${param.user.name} has checked into Location from safety plan and have shared their safety plan with you:
-        //   Aegis 24/7.`,
-        //   PhoneNumber: number,
-        //   MessageAttributes: {
-        //     "AWS.MM.SMS.OriginationNumber": {
-        //       DataType: "String",
-        //       StringValue: process.env.TEN_DLC,
-        //     },
-        //   },
-        // };
+        sendSMS = {
+          Subject: "Aegis247 For Safety plan check in",
+          Message: `${param.user.name} has checked into Location from safety plan and have shared their safety plan with you: Aegis 24/7.`,
+          PhoneNumber: number,
+          MessageAttributes: {
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
+              StringValue: process.env.TEN_DLC,
+            },
+          },
+        };
       }
 
       if (param.check == false) {
         sendSMS = {
           Subject: "Aegis247 For Safety plan check out",
-          Message: `${param.user.name} has now checked out of Location from safety plan. As part of their safety plan, they wanted you to know. 
-          For more contact ${param.user.name} on ${param.user.phone_number}.
-          Aegis 24/7.`,
-          PhoneNumber: number,
+          Message: `${param.user.name} has now checked out of Location from safety plan. As part of their safety plan, they wanted you to know. For more contact ${param.user.name} on ${param.user.phone_number}. Aegis 24/7.`,
+          PhoneNumber: "+917779064419",
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
               DataType: "String",
