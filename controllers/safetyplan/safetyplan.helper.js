@@ -467,7 +467,7 @@ exports.alertSafetyPlan = async (param) => {
 
 exports.responded = async (param) => {
   try {
-    const helpArray = [];
+    let helpArray = [];
     if (param.safetyplan) {
       const safetyplan = await findSafetyPlan(param.user.id);
       for (const id of safetyplan.dataValues.help_group) {
@@ -566,7 +566,7 @@ exports.responded = async (param) => {
 
 exports.okay = async (param) => {
   try {
-    const helpArray = [];
+    let helpArray = [];
     if (param.safetyplan) {
       const safetyplan = await findSafetyPlan(param.user.id);
       for (const id of safetyplan.dataValues.help_group) {
@@ -654,6 +654,7 @@ exports.okay = async (param) => {
       msg: "Live location share.",
     };
   } catch (error) {
+    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,
