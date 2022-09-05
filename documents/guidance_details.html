@@ -1,0 +1,50 @@
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+<meta name="generator" content="Hugo 0.72.0">
+<title>Details</title>
+<link rel='stylesheet' href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- partial:index.partial.html -->
+
+<div class="detail_page_main"> <a href="guidance.html"> <img src="images/arrow-back.svg" alt="back" /> </a>
+    <div id="dataDescritpion">
+    </div>
+    
+</div>
+
+<script src="js/main.js"></script>
+<script>
+    let GuidanceId = localStorage.getItem("GuidanceId");
+    let GuidanceCagegory = localStorage.getItem("GuidanceCagegory");
+    const dataDescritpion = document.querySelector("#dataDescritpion");
+    data.map((item)=>{
+        item.Guidance.map((element)=>{
+            element.Category.map((e)=>{
+                if(e.keyName == GuidanceCagegory){
+                   
+                    e.gData.map((element)=>{
+                        if(element.id == GuidanceId){
+                            dataDescritpion.innerHTML = dataDescritpion.innerHTML + `
+                            <h2>${element.title}</h2>
+                            <p> <img src="/images/${element.imageUrl}" alt="${element.title}"  /></p>
+                            <h3>About</h3>
+                            <p>${element.about}</p>
+                            <h3>Guidance</h3>
+                            <p>${element.description}</p>
+                            `;
+                        }
+                    });
+                }
+                
+            })
+        });
+    });
+</script>
+</body>
+</html>
