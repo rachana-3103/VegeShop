@@ -443,7 +443,7 @@ exports.codeVerify = async (param) => {
       const accessToken = generateJWTtoken({
         id: userLogin.id,
         email: userLogin.email,
-        name: user.name,
+        name: userLogin.name,
         password: userLogin.password,
         phone_number: userLogin.phone_number,
         country_code: userLogin.country_code,

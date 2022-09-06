@@ -258,7 +258,7 @@ exports.cancelSafetyPlan = async (param) => {
     return {
       err: false,
       data: null,
-      msg: "SafetyPlan Cancelled Successfully.",
+      msg: 'Cancelled safety plan.',
     };
   } catch (error) {
     return {
@@ -283,7 +283,7 @@ exports.completeSafetyPlan = async (param) => {
     return {
       err: false,
       data: null,
-      msg: "SafetyPlan Completed Successfully.",
+      msg: 'Completed safety plan.',
     };
   } catch (error) {
     return {
