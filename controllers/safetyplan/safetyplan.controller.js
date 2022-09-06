@@ -77,7 +77,7 @@ exports.getSafetyPlan = async (req, res) => {
     const param = req.body;
     const safetyplan = await getSafetyPlan(param);
     if (!isEmpty(safetyplan) && safetyplan.err) {
-      return errorResponse(req, res, safetyplan.msg, 400);
+      return errorResponse(req, res, safetyplan.msg, 200);
     }
     return successResponse(req, res, safetyplan.data, safetyplan.msg);
   } catch (error) {
