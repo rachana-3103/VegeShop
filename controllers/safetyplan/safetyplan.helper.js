@@ -115,7 +115,7 @@ exports.addSafetyPlan = async (param) => {
     return {
       err: false,
       data: null,
-      msg: "SafetyPlan added Successfully",
+      msg: "Safety plan added",
     };
   } catch (error) {
     return {
