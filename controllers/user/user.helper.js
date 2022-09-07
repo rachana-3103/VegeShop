@@ -99,7 +99,7 @@ exports.userSignup = async (param) => {
 
     if (userRegistered) {
       let sendSMS = {
-        Subject: "Aegis247 Verification Code",
+        Subject: "Welcome to Aegis 24/7. Your cell verification code is:",
         Message: `${OTP_MESSAGE} ${OTP} `,
         PhoneNumber: mobile,
         MessageAttributes: {
@@ -128,7 +128,7 @@ exports.userSignup = async (param) => {
       };
     } else {
       let sendSMS = {
-        Subject: "Aegis247 Verification Code",
+        Subject: "Welcome to Aegis 24/7. Your cell verification code is:",
         Message: `${OTP_MESSAGE} ${OTP} `,
         PhoneNumber: mobile,
         MessageAttributes: {
