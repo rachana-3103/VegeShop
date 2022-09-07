@@ -163,37 +163,40 @@ exports.status = async (param) => {
         msg: LOCATION_NOT_FOUND,
       };
     }
+
     if (param.status == "Cancel") {
       await updateStatus("CANCELLED", param.user.id, "live");
-      msg='status has been cancelled.'
-      message= `${param.user.name} has cancelled their live location sharing prior to arriving at their location. Aegis 24/7`
+      msg = "status has been cancelled.";
+      message = `${param.user.name} has cancelled their live location sharing prior to arriving at their location. Aegis 24/7`;
     }
 
     if (param.status == "Stop") {
       await updateStatus("STOPPED", param.user.id, "live");
-      msg='status has been stopped.'
-      message= `${param.user.name} has arrived at their destination. Live location sharing stopped. Aegis 24/7`
+      msg = "status has been stopped.";
+      message = `${param.user.name} has arrived at their destination. Live location sharing stopped. Aegis 24/7`;
     }
-    const mobile = "+" + Number(param.user.country_code) + param.user.phone_number;
-    let sendSMS = {
-      Subject: "Aegis247 For Help",
-      Message: message,
-      PhoneNumber: mobile,
-      MessageAttributes: {
-        "AWS.MM.SMS.OriginationNumber": {
-          DataType: "String",
-          StringValue: process.env.TEN_DLC,
-        },
-      },
-    };
+    for (const contact of location.contacts) {
+      const mobile = "+" + Number(contact.countryCode) + param.user.phoneNumber;
 
-    sns.publish(sendSMS, (err, result) => {
-      if (err) {
-        console.info(err);
-      } else {
-        console.info(result);
-      }
-    });
+      let sendSMS = {
+        Subject: "Aegis247 For Help",
+        Message: message,
+        PhoneNumber: mobile,
+        MessageAttributes: {
+          "AWS.MM.SMS.OriginationNumber": {
+            DataType: "String",
+            StringValue: process.env.TEN_DLC,
+          },
+        },
+      };
+      sns.publish(sendSMS, (err, result) => {
+        if (err) {
+          console.info(err);
+        } else {
+          console.info(result);
+        }
+      });
+    }
 
     return {
       err: false,
