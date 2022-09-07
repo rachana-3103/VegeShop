@@ -473,7 +473,7 @@ exports.codeVerify = async (param) => {
       const refreshToken = generateRefreshtoken({
         id: userResetPwd.id,
         email: userResetPwd.email,
-        name: user.name,
+        name: userResetPwd.name,
         password: userResetPwd.password,
         phone_number: userResetPwd.phone_number,
         country_code: userResetPwd.country_code,
