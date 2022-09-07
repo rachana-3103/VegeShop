@@ -12,6 +12,7 @@ exports.findLiveLocation = async (userId) => {
     where: {
       user_id: userId,
       type: "live",
+      status: "SHARED",
     },
     attributes: {
       exclude: ["password", "sms_code"],
