@@ -169,7 +169,7 @@ exports.status = async (param) => {
       message= `${param.user.name} has cancelled their live location sharing prior to arriving at their location. Aegis 24/7`
     }
 
-    if (param.status == "stop") {
+    if (param.status == "Stop") {
       await updateStatus("STOPPED", param.user.id, "live");
       msg='status has been stopped.'
       message= `${param.user.name} has arrived at their destination. Live location sharing stopped. Aegis 24/7`
