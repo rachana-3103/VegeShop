@@ -41,7 +41,7 @@ exports.updateSafetyplan = async (safetyplan, userId) => {
 
 exports.updateStatus = async (status, userId) => {
   return await safetyplans.update(
-    { status},
+    { status },
     {
       where: {
         user_id: userId,

@@ -36,6 +36,7 @@ AWS.config.update({
 });
 const sns = new AWS.SNS();
 const moment = require("moment");
+const { patch } = require("../../routes/user.routes");
 
 exports.addSafetyPlan = async (param) => {
   try {
@@ -79,6 +80,7 @@ exports.addSafetyPlan = async (param) => {
     if (!location) {
       location = await locations.create(locationObj);
     }
+
     const helpIndi = [];
     for (const obj of param.helpIndividuals) {
       obj.phone_number = obj.phoneNumber;
@@ -115,7 +117,7 @@ exports.addSafetyPlan = async (param) => {
     return {
       err: false,
       data: null,
-      msg: "Safety plan added",
+      msg: "Safety plan added.",
     };
   } catch (error) {
     return {
@@ -258,7 +260,7 @@ exports.cancelSafetyPlan = async (param) => {
     return {
       err: false,
       data: null,
-      msg: 'Cancelled safety plan',
+      msg: 'Cancelled safety plan.',
     };
   } catch (error) {
     return {
@@ -283,7 +285,7 @@ exports.completeSafetyPlan = async (param) => {
     return {
       err: false,
       data: null,
-      msg: 'Completed safety plan',
+      msg: 'Completed safety plan.',
     };
   } catch (error) {
     return {
@@ -296,6 +298,8 @@ exports.completeSafetyPlan = async (param) => {
 exports.getSafetyPlan = async (param) => {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
+    const location = await findLocationById(param.user.id, safetyplan.location_id);
+    safetyplan.dataValues.location = location.dataValues
     if (!safetyplan) {
       return {
         err: true,
