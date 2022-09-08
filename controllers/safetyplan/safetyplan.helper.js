@@ -79,6 +79,11 @@ exports.addSafetyPlan = async (param) => {
     location = await findLocation(locationObj);
     if (!location) {
       location = await locations.create(locationObj);
+    } else {
+      Object.assign(locationObj,{
+        id: safetyplan.dataValues.location_id
+      })
+      await updateLocations(locationObj);
     }
 
     const helpIndi = [];
