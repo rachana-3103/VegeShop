@@ -81,7 +81,7 @@ exports.addSafetyPlan = async (param) => {
       location = await locations.create(locationObj);
     } else {
       Object.assign(locationObj,{
-        id: safetyplan.dataValues.location_id
+        id: location.id
       })
       await updateLocations(locationObj);
     }
