@@ -80,9 +80,9 @@ exports.addSafetyPlan = async (param) => {
     if (!location) {
       location = await locations.create(locationObj);
     } else {
-      Object.assign(locationObj,{
-        id: location.id
-      })
+      Object.assign(locationObj, {
+        id: location.id,
+      });
       await updateLocations(locationObj);
     }
 
@@ -102,14 +102,15 @@ exports.addSafetyPlan = async (param) => {
       delete obj.countryCode;
       checkInOutIndi.push(obj);
     }
-
+    const startDate = moment(param.startTime).utc().format();
+    const endDate = moment(param.endTime).utc().format();
     const safetyPlanObj = {
       user_id: param.user.id,
       location_id: location.dataValues.id,
       cover_radius: param.coverRadius,
       person_name: param.personName,
-      start_time: moment(param.startTime).utc().format(),
-      end_time: moment(param.endTime).utc().format(),
+      start_time: moment(startDate).utc().format(),
+      end_time: moment(endDate).utc().format(),
       help_individuals: helpIndi,
       checkinout_individuals: checkInOutIndi,
       help_group: param.helpGroup,
@@ -265,7 +266,7 @@ exports.cancelSafetyPlan = async (param) => {
     return {
       err: false,
       data: null,
-      msg: 'Cancelled safety plan.',
+      msg: "Cancelled safety plan.",
     };
   } catch (error) {
     return {
@@ -290,7 +291,7 @@ exports.completeSafetyPlan = async (param) => {
     return {
       err: false,
       data: null,
-      msg: 'Completed safety plan.',
+      msg: "Completed safety plan.",
     };
   } catch (error) {
     return {
@@ -303,8 +304,11 @@ exports.completeSafetyPlan = async (param) => {
 exports.getSafetyPlan = async (param) => {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
-    const location = await findLocationById(param.user.id, safetyplan.location_id);
-    safetyplan.dataValues.location = location.dataValues
+    const location = await findLocationById(
+      param.user.id,
+      safetyplan.location_id
+    );
+    safetyplan.dataValues.location = location.dataValues;
     if (!safetyplan) {
       return {
         err: true,
@@ -673,7 +677,7 @@ exports.okay = async (param) => {
 
 exports.checkInOut = async (param) => {
   try {
-    let response ={};
+    let response = {};
     const safetyplan = await findSafetyPlan(param.user.id);
     const location = await findLocationById(
       param.user.id,
