@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     start_time: {
       allowNull: false,
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
     },
     end_time: {
       allowNull: false,
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
     },
     help_group: {
       type: DataTypes.JSON,
