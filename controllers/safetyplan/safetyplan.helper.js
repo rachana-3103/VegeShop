@@ -102,15 +102,14 @@ exports.addSafetyPlan = async (param) => {
       delete obj.countryCode;
       checkInOutIndi.push(obj);
     }
-    const startDate = moment(param.startTime).utc().format();
-    const endDate = moment(param.endTime).utc().format();
+   
     const safetyPlanObj = {
       user_id: param.user.id,
       location_id: location.dataValues.id,
       cover_radius: param.coverRadius,
       person_name: param.personName,
-      start_time: moment(startDate).utc().format(),
-      end_time: moment(endDate).utc().format(),
+      start_time: moment(param.startTime).format("YYYY-MM-DDTHH:mm"),
+      end_time: moment(param.endTime).format("YYYY-MM-DDTHH:mm"),
       help_individuals: helpIndi,
       checkinout_individuals: checkInOutIndi,
       help_group: param.helpGroup,
