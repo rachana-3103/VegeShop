@@ -1,246 +1,728 @@
-
 <html lang="en">
-    <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.72.0">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta
+      name="author"
+      content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
+    />
+    <meta name="generator" content="Hugo 0.72.0" />
     <title>Guidance</title>
-    <link rel='stylesheet' href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
     <!-- partial:index.partial.html -->
-    
+
     <div class="guidance_main">
-        <h2 class="top_txt">Guidance</h2>
-        <p class="find_txt">Guidance on how to prevent or respond to the unplanned.</p>
-        <p class="find_txt_red">For information purposes only In an emergency call emergency services.</p>
-        <div class="">
-            <ul class="prevention_tab nav nav-pills mb-3"  role="tablist">
+      <div class="guidance_header d-flex justify-content-between align-content-center">
+        <h2 class="top_txt  mb-">Guidance</h2>
+        <button class="searchBtn" onclick="onSearch()">
+          <img src="images/search.svg" alt="search" />
+        </button>
+      </div>
+      <p class="find_txt mt-1">
+        Guidance on how to prevent or respond to the unplanned.
+      </p>
+      <p class="find_txt_red">
+        For information purposes only In an emergency call emergency services.
+      </p>
+      <div class="">
+        <ul class="prevention_tab nav nav-pills mb-3" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="pills-home-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-home"
+              type="button"
+              role="tab"
+              aria-controls="pills-home"
+              aria-selected="true"
+            >
+              Prevention
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="pills-profile-tab"
+              data-bs-toggle="pill"
+              data-bs-target="#pills-profile"
+              type="button"
+              role="tab"
+              aria-controls="pills-profile"
+              aria-selected="false"
+            >
+              Response
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+          <div
+            class="tab-pane fade show active"
+            id="pills-home"
+            role="tabpanel"
+            aria-labelledby="pills-home-tab"
+          >
+            <div class="custom_scroll">
+              <ul
+                class="nav nav-pills inner_tab_custom"
+                id="pills2-tab"
+                role="tablist"
+              >
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Prevention</button>
+                  <button
+                    class="nav-link active"
+                    id="pills2-home-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills2-home"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-home"
+                    aria-selected="true"
+                  >
+                    Personal Safety
+                  </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Response</button>
+                  <button
+                    class="nav-link"
+                    id="pills2-profile-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills2-profile"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-profile"
+                    aria-selected="false"
+                  >
+                    Travel
+                  </button>
                 </li>
-            </ul>
-            <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                    <div class="custom_scroll">
-                        <ul class="nav nav-pills inner_tab_custom" id="pills2-tab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="pills2-home-tab" data-bs-toggle="pill" data-bs-target="#pills2-home" type="button" role="tab" aria-controls="pills2-home" aria-selected="true">Personal Safety</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills2-profile-tab" data-bs-toggle="pill" data-bs-target="#pills2-profile" type="button" role="tab" aria-controls="pills2-profile" aria-selected="false">Travel</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills2-contact-tab" data-bs-toggle="pill" data-bs-target="#pills2-contact" type="button" role="tab" aria-controls="pills2-contact" aria-selected="false">Negative events</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills2-electrical-tab" data-bs-toggle="pill" data-bs-target="#pills2-electrical" type="button" role="tab" aria-controls="pills2-electrical" aria-selected="false">Electrical</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills2-vehicles-tab" data-bs-toggle="pill" data-bs-target="#pills2-vehicles" type="button" role="tab" aria-controls="pills2-vehicles" aria-selected="false">Vehicles </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills2-fire-tab" data-bs-toggle="pill" data-bs-target="#pills2-fire" type="button" role="tab" aria-controls="pills2-fire" aria-selected="false">Fire</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills2-flood-tab" data-bs-toggle="pill" data-bs-target="#pills2-flood" type="button" role="tab" aria-controls="pills2-flood" aria-selected="false">Flood</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills2-wind-tab" data-bs-toggle="pill" data-bs-target="#pills2-wind" type="button" role="tab" aria-controls="pills2-wind" aria-selected="false">Wind</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills2-emergency-tab" data-bs-toggle="pill" data-bs-target="#pills2-emergency" type="button" role="tab" aria-controls="pills2-emergency" aria-selected="false">Public emergency</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills2-health-tab" data-bs-toggle="pill" data-bs-target="#pills2-health" type="button" role="tab" aria-controls="pills2-health" aria-selected="false">Health</button>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="tab-content" id="pills2-tabContent">
-                        <div class="tab-pane fade show active" id="pills2-home" role="tabpanel" aria-labelledby="pills2-home-tab"> 
-                            <ul class="ps-0" id="PersonalSafety"></ul>
-                        </div>
-                        <div class="tab-pane fade" id="pills2-profile" role="tabpanel" aria-labelledby="pills2-profile-tab">
-                            <ul class="ps-0" id="Travel"></ul>
-                        </div>
-                        <div class="tab-pane fade" id="pills2-contact" role="tabpanel" aria-labelledby="pills2-contact-tab">
-                            <ul class="ps-0" id="NegativeEvents"></ul>
-                        </div>
-                        <div class="tab-pane fade" id="pills2-electrical" role="tabpanel" aria-labelledby="pills2-electrical-tab">
-                            <ul class="ps-0" id="Electrical"></ul>
-                        </div>
-                        <div class="tab-pane fade" id="pills2-vehicles" role="tabpanel" aria-labelledby="pills2-vehicles-tab">
-                            <ul class="ps-0" id="Vehicles"></ul>
-                           
-                          
-                          </div>
-                        <div class="tab-pane fade" id="pills2-fire" role="tabpanel" aria-labelledby="pills2-fire-tab">
-                            <ul class="ps-0" id="Fire"></ul>
-                        </div>
-                        <div class="tab-pane fade" id="pills2-flood" role="tabpanel" aria-labelledby="pills2-flood-tab">
-                            <ul class="ps-0" id="Flood"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills2-wind" role="tabpanel" aria-labelledby="pills2-wind-tab">
-                            <ul class="ps-0" id="Wind"></ul>  
-                        </div>
-                        <div class="tab-pane fade" id="pills2-emergency" role="tabpanel" aria-labelledby="pills2-emergency-tab">
-                            <ul class="ps-0" id="PublicEmergency"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills2-health" role="tabpanel" aria-labelledby="pills2-health-tab">
-                            <ul class="ps-0" id="Health"></ul> 
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade " id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                    <div class="custom_scroll2">
-                        <ul class="nav nav-pills inner_tab_custom inner_tab_custom_2" id="pills3-tab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="pills3-harassment-tab" data-bs-toggle="pill" data-bs-target="#pills3-harassment" type="button" role="tab" aria-controls="pills2-harassment" aria-selected="true">Violence / harassment</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-crime-tab" data-bs-toggle="pill" data-bs-target="#pills3-crime" type="button" role="tab" aria-controls="pills3-crime" aria-selected="true">Crime</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-vehicle2-tab" data-bs-toggle="pill" data-bs-target="#pills3-vehicle2" type="button" role="tab" aria-controls="pills2-vehicle2" aria-selected="true">Vehicle </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-fire2-tab" data-bs-toggle="pill" data-bs-target="#pills3-fire2" type="button" role="tab" aria-controls="pills3-fire2" aria-selected="true">Fire</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-wind2-tab" data-bs-toggle="pill" data-bs-target="#pills3-wind2" type="button" role="tab" aria-controls="pills3-wind2" aria-selected="true">Wind</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-lightening-tab" data-bs-toggle="pill" data-bs-target="#pills3-lightening" type="button" role="tab" aria-controls="pills3-lightening" aria-selected="true">Lightening</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-earthquake-tab" data-bs-toggle="pill" data-bs-target="#pills3-earthquake" type="button" role="tab" aria-controls="pills3-earthquake" aria-selected="true">Earthquake</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-downed-tab" data-bs-toggle="pill" data-bs-target="#pills3-downed" type="button" role="tab" aria-controls="pills3-downed" aria-selected="true">Downed power lines</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-public-tab" data-bs-toggle="pill" data-bs-target="#pills3-public" type="button" role="tab" aria-controls="pills3-public" aria-selected="true">Public emergency</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-industrial-tab" data-bs-toggle="pill" data-bs-target="#pills3-industrial" type="button" role="tab" aria-controls="pills3-industrial" aria-selected="true">Industrial accident</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-electrocution-tab" data-bs-toggle="pill" data-bs-target="#pills3-electrocution" type="button" role="tab" aria-controls="pills3-electrocution" aria-selected="true">Electrocution </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-health2-tab" data-bs-toggle="pill" data-bs-target="#pills3-health2" type="button" role="tab" aria-controls="pills3-health2" aria-selected="true">Health</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-lost-tab" data-bs-toggle="pill" data-bs-target="#pills3-lost" type="button" role="tab" aria-controls="pills3-lost" aria-selected="true">Lost </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-media-tab" data-bs-toggle="pill" data-bs-target="#pills3-media" type="button" role="tab" aria-controls="pills3-media" aria-selected="true">Media</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-harassment-tab" data-bs-toggle="pill" data-bs-target="#pills3-services" type="button" role="tab" aria-controls="pills3-services" aria-selected="true">Emergency services</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-accessing-tab" data-bs-toggle="pill" data-bs-target="#pills3-accessing" type="button" role="tab" aria-controls="pills3-accessing" aria-selected="true">Accessing a location</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="pills3-aid-tab" data-bs-toggle="pill" data-bs-target="#pills3-aid" type="button" role="tab" aria-controls="pills3-aid" aria-selected="true">First aid</button>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="tab-content" id="pills3-tabContent">
-                        <div class="tab-pane fade show active" id="pills3-harassment" role="tabpanel" aria-labelledby="pills3-harassment-tab">
-                            <ul class="ps-0" id="ViolenceHarassment"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-crime" role="tabpanel" aria-labelledby="pills3-crime-tab">
-                            <ul class="ps-0" id="Crime"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-vehicle2" role="tabpanel" aria-labelledby="pills3-vehicle2-tab"> 
-                            <ul class="ps-0" id="Vehicle"></ul>                    
-                        </div>
-                        <div class="tab-pane fade" id="pills3-fire2" role="tabpanel" aria-labelledby="pills3-fire2-tab"> 
-                            <ul class="ps-0" id="Firer"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-wind2" role="tabpanel" aria-labelledby="pills3-wind2-tab"> 
-                            <ul class="ps-0" id="Windr"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-lightening" role="tabpanel" aria-labelledby="pills3-lightening-tab"> 
-                            <ul class="ps-0" id="Lighteningr"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-earthquake" role="tabpanel" aria-labelledby="pills3-earthquake-tab"> 
-                            <ul class="ps-0" id="Earthquake"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-downed" role="tabpanel" aria-labelledby="pills3-downed-tab"> 
-                            <ul class="ps-0" id="DownedPowerLines"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-public" role="tabpanel" aria-labelledby="pills3-public-tab"> 
-                            <ul class="ps-0" id="PublicEmergencyr"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-industrial" role="tabpanel" aria-labelledby="pills3-industrial-tab"> 
-                            <ul class="ps-0" id="IndustrialAccident"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-electrocution" role="tabpanel" aria-labelledby="pills3-electrocution-tab"> 
-                            <ul class="ps-0" id="Electrocution"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-health2" role="tabpanel" aria-labelledby="pills3-health2-tab"> 
-                            <ul class="ps-0" id="Healthr"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-lost" role="tabpanel" aria-labelledby="pills3-lost-tab"> 
-                            <ul class="ps-0" id="Lost"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-media" role="tabpanel" aria-labelledby="pills3-media-tab"> 
-                            <ul class="ps-0" id="Media"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-services" role="tabpanel" aria-labelledby="pills3-services-tab"> 
-                            <ul class="ps-0" id="EmergencyServices"></ul> 
-                        </div>
-                        <div class="tab-pane fade" id="pills3-accessing" role="tabpanel" aria-labelledby="pills3-accessing-tab"> 
-                            <ul class="ps-0" id="AccessingALocation"></ul> 
-                         </div>
-                        <div class="tab-pane fade" id="pills3-aid" role="tabpanel" aria-labelledby="pills3-aid-tab">
-                            <ul class="ps-0" id="FirstAid"></ul> 
-                        </div>
-                    </div>
-                </div>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills2-contact-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills2-contact"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-contact"
+                    aria-selected="false"
+                  >
+                    Negative events
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills2-electrical-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills2-electrical"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-electrical"
+                    aria-selected="false"
+                  >
+                    Electrical
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills2-vehicles-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills2-vehicles"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-vehicles"
+                    aria-selected="false"
+                  >
+                    Vehicles
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills2-fire-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills2-fire"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-fire"
+                    aria-selected="false"
+                  >
+                    Fire
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills2-flood-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills2-flood"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-flood"
+                    aria-selected="false"
+                  >
+                    Flood
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills2-wind-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills2-wind"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-wind"
+                    aria-selected="false"
+                  >
+                    Wind
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills2-emergency-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills2-emergency"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-emergency"
+                    aria-selected="false"
+                  >
+                    Public emergency
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills2-health-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills2-health"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-health"
+                    aria-selected="false"
+                  >
+                    Health
+                  </button>
+                </li>
+              </ul>
             </div>
+            <div class="tab-content" id="pills2-tabContent">
+              <div
+                class="tab-pane fade show active"
+                id="pills2-home"
+                role="tabpanel"
+                aria-labelledby="pills2-home-tab"
+              >
+                <ul class="ps-0" id="PersonalSafety"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills2-profile"
+                role="tabpanel"
+                aria-labelledby="pills2-profile-tab"
+              >
+                <ul class="ps-0" id="Travel"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills2-contact"
+                role="tabpanel"
+                aria-labelledby="pills2-contact-tab"
+              >
+                <ul class="ps-0" id="NegativeEvents"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills2-electrical"
+                role="tabpanel"
+                aria-labelledby="pills2-electrical-tab"
+              >
+                <ul class="ps-0" id="Electrical"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills2-vehicles"
+                role="tabpanel"
+                aria-labelledby="pills2-vehicles-tab"
+              >
+                <ul class="ps-0" id="Vehicles"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills2-fire"
+                role="tabpanel"
+                aria-labelledby="pills2-fire-tab"
+              >
+                <ul class="ps-0" id="Fire"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills2-flood"
+                role="tabpanel"
+                aria-labelledby="pills2-flood-tab"
+              >
+                <ul class="ps-0" id="Flood"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills2-wind"
+                role="tabpanel"
+                aria-labelledby="pills2-wind-tab"
+              >
+                <ul class="ps-0" id="Wind"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills2-emergency"
+                role="tabpanel"
+                aria-labelledby="pills2-emergency-tab"
+              >
+                <ul class="ps-0" id="PublicEmergency"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills2-health"
+                role="tabpanel"
+                aria-labelledby="pills2-health-tab"
+              >
+                <ul class="ps-0" id="Health"></ul>
+              </div>
+            </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="pills-profile"
+            role="tabpanel"
+            aria-labelledby="pills-profile-tab"
+          >
+            <div class="custom_scroll2">
+              <ul
+                class="nav nav-pills inner_tab_custom inner_tab_custom_2"
+                id="pills3-tab"
+                role="tablist"
+              >
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link active"
+                    id="pills3-harassment-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-harassment"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-harassment"
+                    aria-selected="true"
+                  >
+                    Violence / harassment
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-crime-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-crime"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-crime"
+                    aria-selected="true"
+                  >
+                    Crime
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-vehicle2-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-vehicle2"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills2-vehicle2"
+                    aria-selected="true"
+                  >
+                    Vehicle
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-fire2-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-fire2"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-fire2"
+                    aria-selected="true"
+                  >
+                    Fire
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-wind2-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-wind2"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-wind2"
+                    aria-selected="true"
+                  >
+                    Wind
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-lightening-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-lightening"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-lightening"
+                    aria-selected="true"
+                  >
+                    Lightening
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-earthquake-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-earthquake"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-earthquake"
+                    aria-selected="true"
+                  >
+                    Earthquake
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-downed-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-downed"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-downed"
+                    aria-selected="true"
+                  >
+                    Downed power lines
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-public-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-public"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-public"
+                    aria-selected="true"
+                  >
+                    Public emergency
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-industrial-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-industrial"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-industrial"
+                    aria-selected="true"
+                  >
+                    Industrial accident
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-electrocution-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-electrocution"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-electrocution"
+                    aria-selected="true"
+                  >
+                    Electrocution
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-health2-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-health2"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-health2"
+                    aria-selected="true"
+                  >
+                    Health
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-lost-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-lost"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-lost"
+                    aria-selected="true"
+                  >
+                    Lost
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-media-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-media"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-media"
+                    aria-selected="true"
+                  >
+                    Media
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-harassment-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-services"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-services"
+                    aria-selected="true"
+                  >
+                    Emergency services
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-accessing-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-accessing"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-accessing"
+                    aria-selected="true"
+                  >
+                    Accessing a location
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="pills3-aid-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills3-aid"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills3-aid"
+                    aria-selected="true"
+                  >
+                    First aid
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div class="tab-content" id="pills3-tabContent">
+              <div
+                class="tab-pane fade show active"
+                id="pills3-harassment"
+                role="tabpanel"
+                aria-labelledby="pills3-harassment-tab"
+              >
+                <ul class="ps-0" id="ViolenceHarassment"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-crime"
+                role="tabpanel"
+                aria-labelledby="pills3-crime-tab"
+              >
+                <ul class="ps-0" id="Crime"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-vehicle2"
+                role="tabpanel"
+                aria-labelledby="pills3-vehicle2-tab"
+              >
+                <ul class="ps-0" id="Vehicle"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-fire2"
+                role="tabpanel"
+                aria-labelledby="pills3-fire2-tab"
+              >
+                <ul class="ps-0" id="Firer"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-wind2"
+                role="tabpanel"
+                aria-labelledby="pills3-wind2-tab"
+              >
+                <ul class="ps-0" id="Windr"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-lightening"
+                role="tabpanel"
+                aria-labelledby="pills3-lightening-tab"
+              >
+                <ul class="ps-0" id="Lighteningr"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-earthquake"
+                role="tabpanel"
+                aria-labelledby="pills3-earthquake-tab"
+              >
+                <ul class="ps-0" id="Earthquake"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-downed"
+                role="tabpanel"
+                aria-labelledby="pills3-downed-tab"
+              >
+                <ul class="ps-0" id="DownedPowerLines"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-public"
+                role="tabpanel"
+                aria-labelledby="pills3-public-tab"
+              >
+                <ul class="ps-0" id="PublicEmergencyr"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-industrial"
+                role="tabpanel"
+                aria-labelledby="pills3-industrial-tab"
+              >
+                <ul class="ps-0" id="IndustrialAccident"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-electrocution"
+                role="tabpanel"
+                aria-labelledby="pills3-electrocution-tab"
+              >
+                <ul class="ps-0" id="Electrocution"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-health2"
+                role="tabpanel"
+                aria-labelledby="pills3-health2-tab"
+              >
+                <ul class="ps-0" id="Healthr"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-lost"
+                role="tabpanel"
+                aria-labelledby="pills3-lost-tab"
+              >
+                <ul class="ps-0" id="Lost"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-media"
+                role="tabpanel"
+                aria-labelledby="pills3-media-tab"
+              >
+                <ul class="ps-0" id="Media"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-services"
+                role="tabpanel"
+                aria-labelledby="pills3-services-tab"
+              >
+                <ul class="ps-0" id="EmergencyServices"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-accessing"
+                role="tabpanel"
+                aria-labelledby="pills3-accessing-tab"
+              >
+                <ul class="ps-0" id="AccessingALocation"></ul>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="pills3-aid"
+                role="tabpanel"
+                aria-labelledby="pills3-aid-tab"
+              >
+                <ul class="ps-0" id="FirstAid"></ul>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    <!-- partial --> 
+
+    <!-- partial -->
     <script src="js/bootstrap.bundle.min.js"></script>
-    
+
     <script src="js/main.js"></script>
     <script>
-        const dataList = document.querySelector(".guidance_main");
-        dataList.addEventListener("click",e=>{
-            if(e.target.classList.contains("nextPageLink")== true){
-                localStorage.setItem("GuidanceId",e.target.getAttribute("data-id"));
-                localStorage.setItem("GuidanceCagegory",e.target.getAttribute("data-cagegary"));
-                window.location.href = `http://${window.location.host}/guidance_details.html`;
-            }
-        })
-        data.map((item)=>{
-            item.Guidance.map((element)=>{
-                element.Category.map((e)=>{
-                    e.gData.map(elementData=>{
-                        document.querySelector("#"+e.keyName).innerHTML += `<a class="position-relative nextPageLink  text_main01 custom_arrow1" data-cagegary='${e.keyName}' data-id='${elementData.id}'>${elementData.title}</a>`;
-                    })
-                })
+      const dataList = document.querySelector(".guidance_main");
+      dataList.addEventListener("click", (e) => {
+        if (e.target.classList.contains("nextPageLink") == true) {
+          localStorage.setItem("GuidanceId", e.target.getAttribute("data-id"));
+          localStorage.setItem(
+            "GuidanceCagegory",
+            e.target.getAttribute("data-cagegary")
+          );
+          window.location.href = `http://${window.location.host}/guidance_details.html`;
+        }
+      });
+      data.map((item) => {
+        item.Guidance.map((element) => {
+          element.Category.map((e) => {
+            e.gData.map((elementData) => {
+              document.querySelector(
+                "#" + e.keyName
+              ).innerHTML += `<a class="position-relative nextPageLink  text_main01 custom_arrow1" data-cagegary='${e.keyName}' data-id='${elementData.id}'>${elementData.title}</a>`;
             });
+          });
         });
+      });
+
+      function onSearch() {
+        window.location.href = `http://${window.location.host}/search.html`;
+      }
     </script>
-    </body>
-    </html>
-    
+  </body>
+</html>
