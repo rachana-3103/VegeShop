@@ -400,6 +400,7 @@ exports.alertSafetyPlan = async (param) => {
           }
         });
       }
+      await updateAlert(param.user.id);
       msg = "Manual live location share.";
     }
     if (param.type == "safetyplan") {

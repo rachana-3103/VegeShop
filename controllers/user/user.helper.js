@@ -735,9 +735,14 @@ exports.settings = async (req) => {
     let url = "";
     if (req.body.htmlType === "term_and_condition") {
       url = `http://34.227.59.13:5000/documents/terms.html`;
-    } else if (req.body.htmlType === "help") {
+    }
+    if (req.body.htmlType === "help") {
       url = `http://34.227.59.13:5000/documents/help.html`;
-    } else {
+    }
+    if (req.body.htmlType === "guidance") {
+      url = `http://34.227.59.13:5000/documents/guidance.html`;
+    }
+    if (req.body.htmlType === "policy") {
       url = `http://34.227.59.13:5000/documents/policy.html`;
     }
     const data = {
