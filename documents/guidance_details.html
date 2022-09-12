@@ -30,10 +30,10 @@
 
       function onback () {
         if (localStorage.getItem('fromSearchPage') === 'true') {
-            window.location.href = `http://${window.location.host}/search.html`;
+            window.location.href = `http://34.227.59.13:5000/documents/search.html`;
             localStorage.removeItem('fromSearchPage');
         } else {
-            window.location.href = `http://${window.location.host}/guidance.html`;
+            window.location.href = `http://34.227.59.13:5000/documents/guidance.html`;
         }
       }
 
