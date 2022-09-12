@@ -749,13 +749,13 @@ exports.settings = async (req) => {
       html_type: req.body.htmlType,
       url,
     };
+    console.log('~ data', data)
     return {
       err: false,
       data,
       msg: "",
     };
   } catch (error) {
-    console.log("~ error", error);
     return {
       err: true,
       msg: error,
