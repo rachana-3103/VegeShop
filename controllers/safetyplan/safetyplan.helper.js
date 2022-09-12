@@ -1,6 +1,7 @@
-const { safetyplans, locations } = require("../../models/index");
+const { safetyplans, locations, manualhelps } = require("../../models/index");
 const {
   SAFETYPLAN_NOT_FOUND,
+  MANUALHELP_NOT_FOUND,
   SAFETYPLAN_ALREADY_EXIST,
   STATUS,
   GROUP_NOT_FOUND_CHECKOUT,
@@ -102,7 +103,7 @@ exports.addSafetyPlan = async (param) => {
       delete obj.countryCode;
       checkInOutIndi.push(obj);
     }
-   
+
     const safetyPlanObj = {
       user_id: param.user.id,
       location_id: location.dataValues.id,
@@ -303,23 +304,46 @@ exports.completeSafetyPlan = async (param) => {
 
 exports.getSafetyPlan = async (param) => {
   try {
-    const safetyplan = await findSafetyPlan(param.user.id);
-    const location = await findLocationById(
-      param.user.id,
-      safetyplan.location_id
-    );
-    safetyplan.dataValues.location = location.dataValues;
-    if (!safetyplan) {
+    
+    if(param.type == 'manual'){
+      const manualHelp = await manualhelps.findOne({
+        where: {
+          user_id: param.user.id,
+        },
+      });
+      if (!manualHelp) {
+        return {
+          err: true,
+          msg: MANUALHELP_NOT_FOUND,
+        };
+      }
       return {
-        err: true,
-        msg: SAFETYPLAN_NOT_FOUND,
+        err: false,
+        data: manualHelp.dataValues,
+        msg: "ManualHelp Details.",
+      };
+
+    } else{
+      const safetyplan = await findSafetyPlan(param.user.id);
+      const location = await findLocationById(
+        param.user.id,
+        safetyplan.location_id
+      );
+      safetyplan.dataValues.location = location.dataValues;
+      if (!safetyplan) {
+        return {
+          err: true,
+          msg: SAFETYPLAN_NOT_FOUND,
+        };
+      }
+      return {
+        err: false,
+        data: safetyplan.dataValues,
+        msg: "SafetyPlan Details.",
       };
     }
-    return {
-      err: false,
-      data: safetyplan.dataValues,
-      msg: "SafetyPlan Details.",
-    };
+   
+   
   } catch (error) {
     return {
       err: true,
@@ -361,16 +385,40 @@ exports.alertSafetyPlan = async (param) => {
       const helpArray = [];
       for (const id of param.helpGroup) {
         const data = await findGroupById(param.user.id, id);
+        if (!data) {
+          return {
+            err: true,
+            msg: GROUP_NOT_FOUND_HELP + id,
+          };
+        }
         for (const obj of data.contacts) {
           helpArray.push(obj);
         }
       }
+
       for (const obj of param.helpIndividuals) {
         obj.phone_number = obj.phoneNumber;
         obj.country_code = obj.countryCode;
         delete obj.phoneNumber;
         delete obj.countryCode;
         helpArray.push(obj);
+      }
+      const manualHelpObj = {
+        user_id: param.user.id,
+        latitude: param.latitude,
+        longitude: param.longitude,
+        help_group: param.helpGroup,
+        help_individuals: param.helpIndividuals,
+        alert: true,
+      };
+      const findManualHelp = await manualhelps.findOne({
+        where: {
+          user_id: param.user.id,
+        },
+      });
+    
+      if(!findManualHelp.alert){
+        await manualhelps.create(manualHelpObj);
       }
       await updateBattery(param.user.id, param.battery);
       for (const contact of helpArray) {
@@ -400,7 +448,6 @@ exports.alertSafetyPlan = async (param) => {
           }
         });
       }
-      await updateAlert(param.user.id);
       msg = "Manual live location share.";
     }
     if (param.type == "safetyplan") {
