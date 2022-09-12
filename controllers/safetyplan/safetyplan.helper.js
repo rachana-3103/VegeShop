@@ -342,8 +342,6 @@ exports.getSafetyPlan = async (param) => {
         msg: "SafetyPlan Details.",
       };
     }
-   
-   
   } catch (error) {
     return {
       err: true,
@@ -574,13 +572,18 @@ exports.responded = async (param) => {
     }
 
     if (!param.safetyplan) {
-      for (const id of param.helpGroup) {
+       const findManualHelp = await manualhelps.findOne({
+        where: {
+          user_id: param.user.id,
+        },
+      });
+      for (const id of findManualHelp.help_group) {
         const data = await findGroupById(param.user.id, id);
         for (const obj of data.contacts) {
           helpArray.push(obj);
         }
       }
-      for (const obj of param.helpIndividuals) {
+      for (const obj of findManualHelp.help_individuals) {
         obj.phone_number = obj.phoneNumber;
         obj.country_code = obj.countryCode;
         delete obj.phoneNumber;
@@ -672,19 +675,24 @@ exports.okay = async (param) => {
     }
 
     if (!param.safetyplan) {
-      for (const id of param.helpGroup) {
-        const data = await findGroupById(param.user.id, id);
-        for (const obj of data.contacts) {
-          helpArray.push(obj);
-        }
-      }
-      for (const obj of param.helpIndividuals) {
-        obj.phone_number = obj.phoneNumber;
-        obj.country_code = obj.countryCode;
-        delete obj.phoneNumber;
-        delete obj.countryCode;
-        helpArray.push(obj);
-      }
+      const findManualHelp = await manualhelps.findOne({
+       where: {
+         user_id: param.user.id,
+       },
+     });
+     for (const id of findManualHelp.help_group) {
+       const data = await findGroupById(param.user.id, id);
+       for (const obj of data.contacts) {
+         helpArray.push(obj);
+       }
+     }
+     for (const obj of findManualHelp.help_individuals) {
+       obj.phone_number = obj.phoneNumber;
+       obj.country_code = obj.countryCode;
+       delete obj.phoneNumber;
+       delete obj.countryCode;
+       helpArray.push(obj);
+     }
       for (const contact of helpArray) {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
