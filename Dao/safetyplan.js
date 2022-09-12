@@ -74,11 +74,11 @@ exports.updateAlert = async (userId) => {
   );
 };
 
-exports.updateExtend = async (userId, extendPlan, endTime) => {
+exports.updateExtend = async (userId, time, extendPlan, endTime) => {
   return await safetyplans.update(
     {
       extend_plan: extendPlan,
-      end_time: moment(endTime).add(10, "minutes").format("YYYY-MM-DDTHH:mm"),
+      end_time: moment(endTime).add(time, "minutes").format("YYYY-MM-DDTHH:mm"),
     },
     {
       where: {

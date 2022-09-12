@@ -234,6 +234,7 @@ exports.extend = async (param) => {
 
     await updateExtend(
       param.user.id,
+      param.time,
       safetyplan.dataValues.extend_plan,
       safetyplan.dataValues.end_time
     );
