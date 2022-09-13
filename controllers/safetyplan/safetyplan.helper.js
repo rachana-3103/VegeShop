@@ -12,7 +12,6 @@ const {
 } = require("../../helpers/messages");
 const {
   findSafetyPlan,
-  findSafetyPlanByLocationId,
   updateStatus,
   updateSafetyplan,
   updateAlert,
@@ -415,7 +414,7 @@ exports.alertSafetyPlan = async (param) => {
         },
       });
     
-      if(!findManualHelp.alert){
+      if(!findManualHelp){
         await manualhelps.create(manualHelpObj);
       }
       await updateBattery(param.user.id, param.battery);
@@ -733,12 +732,8 @@ exports.okay = async (param) => {
 
 exports.checkInOut = async (param) => {
   try {
-    let response = {};
     const safetyplan = await findSafetyPlan(param.user.id);
-    const location = await findLocationById(
-      param.user.id,
-      safetyplan.location_id
-    );
+  
     if (!safetyplan) {
       return {
         err: true,
@@ -826,6 +821,8 @@ exports.checkInOut = async (param) => {
             },
           },
         };
+        await updateStatus(STATUS.COMPLETED, param.user.id);
+
       }
       sns.publish(sendSMS, (err, result) => {
         if (err) {
