@@ -21,7 +21,6 @@ exports.GROUP_ALREADY_EXIST = "Group Already Exist.";
 exports.GROUP_NOT_FOUND = "Group Not Found.";
 exports.CONTACT_PHONENUMBER_SAME = "Contact Phone Number is the same.";
 exports.SAFETYPLAN_NOT_FOUND = "Safty Plan not found.";
-exports.MANUALHELP_NOT_FOUND = "Manual Help not found.";
 exports.LOCATION_NOT_FOUND = "Location not found.";
 exports.SAFETYPLAN_ALREADY_EXIST = "Safety Plan already exists.";
 exports.NEW_PHONENUMBER_EXIST = "New Phone number already exist.";

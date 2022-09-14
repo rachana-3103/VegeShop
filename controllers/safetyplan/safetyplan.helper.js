@@ -1,7 +1,6 @@
 const { safetyplans, locations, manualhelps } = require("../../models/index");
 const {
   SAFETYPLAN_NOT_FOUND,
-  MANUALHELP_NOT_FOUND,
   SAFETYPLAN_ALREADY_EXIST,
   STATUS,
   GROUP_NOT_FOUND_CHECKOUT,
@@ -22,7 +21,6 @@ const axios = require("axios");
 const uuid = require("uuid");
 const { findGroupById } = require("../../Dao/group");
 const { updateBattery } = require("../../Dao/user");
-
 const {
   updateLocations,
   findLocation,
@@ -36,7 +34,6 @@ AWS.config.update({
 });
 const sns = new AWS.SNS();
 const moment = require("moment");
-const { patch } = require("../../routes/user.routes");
 
 exports.addSafetyPlan = async (param) => {
   try {
@@ -303,44 +300,40 @@ exports.completeSafetyPlan = async (param) => {
 
 exports.getSafetyPlan = async (param) => {
   try {
-    
-    if(param.type == 'manual'){
-      const manualHelp = await manualhelps.findOne({
-        where: {
-          user_id: param.user.id,
-        },
-      });
-      if (!manualHelp) {
-        return {
-          err: true,
-          msg: MANUALHELP_NOT_FOUND,
-        };
-      }
-      return {
-        err: false,
-        data: manualHelp.dataValues,
-        msg: "ManualHelp Details.",
-      };
+    let obj = {};
+    let msg;
+    const manualHelp = await manualhelps.findOne({
+      where: {
+        user_id: param.user.id,
+        alert: true,
+      },
+    });
 
-    } else{
+    if (manualHelp) {
+      manualHelp.dataValues.type = "manual";
+      obj = manualHelp;
+      msg = "Manual help Details";
+    } else {
       const safetyplan = await findSafetyPlan(param.user.id);
-      const location = await findLocationById(
-        param.user.id,
-        safetyplan.location_id
-      );
-      safetyplan.dataValues.location = location.dataValues;
-      if (!safetyplan) {
-        return {
-          err: true,
-          msg: SAFETYPLAN_NOT_FOUND,
-        };
+      if (safetyplan) {
+        const location = await findLocationById(
+          param.user.id,
+          safetyplan.location_id
+        );
+        safetyplan.dataValues.type = 'safetyplan';
+        safetyplan.dataValues.location = location.dataValues;
+        obj = safetyplan;
+        msg = "Safetyplan Details";
+      } else {
+        obj = null;
       }
-      return {
-        err: false,
-        data: safetyplan.dataValues,
-        msg: "SafetyPlan Details.",
-      };
     }
+
+    return {
+      err: false,
+      data: obj,
+      msg,
+    };
   } catch (error) {
     return {
       err: true,
@@ -413,8 +406,8 @@ exports.alertSafetyPlan = async (param) => {
           user_id: param.user.id,
         },
       });
-    
-      if(!findManualHelp){
+
+      if (!findManualHelp) {
         await manualhelps.create(manualHelpObj);
       }
       await updateBattery(param.user.id, param.battery);
@@ -422,13 +415,7 @@ exports.alertSafetyPlan = async (param) => {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `${param.user.name} has activated the help button on their Aegis 24/7 safety app.
-          Contact this person now.
-          user live location on an online map: ${obj.link}
-          user full name: ${param.user.name}
-          user phone number: ${param.user.phone_number}
-          phone battery: ${param.battery}
-          Aegis 24/7.`,
+          Message: `${contact.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${contact.name}\r\nuser phone number: ${contact.phone_number}\r\nphone battery: ${param.battery}\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -437,6 +424,7 @@ exports.alertSafetyPlan = async (param) => {
             },
           },
         };
+
         sns.publish(sendSMS, (err, result) => {
           if (err) {
             console.log(err);
@@ -482,13 +470,7 @@ exports.alertSafetyPlan = async (param) => {
           number = objHelp.country_code + objHelp.phone_number;
           sendSMS = {
             Subject: "Aegis247 alert for help",
-            Message: `${param.user.name} has activated the help button on their Aegis 24/7 safety app.
-            Contact this person now.
-            user live location on an online map: ${obj.link}
-            user full name: ${param.user.name}
-            user phone number: ${param.user.phone_number}
-            phone battery: ${param.battery}
-            Aegis 24/7.`,
+            Message: `${objHelp.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${objHelp.name}\r\nuser phone number: ${objHelp.phone_number}\r\nphone battery: ${param.battery}\r\nAegis 24/7.`,
             PhoneNumber: number,
             MessageAttributes: {
               "AWS.MM.SMS.OriginationNumber": {
@@ -546,10 +528,7 @@ exports.responded = async (param) => {
           number = objHelp.country_code + objHelp.phone_number;
           sendSMS = {
             Subject: "Aegis247 alert for help",
-            Message: `Update. ${param.user.name} messaged for Help.
-            A Contact from their Aegis 24/7 safety plan has responded.
-            If you still want to contact ${param.user.name} you can.
-            Aegis 24/7.`,
+            Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
             PhoneNumber: number,
             MessageAttributes: {
               "AWS.MM.SMS.OriginationNumber": {
@@ -571,7 +550,7 @@ exports.responded = async (param) => {
     }
 
     if (!param.safetyplan) {
-       const findManualHelp = await manualhelps.findOne({
+      const findManualHelp = await manualhelps.findOne({
         where: {
           user_id: param.user.id,
         },
@@ -593,10 +572,7 @@ exports.responded = async (param) => {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} messaged for Help.
-          A Contact from their Aegis 24/7 safety plan has responded.
-          If you still want to contact ${param.user.name} you can.
-          Aegis 24/7.`,
+          Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -650,9 +626,7 @@ exports.okay = async (param) => {
           number = objHelp.country_code + objHelp.phone_number;
           sendSMS = {
             Subject: "Aegis247 alert for help",
-            Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.
-            If you still want to contact ${param.user.name} you can.
-            Aegis 24/7`,
+            Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7`,
             PhoneNumber: number,
             MessageAttributes: {
               "AWS.MM.SMS.OriginationNumber": {
@@ -675,30 +649,28 @@ exports.okay = async (param) => {
 
     if (!param.safetyplan) {
       const findManualHelp = await manualhelps.findOne({
-       where: {
-         user_id: param.user.id,
-       },
-     });
-     for (const id of findManualHelp.help_group) {
-       const data = await findGroupById(param.user.id, id);
-       for (const obj of data.contacts) {
-         helpArray.push(obj);
-       }
-     }
-     for (const obj of findManualHelp.help_individuals) {
-       obj.phone_number = obj.phoneNumber;
-       obj.country_code = obj.countryCode;
-       delete obj.phoneNumber;
-       delete obj.countryCode;
-       helpArray.push(obj);
-     }
+        where: {
+          user_id: param.user.id,
+        },
+      });
+      for (const id of findManualHelp.help_group) {
+        const data = await findGroupById(param.user.id, id);
+        for (const obj of data.contacts) {
+          helpArray.push(obj);
+        }
+      }
+      for (const obj of findManualHelp.help_individuals) {
+        obj.phone_number = obj.phoneNumber;
+        obj.country_code = obj.countryCode;
+        delete obj.phoneNumber;
+        delete obj.countryCode;
+        helpArray.push(obj);
+      }
       for (const contact of helpArray) {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.
-          If you still want to contact ${param.user.name} you can.
-          Aegis 24/7`,
+          Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -733,14 +705,13 @@ exports.okay = async (param) => {
 exports.checkInOut = async (param) => {
   try {
     const safetyplan = await findSafetyPlan(param.user.id);
-  
+
     if (!safetyplan) {
       return {
         err: true,
         msg: SAFETYPLAN_NOT_FOUND,
       };
     }
-
     let checkInOutrray = [];
     let number;
 
@@ -772,30 +743,6 @@ exports.checkInOut = async (param) => {
       number = obj.country_code + obj.phone_number;
       let sendSMS;
       if (param.check == true) {
-        // const uniqueId = uuid.v4();
-        // const data = JSON.stringify({
-        //   dynamicLinkInfo: {
-        //     domainUriPrefix: "https://ages.page.link",
-        //     link: `http://34.227.59.13:5000/?name=${param.user.name}&number=${param.user.phone_number}&location=${location.name}&person=${safetyplan.person_name}&time=${param.time}`,
-        //     androidInfo: {
-        //       androidPackageName: process.env.ANDROID_PACKAGE_NAME,
-        //     },
-        //     iosInfo: {
-        //       iosBundleId: process.env.IOS_PACKAGE_NAME,
-        //     },
-        //   },
-        // });
-        // const config = {
-        //   method: "POST",
-        //   url: `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${process.env.KEY}`,
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   data: data,
-        // };
-        // const linkShare = await axios(config);
-        // response.link = linkShare.data.shortLink;
-        // // obj.uniqueID = uniqueId;
         sendSMS = {
           Subject: "Aegis247 For Safety plan check in",
           Message: `${param.user.name} has checked into Location from safety plan and have shared their safety plan with you: Aegis 24/7.`,
@@ -808,12 +755,11 @@ exports.checkInOut = async (param) => {
           },
         };
       }
-
       if (param.check == false) {
         sendSMS = {
           Subject: "Aegis247 For Safety plan check out",
-          Message: `${param.user.name} has now checked out of Location from safety plan. As part of their safety plan, they wanted you to know. For more contact ${param.user.name} on ${param.user.phone_number}. Aegis 24/7.`,
-          PhoneNumber: "+917779064419",
+          Message: `${param.user.name} has now checked out of Location from safety plan.\r\nAs part of their safety plan, they wanted you to know.\r\nFor more contact ${param.user.name} on ${param.user.phone_number}.\r\nAegis 24/7.`,
+          PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
               DataType: "String",
@@ -822,7 +768,6 @@ exports.checkInOut = async (param) => {
           },
         };
         await updateStatus(STATUS.COMPLETED, param.user.id);
-
       }
       sns.publish(sendSMS, (err, result) => {
         if (err) {

@@ -74,7 +74,7 @@ exports.completeSafetyPlan = async (req, res) => {
 
 exports.getSafetyPlan = async (req, res) => {
   try {
-    const param = { ...req.query, ...req.body };
+    const param = { ...req.body };
     const safetyplan = await getSafetyPlan(param);
     if (!isEmpty(safetyplan) && safetyplan.err) {
       return errorResponse(req, res, safetyplan.msg, 200);
