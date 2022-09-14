@@ -243,7 +243,7 @@ exports.settings = async (req, res) => {
     if (!isEmpty(user) && user.err) {
       return errorResponse(req, res, user.msg, 400);
     }
-    return successResponse(req, res, null, user.msg);
+    return successResponse(req, res, user.data, user.msg);
   } catch (error) {
     return errorResponse(req, res, error, 400);
   }

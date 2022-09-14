@@ -58,7 +58,7 @@ exports.locationSharing = async (param) => {
         const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
         let sendSMS = {
           Subject: "Aegis247 For Help",
-          Message: `${contact.name} shared a static location with you. ${obj.link}  Aegis 24/7.`,
+          Message: `${contact.name} shared a static location with you. ${obj.link}\r\nAegis 24/7.`,
           PhoneNumber: mobile,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -117,7 +117,7 @@ exports.locationSharing = async (param) => {
         console.log("~ mobile", mobile);
         let sendSMS = {
           Subject: "Aegis247 For Help",
-          Message: `${contact.name} has shared their live location and end destination with you. ${obj.link}  Aegis 24/7.`,
+          Message: `${contact.name} has shared their live location and end destination with you. ${obj.link}\r\nAegis 24/7.`,
           PhoneNumber: mobile,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -177,11 +177,11 @@ exports.status = async (param) => {
     for (const contact of location.contacts) {
       const mobile = "+" + Number(contact.countryCode) + param.user.phoneNumber;
       if (param.status == "Cancel") {
-        message = `${contact.name} has cancelled their live location sharing prior to arriving at their location. Aegis 24/7`;
+        message = `${contact.name} has cancelled their live location sharing prior to arriving at their location.\r\nAegis 24/7`;
       }
 
       if (param.status == "Stop") {
-        message = `${contact.name} has arrived at their destination. Live location sharing stopped. Aegis 24/7`;
+        message = `${contact.name} has arrived at their destination. Live location sharing stopped.\r\nAegis 24/7`;
       }
       let sendSMS = {
         Subject: "Aegis247 For Help",
