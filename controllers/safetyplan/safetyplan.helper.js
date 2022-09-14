@@ -608,6 +608,12 @@ exports.okay = async (param) => {
     let helpArray = [];
     if (param.safetyplan) {
       const safetyplan = await findSafetyPlan(param.user.id);
+      if (!safetyplan) {
+        return {
+          err: true,
+          msg: SAFETYPLAN_NOT_FOUND,
+        };
+      }
       for (const id of safetyplan.dataValues.help_group) {
         const group = await findGroupById(safetyplan.dataValues.user_id, id);
         helpArray = [...group.contacts];
@@ -644,8 +650,8 @@ exports.okay = async (param) => {
             }
           });
         }
-        await updateStatus(STATUS.COMPLETED, param.user.id);
       }
+      await updateStatus(STATUS.COMPLETED, param.user.id);
     }
     if (!param.safetyplan) {
       const findManualHelp = await manualhelps.findOne({
