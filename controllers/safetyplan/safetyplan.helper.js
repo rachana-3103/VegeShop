@@ -320,7 +320,7 @@ exports.getSafetyPlan = async (param) => {
           param.user.id,
           safetyplan.location_id
         );
-        safetyplan.dataValues.type = 'safetyplan';
+        safetyplan.dataValues.type = "safetyplan";
         safetyplan.dataValues.location = location.dataValues;
         obj = safetyplan;
         msg = "Safetyplan Details";
@@ -644,9 +644,9 @@ exports.okay = async (param) => {
             }
           });
         }
+        await updateStatus(STATUS.COMPLETED, param.user.id);
       }
     }
-
     if (!param.safetyplan) {
       const findManualHelp = await manualhelps.findOne({
         where: {
@@ -687,6 +687,10 @@ exports.okay = async (param) => {
           }
         });
       }
+      await manualhelps.destroy({
+        where: { user_id: param.user.id },
+        force: true,
+      });
     }
     return {
       err: false,
@@ -694,7 +698,6 @@ exports.okay = async (param) => {
       msg: "Live location share.",
     };
   } catch (error) {
-    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,
