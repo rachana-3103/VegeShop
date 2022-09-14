@@ -528,7 +528,7 @@ exports.responded = async (param) => {
           number = objHelp.country_code + objHelp.phone_number;
           sendSMS = {
             Subject: "Aegis247 alert for help",
-            Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
+            Message: `Update. ${objHelp.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${objHelp.name} you can.\r\nAegis 24/7.`,
             PhoneNumber: number,
             MessageAttributes: {
               "AWS.MM.SMS.OriginationNumber": {
@@ -572,7 +572,7 @@ exports.responded = async (param) => {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
+          Message: `Update. ${contact.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${contact.name} you can.\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -632,7 +632,7 @@ exports.okay = async (param) => {
           number = objHelp.country_code + objHelp.phone_number;
           sendSMS = {
             Subject: "Aegis247 alert for help",
-            Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7`,
+            Message: `Update. ${objHelp.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${objHelp.name} you can.\r\nAegis 24/7`,
             PhoneNumber: number,
             MessageAttributes: {
               "AWS.MM.SMS.OriginationNumber": {
@@ -676,7 +676,7 @@ exports.okay = async (param) => {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7`,
+          Message: `Update. ${contact.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${contact.name} you can.\r\nAegis 24/7`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -754,7 +754,7 @@ exports.checkInOut = async (param) => {
       if (param.check == true) {
         sendSMS = {
           Subject: "Aegis247 For Safety plan check in",
-          Message: `${param.user.name} has checked into Location from safety plan and have shared their safety plan with you: Aegis 24/7.`,
+          Message: `${obj.name} has checked into Location from safety plan and have shared their safety plan with you: Aegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -767,7 +767,7 @@ exports.checkInOut = async (param) => {
       if (param.check == false) {
         sendSMS = {
           Subject: "Aegis247 For Safety plan check out",
-          Message: `${param.user.name} has now checked out of Location from safety plan.\r\nAs part of their safety plan, they wanted you to know.\r\nFor more contact ${param.user.name} on ${param.user.phone_number}.\r\nAegis 24/7.`,
+          Message: `${obj.name} has now checked out of Location from safety plan.\r\nAs part of their safety plan, they wanted you to know.\r\nFor more contact ${obj.name} on ${obj.phone_number}.\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -793,7 +793,6 @@ exports.checkInOut = async (param) => {
       msg: "Contact informed successfully.",
     };
   } catch (error) {
-    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,
