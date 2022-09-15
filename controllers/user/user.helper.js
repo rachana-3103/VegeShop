@@ -604,7 +604,6 @@ exports.updateNewNumber = async (param) => {
 
 exports.logout = async (id) => {
   try {
-    console.log("~ id", id);
     const safetyplan = await findSafetyPlan(id);
     if (safetyplan) {
       await updateStatus(STATUS.COMPLETED, id);
