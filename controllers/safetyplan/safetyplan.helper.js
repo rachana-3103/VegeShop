@@ -4,6 +4,7 @@ const {
   SAFETYPLAN_ALREADY_EXIST,
   STATUS,
   GROUP_NOT_FOUND_CHECKOUT,
+  MANUALHELP_NOT_FOUND,
   GROUP_NOT_FOUND_HELP,
   LOCATION_NOT_FOUND,
   NOTIFIED_CONTACT,
@@ -513,39 +514,39 @@ exports.responded = async (param) => {
       for (const id of safetyplan.dataValues.help_group) {
         const group = await findGroupById(safetyplan.dataValues.user_id, id);
         helpArray = [...group.contacts];
-        for (const element of safetyplan.dataValues.help_individuals) {
-          if (
-            !helpArray.some(
-              (objData) =>
-                objData.phone_number == element.phone_number &&
-                objData.country_code == element.country_code
-            )
-          ) {
-            helpArray.push(element);
-          }
+      }
+      for (const element of safetyplan.dataValues.help_individuals) {
+        if (
+          !helpArray.some(
+            (objData) =>
+              objData.phone_number == element.phone_number &&
+              objData.country_code == element.country_code
+          )
+        ) {
+          helpArray.push(element);
         }
-        for (const objHelp of helpArray) {
-          number = objHelp.country_code + objHelp.phone_number;
-          sendSMS = {
-            Subject: "Aegis247 alert for help",
-            Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
-            PhoneNumber: number,
-            MessageAttributes: {
-              "AWS.MM.SMS.OriginationNumber": {
-                DataType: "String",
-                StringValue: process.env.TEN_DLC,
-              },
+      }
+      for (const objHelp of helpArray) {
+        number = objHelp.country_code + objHelp.phone_number;
+        sendSMS = {
+          Subject: "Aegis247 alert for help",
+          Message: `Update. ${objHelp.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${objHelp.name} you can.\r\nAegis 24/7.`,
+          PhoneNumber: number,
+          MessageAttributes: {
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
+              StringValue: process.env.TEN_DLC,
             },
-          };
+          },
+        };
 
-          sns.publish(sendSMS, (err, result) => {
-            if (err) {
-              console.info(err);
-            } else {
-              console.info(result);
-            }
-          });
-        }
+        sns.publish(sendSMS, (err, result) => {
+          if (err) {
+            console.info(err);
+          } else {
+            console.info(result);
+          }
+        });
       }
     }
 
@@ -555,6 +556,12 @@ exports.responded = async (param) => {
           user_id: param.user.id,
         },
       });
+      if (!findManualHelp) {
+        return {
+          err: true,
+          msg: MANUALHELP_NOT_FOUND,
+        };
+      }
       for (const id of findManualHelp.help_group) {
         const data = await findGroupById(param.user.id, id);
         for (const obj of data.contacts) {
@@ -562,17 +569,13 @@ exports.responded = async (param) => {
         }
       }
       for (const obj of findManualHelp.help_individuals) {
-        obj.phone_number = obj.phoneNumber;
-        obj.country_code = obj.countryCode;
-        delete obj.phoneNumber;
-        delete obj.countryCode;
         helpArray.push(obj);
       }
       for (const contact of helpArray) {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
+          Message: `Update. ${contact.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${contact.name} you can.\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -608,44 +611,50 @@ exports.okay = async (param) => {
     let helpArray = [];
     if (param.safetyplan) {
       const safetyplan = await findSafetyPlan(param.user.id);
+      if (!safetyplan) {
+        return {
+          err: true,
+          msg: SAFETYPLAN_NOT_FOUND,
+        };
+      }
+
       for (const id of safetyplan.dataValues.help_group) {
         const group = await findGroupById(safetyplan.dataValues.user_id, id);
         helpArray = [...group.contacts];
-        for (const element of safetyplan.dataValues.help_individuals) {
-          if (
-            !helpArray.some(
-              (objData) =>
-                objData.phone_number == element.phone_number &&
-                objData.country_code == element.country_code
-            )
-          ) {
-            helpArray.push(element);
-          }
-        }
-        for (const objHelp of helpArray) {
-          number = objHelp.country_code + objHelp.phone_number;
-          sendSMS = {
-            Subject: "Aegis247 alert for help",
-            Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7`,
-            PhoneNumber: number,
-            MessageAttributes: {
-              "AWS.MM.SMS.OriginationNumber": {
-                DataType: "String",
-                StringValue: process.env.TEN_DLC,
-              },
-            },
-          };
-
-          sns.publish(sendSMS, (err, result) => {
-            if (err) {
-              console.info(err);
-            } else {
-              console.info(result);
-            }
-          });
-        }
-        await updateStatus(STATUS.COMPLETED, param.user.id);
       }
+      for (const element of safetyplan.dataValues.help_individuals) {
+        if (
+          !helpArray.some(
+            (objData) =>
+              objData.phone_number == element.phone_number &&
+              objData.country_code == element.country_code
+          )
+        ) {
+          helpArray.push(element);
+        }
+      }
+      for (const objHelp of helpArray) {
+        number = objHelp.country_code + objHelp.phone_number;
+        sendSMS = {
+          Subject: "Aegis247 alert for help",
+          Message: `Update. ${objHelp.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${objHelp.name} you can.\r\nAegis 24/7.`,
+          PhoneNumber: number,
+          MessageAttributes: {
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
+              StringValue: process.env.TEN_DLC,
+            },
+          },
+        };
+        sns.publish(sendSMS, (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(result);
+          }
+        });
+      }
+      await updateStatus(STATUS.COMPLETED, param.user.id);
     }
     if (!param.safetyplan) {
       const findManualHelp = await manualhelps.findOne({
@@ -660,17 +669,13 @@ exports.okay = async (param) => {
         }
       }
       for (const obj of findManualHelp.help_individuals) {
-        obj.phone_number = obj.phoneNumber;
-        obj.country_code = obj.countryCode;
-        delete obj.phoneNumber;
-        delete obj.countryCode;
         helpArray.push(obj);
       }
       for (const contact of helpArray) {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7`,
+          Message: `Update. ${contact.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${contact.name} you can.\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -748,7 +753,7 @@ exports.checkInOut = async (param) => {
       if (param.check == true) {
         sendSMS = {
           Subject: "Aegis247 For Safety plan check in",
-          Message: `${param.user.name} has checked into Location from safety plan and have shared their safety plan with you: Aegis 24/7.`,
+          Message: `${obj.name} has checked into Location from safety plan and have shared their safety plan with you: Aegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -761,7 +766,7 @@ exports.checkInOut = async (param) => {
       if (param.check == false) {
         sendSMS = {
           Subject: "Aegis247 For Safety plan check out",
-          Message: `${param.user.name} has now checked out of Location from safety plan.\r\nAs part of their safety plan, they wanted you to know.\r\nFor more contact ${param.user.name} on ${param.user.phone_number}.\r\nAegis 24/7.`,
+          Message: `${obj.name} has now checked out of Location from safety plan.\r\nAs part of their safety plan, they wanted you to know.\r\nFor more contact ${obj.name} on ${obj.phone_number}.\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -787,7 +792,6 @@ exports.checkInOut = async (param) => {
       msg: "Contact informed successfully.",
     };
   } catch (error) {
-    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,
