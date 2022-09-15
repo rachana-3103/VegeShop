@@ -415,12 +415,12 @@ exports.alertSafetyPlan = async (param) => {
       for (const contact of helpArray) {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
-          Subject: "Aegis247 alert for help",
-          Message: `${contact.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${contact.name}\r\nuser phone number: ${contact.phone_number}\r\nphone battery: ${param.battery}\r\nAegis 24/7.`,
+          Subject: 'Aegis247 alert for help',
+          Message: `${param.user.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${contact.name}\r\nuser phone number: ${contact.phone_number}\r\nphone battery: ${param.battery}\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
-            "AWS.MM.SMS.OriginationNumber": {
-              DataType: "String",
+            'AWS.MM.SMS.OriginationNumber': {
+              DataType: 'String',
               StringValue: process.env.TEN_DLC,
             },
           },
