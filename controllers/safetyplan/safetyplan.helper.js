@@ -669,10 +669,6 @@ exports.okay = async (param) => {
         }
       }
       for (const obj of findManualHelp.help_individuals) {
-        obj.phone_number = obj.phoneNumber;
-        obj.country_code = obj.countryCode;
-        delete obj.phoneNumber;
-        delete obj.countryCode;
         helpArray.push(obj);
       }
       for (const contact of helpArray) {
