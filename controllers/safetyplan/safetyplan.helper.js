@@ -411,12 +411,12 @@ exports.alertSafetyPlan = async (param) => {
       if (!findManualHelp) {
         await manualhelps.create(manualHelpObj);
       }
-      await updateBattery(param.user.id, param.battery);
+      await updateBattery(param.user.id, param.battery , param.altitude);
       for (const contact of helpArray) {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: 'Aegis247 alert for help',
-          Message: `${param.user.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${param.user.name}\r\nuser phone number: ${param.user.country_code}${param.user.phone_number}\r\nphone battery: ${param.battery}\r\nAegis 24/7.`,
+          Message: `${param.user.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${param.user.name}\r\nuser phone number: ${param.user.country_code}${param.user.phone_number}\r\nphone battery: ${param.battery}\r\nAltitude (ft/m): ${param.altitude}\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             'AWS.MM.SMS.OriginationNumber': {
@@ -467,11 +467,12 @@ exports.alertSafetyPlan = async (param) => {
             helpArray.push(element);
           }
         }
+        await updateBattery(param.user.id, param.battery , param.altitude);
         for (const objHelp of helpArray) {
           number = objHelp.country_code + objHelp.phone_number;
           sendSMS = {
             Subject: "Aegis247 alert for help",
-            Message: `${param.user.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${param.user.name}\r\nuser phone number:  ${param.user.country_code}${param.user.phone_number}\r\nphone battery: ${param.battery}\r\nAegis 24/7.`,
+            Message: `${param.user.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${param.user.name}\r\nuser phone number:  ${param.user.country_code}${param.user.phone_number}\r\nphone battery: ${param.battery}\r\nAltitude (ft/m): ${param.altitude}\r\nAegis 24/7.`,
             PhoneNumber: number,
             MessageAttributes: {
               "AWS.MM.SMS.OriginationNumber": {

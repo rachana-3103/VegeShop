@@ -95,10 +95,11 @@ exports.updateNotification = async (id, data) => {
   );
 };
 
-exports.updateBattery = async (id, battery) => {
+exports.updateBattery = async (id, battery, altitude) => {
   return await users.update(
     {
       battery,
+      altitude,
     },
     {
       where: {

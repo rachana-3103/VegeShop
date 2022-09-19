@@ -47,6 +47,9 @@ module.exports = (sequelize, DataTypes) => {
     battery: {
       type: DataTypes.STRING,
     },
+    altitude:{
+      type: DataTypes.STRING,
+    }
   });
 
   return users;
