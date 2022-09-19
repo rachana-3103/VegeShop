@@ -58,7 +58,7 @@ exports.locationSharing = async (param) => {
         const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
         let sendSMS = {
           Subject: "Aegis247 For Help",
-          Message: `${contact.name} shared a static location with you. ${obj.link}\r\nAegis 24/7.`,
+          Message: `${user.param.name} shared a static location with you. ${obj.link}\r\nAegis 24/7.`,
           PhoneNumber: mobile,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -114,10 +114,9 @@ exports.locationSharing = async (param) => {
       obj.uniqueID = uniqueId;
       for (const contact of param.contacts) {
         const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
-        console.log("~ mobile", mobile);
         let sendSMS = {
           Subject: "Aegis247 For Help",
-          Message: `${contact.name} has shared their live location and end destination with you. ${obj.link}\r\nAegis 24/7.`,
+          Message: `${user.param.name} has shared their live location and end destination with you. ${obj.link}\r\nAegis 24/7.`,
           PhoneNumber: mobile,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -144,7 +143,6 @@ exports.locationSharing = async (param) => {
       msg,
     };
   } catch (error) {
-    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,
@@ -208,7 +206,6 @@ exports.status = async (param) => {
       msg,
     };
   } catch (error) {
-    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,
