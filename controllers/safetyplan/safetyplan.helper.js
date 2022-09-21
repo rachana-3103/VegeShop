@@ -531,7 +531,7 @@ exports.responded = async (param) => {
         number = objHelp.country_code + objHelp.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
+          Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan have replied.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -576,7 +576,7 @@ exports.responded = async (param) => {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan has responded.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
+          Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan have replied.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
