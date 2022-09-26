@@ -11,6 +11,7 @@ const {
   checkInOut,
   extend,
   responded,
+  getSafetyPlanDetails,
   okay
 } = require("./safetyplan.helper");
 
@@ -76,6 +77,19 @@ exports.getSafetyPlan = async (req, res) => {
   try {
     const param = { ...req.body };
     const safetyplan = await getSafetyPlan(param);
+    if (!isEmpty(safetyplan) && safetyplan.err) {
+      return errorResponse(req, res, safetyplan.msg, 200);
+    }
+    return successResponse(req, res, safetyplan.data, safetyplan.msg);
+  } catch (error) {
+    return errorResponse(req, res, error, 400);
+  }
+};
+
+exports.getSafetyPlanDetails = async (req, res) => {
+  try {
+    const param = { ...req.query};
+    const safetyplan = await getSafetyPlanDetails(param);
     if (!isEmpty(safetyplan) && safetyplan.err) {
       return errorResponse(req, res, safetyplan.msg, 200);
     }

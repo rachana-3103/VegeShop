@@ -21,7 +21,7 @@ const {
 const axios = require("axios");
 const uuid = require("uuid");
 const { findGroupById } = require("../../Dao/group");
-const { updateBattery } = require("../../Dao/user");
+const { updateBattery, findUserById } = require("../../Dao/user");
 const {
   updateLocations,
   findLocation,
@@ -343,12 +343,86 @@ exports.getSafetyPlan = async (param) => {
   }
 };
 
+exports.getSafetyPlanDetails = async (param) => {
+  try {
+    let safetyplan = await findSafetyPlan(param.userId);
+
+    if (safetyplan) {
+      const location = await findLocationById(
+        param.userId,
+        safetyplan.dataValues.location_id
+      );
+      const user = await findUserById(safetyplan.dataValues.user_id);
+      Object.assign(safetyplan.dataValues, {
+        name: user.dataValues.name,
+        cell: user.dataValues.country_code + user.dataValues.phone_number,
+        location: location.dataValues.address,
+        more: location.dataValues.more_address,
+        altitude: user.dataValues.altitude,
+        battery: user.dataValues.battery,
+        contacts:
+          safetyplan.dataValues.help_individuals.length +
+          safetyplan.dataValues.help_group.length,
+      });
+      delete safetyplan.dataValues.help_group;
+      delete safetyplan.dataValues.help_individuals;
+      delete safetyplan.dataValues.checkinout_group;
+      delete safetyplan.dataValues.checkinout_individuals;
+      return {
+        err: false,
+        data: safetyplan,
+        msg: "Safetyplan Details",
+      };
+    } else {
+      const findManualHelp = await manualhelps.findOne({
+        where: {
+          user_id: param.userId,
+          alert: true,
+        },
+      });
+      if (!findManualHelp) {
+        return {
+          err: true,
+          msg: "Manual help and safety plan not found",
+        };
+      }
+      const user = await findUserById(findManualHelp.dataValues.user_id);
+      if (findManualHelp) {
+        Object.assign(findManualHelp.dataValues, {
+          name: user.dataValues.name,
+          cell: user.dataValues.country_code + user.dataValues.phone_number,
+          location: "",
+          more: "",
+          altitude: user.dataValues.altitude,
+          battery: user.dataValues.battery,
+          contacts:
+            findManualHelp.dataValues.help_individuals.length +
+            findManualHelp.dataValues.help_group.length,
+        });
+      }
+      delete findManualHelp.dataValues.help_group;
+      delete findManualHelp.dataValues.help_individuals;
+      return {
+        err: false,
+        data: findManualHelp,
+        msg: "Manual Help Details",
+      };
+    }
+  } catch (error) {
+    console.log("~ error", error);
+    return {
+      err: true,
+      msg: error.message,
+    };
+  }
+};
+
 exports.alertSafetyPlan = async (param) => {
   try {
     let obj = {};
     let msg;
     const uniqueId = uuid.v4();
-    const data = JSON.stringify({
+    let data = JSON.stringify({
       dynamicLinkInfo: {
         domainUriPrefix: "https://ages.page.link",
         link: `https://www.example.com/?lat=${param.latitude}&long=${param.longitude}&type=help&uniqueId=${uniqueId}`,
@@ -360,6 +434,7 @@ exports.alertSafetyPlan = async (param) => {
         },
       },
     });
+
     const config = {
       method: "POST",
       url: `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${process.env.KEY}`,
@@ -411,16 +486,16 @@ exports.alertSafetyPlan = async (param) => {
       if (!findManualHelp) {
         await manualhelps.create(manualHelpObj);
       }
-      await updateBattery(param.user.id, param.battery , param.altitude);
+      await updateBattery(param.user.id, param.battery, param.altitude);
       for (const contact of helpArray) {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
-          Subject: 'Aegis247 alert for help',
+          Subject: "Aegis247 alert for help",
           Message: `${param.user.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${param.user.name}\r\nuser phone number: ${param.user.country_code}${param.user.phone_number}\r\nphone battery: ${param.battery}\r\nAltitude (ft/m): ${param.altitude}\r\nAegis 24/7.`,
           PhoneNumber: number,
           MessageAttributes: {
-            'AWS.MM.SMS.OriginationNumber': {
-              DataType: 'String',
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
               StringValue: process.env.TEN_DLC,
             },
           },
@@ -467,7 +542,7 @@ exports.alertSafetyPlan = async (param) => {
             helpArray.push(element);
           }
         }
-        await updateBattery(param.user.id, param.battery , param.altitude);
+        await updateBattery(param.user.id, param.battery, param.altitude);
         for (const objHelp of helpArray) {
           number = objHelp.country_code + objHelp.phone_number;
           sendSMS = {

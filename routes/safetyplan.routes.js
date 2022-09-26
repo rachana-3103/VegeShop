@@ -33,6 +33,9 @@ router.put(
 
 router.get("/details", authorization, safetyPlanController.getSafetyPlan);
 
+router.get("/browser-details", safetyPlanController.getSafetyPlanDetails);
+
+
 router.post(
   "/alert",
   authorization,
