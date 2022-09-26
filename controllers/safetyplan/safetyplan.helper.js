@@ -358,8 +358,8 @@ exports.getSafetyPlanDetails = async (param) => {
         cell: user.dataValues.country_code + user.dataValues.phone_number,
         location: location.dataValues.address,
         more: location.dataValues.more_address,
-        altitude: user.dataValues.altitude,
-        battery: user.dataValues.battery,
+        altitude: user.dataValues.altitude || "",
+        battery: user.dataValues.battery || "",
         contacts:
           safetyplan.dataValues.help_individuals.length +
           safetyplan.dataValues.help_group.length,
@@ -393,8 +393,8 @@ exports.getSafetyPlanDetails = async (param) => {
           cell: user.dataValues.country_code + user.dataValues.phone_number,
           location: "",
           more: "",
-          altitude: user.dataValues.altitude,
-          battery: user.dataValues.battery,
+          altitude: user.dataValues.altitude || "",
+          battery: user.dataValues.battery || "",
           contacts:
             findManualHelp.dataValues.help_individuals.length +
             findManualHelp.dataValues.help_group.length,
