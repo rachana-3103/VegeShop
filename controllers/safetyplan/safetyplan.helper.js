@@ -284,6 +284,65 @@ exports.completeSafetyPlan = async (param) => {
         msg: SAFETYPLAN_NOT_FOUND,
       };
     }
+    let number;
+    let array = [];
+    for (const id of safetyplan.dataValues.help_group) {
+      const group = await findGroupById(safetyplan.dataValues.user_id, id);
+      array = [...group.contacts];
+    }
+    for (const element of safetyplan.dataValues.help_individuals) {
+      if (
+        !array.some(
+          (objData) =>
+            objData.phone_number == element.phone_number &&
+            objData.country_code == element.country_code
+        )
+      ) {
+        array.push(element);
+      }
+    }
+    for (const id of safetyplan.dataValues.checkinout_group) {
+      const group = await findGroupById(safetyplan.dataValues.user_id, id);
+      array = [...group.contacts];
+    }
+    for (const element of safetyplan.dataValues.checkinout_individuals) {
+      if (
+        !array.some(
+          (objData) =>
+            objData.phone_number == element.phone_number &&
+            objData.country_code == element.country_code
+        )
+      ) {
+        array.push(element);
+      }
+    }
+
+    const ids = array.map((o) => o.phone_number);
+    const filtered = array.filter(
+      ({ phone_number }, index) => !ids.includes(phone_number, index + 1)
+    );
+    for (const obj of filtered) {
+      number = obj.country_code + obj.phone_number;
+      sendSMS = {
+        Subject: "Aegis247 alert for complete safety plan",
+        Message: `${param.user.name} has completed their Aegis 24/7 safety plan and chosen to remain at loaction.\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\nAegis 24/7`,
+        PhoneNumber: number,
+        MessageAttributes: {
+          "AWS.MM.SMS.OriginationNumber": {
+            DataType: "String",
+            StringValue: process.env.TEN_DLC,
+          },
+        },
+      };
+
+      sns.publish(sendSMS, (err, result) => {
+        if (err) {
+          console.info(err);
+        } else {
+          console.info(result);
+        }
+      });
+    }
     await updateStatus(STATUS.COMPLETED, param.user.id);
 
     return {
@@ -842,7 +901,7 @@ exports.checkInOut = async (param) => {
       if (param.check == false) {
         sendSMS = {
           Subject: "Aegis247 For Safety plan check out",
-          Message: `${param.user.name} has now checked out of Location from safety plan.\r\nAs part of their safety plan, they wanted you to know.\r\nFor more contact ${obj.name} on ${param.user.country_code}${param.user.phone_number}.\r\nAegis 24/7.`,
+          Message: `${param.user.name} has now checked out of the location in their Aegis 24/7 safety plan.\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\nAegis 24/7`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
