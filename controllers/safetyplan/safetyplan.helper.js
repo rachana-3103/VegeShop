@@ -325,7 +325,7 @@ exports.completeSafetyPlan = async (param) => {
       number = obj.country_code + obj.phone_number;
       sendSMS = {
         Subject: "Aegis247 alert for complete safety plan",
-        Message: `${param.user.name} has completed their Aegis 24/7 safety plan and chosen to remain at loaction.\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\nAegis 24/7`,
+        Message: `${param.user.name} has completed their Aegis 24/7 safety plan and chosen to remain at the loaction.\r\n\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\n\r\nAegis 24/7`,
         PhoneNumber: number,
         MessageAttributes: {
           "AWS.MM.SMS.OriginationNumber": {
@@ -550,7 +550,7 @@ exports.alertSafetyPlan = async (param) => {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `${param.user.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${param.user.name}\r\nuser phone number: ${param.user.country_code}${param.user.phone_number}\r\nphone battery: ${param.battery}\r\nAltitude (ft/m): ${param.altitude}\r\nAegis 24/7.`,
+          Message: `${param.user.name} has activated the help button in their Aegis 24/7 mobile safety app.\r\n\r\nContact this person now.\r\n\r\nView their live location.${obj.link}\r\n\r\n Aegis 24/7`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -606,7 +606,7 @@ exports.alertSafetyPlan = async (param) => {
           number = objHelp.country_code + objHelp.phone_number;
           sendSMS = {
             Subject: "Aegis247 alert for help",
-            Message: `${param.user.name} has activated the help button on their Aegis 24/7 safety app.\r\nContact this person now.\r\nuser live location on an online map: ${obj.link}\r\nuser full name: ${param.user.name}\r\nuser phone number:  ${param.user.country_code}${param.user.phone_number}\r\nphone battery: ${param.battery}\r\nAltitude (ft/m): ${param.altitude}\r\nAegis 24/7.`,
+            Message: `${param.user.name} has activated the help button on their Aegis 24/7 mobile safety app.\r\n\r\nView their live location.\r\n\r\nContact this person now.\r\n\r\nAegis 24/7`,
             PhoneNumber: number,
             MessageAttributes: {
               "AWS.MM.SMS.OriginationNumber": {
@@ -665,7 +665,7 @@ exports.responded = async (param) => {
         number = objHelp.country_code + objHelp.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan have replied.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
+          Message: `Update. ${param.user.name} messaged for Help.\r\n\r\nAt least one contact has replied.\r\n\r\nIf you still want to contact ${param.user.name} you can.\r\n\r\nAegis 24/7`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -710,7 +710,7 @@ exports.responded = async (param) => {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} messaged for Help.\r\nA Contact from their Aegis 24/7 safety plan have replied.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
+          Message: `Update. ${param.user.name} messaged for Help.\r\n\r\nAt least one contact has replied.\r\n\r\nIf you still want to contact ${param.user.name} you can.\r\n\r\nAegis 24/7`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -772,7 +772,7 @@ exports.okay = async (param) => {
         number = objHelp.country_code + objHelp.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
+          Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.\r\n\r\nIf you still want to contact ${param.user.name} you can.\r\n\r\nAegis 24/7`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -810,7 +810,7 @@ exports.okay = async (param) => {
         let number = contact.country_code + contact.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for help",
-          Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.\r\nIf you still want to contact ${param.user.name} you can.\r\nAegis 24/7.`,
+          Message: `Update. ${param.user.name} no longer needs Help and has cancelled the request.\r\n\r\nIf you still want to contact ${param.user.name} you can.\r\n\r\nAegis 24/7`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -888,7 +888,7 @@ exports.checkInOut = async (param) => {
       if (param.check == true) {
         sendSMS = {
           Subject: "Aegis247 For Safety plan check in",
-          Message: `${param.user.name} has checked into Location from safety plan and have shared their safety plan with you: Aegis 24/7.`,
+          Message: `${param.user.name} has checked into a location and shared their Aegis 24/7 safety plan with you.\r\n\r\nView here.\r\n\r\nFor more contact ${param.user.name} on ${param.user.country_code}${param.user.phone_number}.\r\n\r\nAegis 24/7`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -901,7 +901,7 @@ exports.checkInOut = async (param) => {
       if (param.check == false) {
         sendSMS = {
           Subject: "Aegis247 For Safety plan check out",
-          Message: `${param.user.name} has now checked out of the location in their Aegis 24/7 safety plan.\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\nAegis 24/7`,
+          Message: `${param.user.name} has now checked out of the location in their Aegis 24/7 safety plan.\r\n\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\n\r\nAegis 24/7`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
