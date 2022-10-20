@@ -485,12 +485,12 @@ exports.alertSafetyPlan = async (param) => {
       dynamicLinkInfo: {
         domainUriPrefix: "https://link.aegis-247.com",
         link: `https://location.aegis-247.com/?lat=${param.latitude}&long=${param.longitude}&type=help&uniqueId=${uniqueId}`,
-        androidInfo: {
-          androidPackageName: process.env.ANDROID_PACKAGE_NAME,
-        },
-        iosInfo: {
-          iosBundleId: process.env.IOS_PACKAGE_NAME,
-        },
+        // androidInfo: {
+        //   androidPackageName: process.env.ANDROID_PACKAGE_NAME,
+        // },
+        // iosInfo: {
+        //   iosBundleId: process.env.IOS_PACKAGE_NAME,
+        // },
       },
     });
 
@@ -894,12 +894,12 @@ exports.checkInOut = async (param) => {
           dynamicLinkInfo: {
             domainUriPrefix: "https://link.aegis-247.com",
             link: `https://location.aegis-247.com/?lat=${param.latitude}&long=${param.longitude}&time=${param.time}&type=checkIn&uniqueId=${uniqueId}`,
-            androidInfo: {
-              androidPackageName: process.env.ANDROID_PACKAGE_NAME,
-            },
-            iosInfo: {
-              iosBundleId: process.env.IOS_PACKAGE_NAME,
-            },
+            // androidInfo: {
+            //   androidPackageName: process.env.ANDROID_PACKAGE_NAME,
+            // },
+            // iosInfo: {
+            //   iosBundleId: process.env.IOS_PACKAGE_NAME,
+            // },
           },
         });
     
