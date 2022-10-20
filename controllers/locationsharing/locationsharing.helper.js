@@ -31,51 +31,51 @@ exports.locationSharing = async (param) => {
       Object.assign(locationSharing, {
         type: "static",
       });
-      const data = JSON.stringify({
-        dynamicLinkInfo: {
-          domainUriPrefix: "https://ages.page.link",
-          link: `https://www.example.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&type=static`,
-          androidInfo: {
-            androidPackageName: process.env.ANDROID_PACKAGE_NAME,
-          },
-          iosInfo: {
-            iosBundleId: process.env.IOS_PACKAGE_NAME,
-          },
-        },
-      });
-      const config = {
-        method: "POST",
-        url: `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${process.env.KEY}`,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: data,
-      };
-      linkShare = await axios(config);
-      obj.link = linkShare.data.shortLink;
+      // const data = JSON.stringify({
+      //   dynamicLinkInfo: {
+      //     domainUriPrefix: "https://ages.page.link",
+      //     link: `https://location.aegis-247.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&type=static`,
+      //     androidInfo: {
+      //       androidPackageName: process.env.ANDROID_PACKAGE_NAME,
+      //     },
+      //     iosInfo: {
+      //       iosBundleId: process.env.IOS_PACKAGE_NAME,
+      //     },
+      //   },
+      // });
+      // const config = {
+      //   method: "POST",
+      //   url: `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${process.env.KEY}`,
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   data: data,
+      // };
+      // linkShare = await axios(config);
+      // obj.link = linkShare.data.shortLink;
       msg = "Static Location Sharing Successfully.";
-      for (const contact of param.contacts) {
-        const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
-        let sendSMS = {
-          Subject: "Aegis247 For Help",
-          Message: `${param.user.name} shared a static location with you.\r\n\r\nSee here. ${obj.link}\r\n\r\nAegis 24/7.`,
-          PhoneNumber: mobile,
-          MessageAttributes: {
-            "AWS.MM.SMS.OriginationNumber": {
-              DataType: "String",
-              StringValue: process.env.TEN_DLC,
-            },
-          },
-        };
+      // for (const contact of param.contacts) {
+      //   const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
+      //   let sendSMS = {
+      //     Subject: "Aegis247 For Help",
+      //     Message: `${param.user.name} shared a static location with you.\r\n\r\nSee here. ${obj.link}\r\n\r\nAegis 24/7.`,
+      //     PhoneNumber: mobile,
+      //     MessageAttributes: {
+      //       "AWS.MM.SMS.OriginationNumber": {
+      //         DataType: "String",
+      //         StringValue: process.env.TEN_DLC,
+      //       },
+      //     },
+      //   };
 
-        sns.publish(sendSMS, (err, result) => {
-          if (err) {
-            console.info(err);
-          } else {
-            console.info(result);
-          }
-        });
-      }
+      //   sns.publish(sendSMS, (err, result) => {
+      //     if (err) {
+      //       console.info(err);
+      //     } else {
+      //       console.info(result);
+      //     }
+      //   });
+      // }
     } else if (
       param.currentLatitude &&
       param.currentLongitude &&
@@ -88,52 +88,52 @@ exports.locationSharing = async (param) => {
         destination_latitude: param.destinationLatitude,
         destination_longitude: param.destinationLatitude,
       });
-      const data = JSON.stringify({
-        dynamicLinkInfo: {
-          domainUriPrefix: "https://ages.page.link",
-          link: `https://www.example.com/?clat=${param.currentLatitude}&clong=${param.currentLongitude}&dlat=${param.destinationLatitude}&dlong=${param.destinationLongitude}&type=live&uniqueId=${uniqueId}`,
-          androidInfo: {
-            androidPackageName: process.env.ANDROID_PACKAGE_NAME,
-          },
-          iosInfo: {
-            iosBundleId: process.env.IOS_PACKAGE_NAME,
-          },
-        },
-      });
-      const config = {
-        method: "POST",
-        url: `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${process.env.KEY}`,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: data,
-      };
-      linkShare = await axios(config);
-      obj.link = linkShare.data.shortLink;
+      // const data = JSON.stringify({
+      //   dynamicLinkInfo: {
+      //     domainUriPrefix: "https://ages.page.link",
+      //     link: `https://location.aegis-247.com/?clat=${param.currentLatitude}&clong=${param.currentLongitude}&dlat=${param.destinationLatitude}&dlong=${param.destinationLongitude}&type=live&uniqueId=${uniqueId}`,
+      //     androidInfo: {
+      //       androidPackageName: process.env.ANDROID_PACKAGE_NAME,
+      //     },
+      //     iosInfo: {
+      //       iosBundleId: process.env.IOS_PACKAGE_NAME,
+      //     },
+      //   },
+      // });
+      // const config = {
+      //   method: "POST",
+      //   url: `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${process.env.KEY}`,
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   data: data,
+      // };
+      // linkShare = await axios(config);
+      // obj.link = linkShare.data.shortLink;
       msg = "Live Location Sharing Successfully.";
-      obj.uniqueID = uniqueId;
-      for (const contact of param.contacts) {
-        const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
-        let sendSMS = {
-          Subject: "Aegis247 For Help",
-          Message: `${param.user.name} has shared their live location and end destination with you.\r\n\r\nView here. ${obj.link}\r\n\r\nAegis 24/7.`,
-          PhoneNumber: mobile,
-          MessageAttributes: {
-            "AWS.MM.SMS.OriginationNumber": {
-              DataType: "String",
-              StringValue: process.env.TEN_DLC,
-            },
-          },
-        };
+      // obj.uniqueID = uniqueId;
+      // for (const contact of param.contacts) {
+      //   const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
+      //   let sendSMS = {
+      //     Subject: "Aegis247 For Help",
+      //     Message: `${param.user.name} has shared their live location and end destination with you.\r\n\r\nView here. ${obj.link}\r\n\r\nAegis 24/7.`,
+      //     PhoneNumber: mobile,
+      //     MessageAttributes: {
+      //       "AWS.MM.SMS.OriginationNumber": {
+      //         DataType: "String",
+      //         StringValue: process.env.TEN_DLC,
+      //       },
+      //     },
+      //   };
 
-        sns.publish(sendSMS, (err, result) => {
-          if (err) {
-            console.info(err);
-          } else {
-            console.info(result);
-          }
-        });
-      }
+      //   sns.publish(sendSMS, (err, result) => {
+      //     if (err) {
+      //       console.info(err);
+      //     } else {
+      //       console.info(result);
+      //     }
+      //   });
+      // }
     }
 
     await locationsharings.create(locationSharing);
