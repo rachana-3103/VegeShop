@@ -606,7 +606,7 @@ exports.alertSafetyPlan = async (param) => {
           number = objHelp.country_code + objHelp.phone_number;
           sendSMS = {
             Subject: "Aegis247 alert for help",
-            Message: `${param.user.name} has activated the help button on their Aegis 24/7 mobile safety app.\r\n\r\nView their live location.\r\n\r\nContact this person now.\r\n\r\nAegis 24/7`,
+            Message: `${param.user.name} has activated the help button on their Aegis 24/7 mobile safety app.\r\n\r\nView their live location.${obj.link}\r\n\r\nContact this person now.\r\n\r\nAegis 24/7`,
             PhoneNumber: number,
             MessageAttributes: {
               "AWS.MM.SMS.OriginationNumber": {
