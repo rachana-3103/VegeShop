@@ -16,7 +16,7 @@ exports.ALLREADY_REGISTER = "An account with that phone number already exists.";
 exports.SUCCESS = "success";
 exports.TOKEN_NOT_FOUND = "Token Not Found";
 exports.OTP_MESSAGE =
-  "Aegis 24/7. Your cell phone verification code is:";
+  "AEGIS247. Your cell phone verification code is:";
 exports.GROUP_ALREADY_EXIST = "Group Already Exist.";
 exports.GROUP_NOT_FOUND = "Group Not Found.";
 exports.CONTACT_PHONENUMBER_SAME = "Contact Phone Number is the same.";
