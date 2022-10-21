@@ -483,7 +483,7 @@ exports.alertSafetyPlan = async (param) => {
     const uniqueId = uuid.v4();
     let data = JSON.stringify({
       dynamicLinkInfo: {
-        domainUriPrefix: "https://link.aegis-247.com",
+        domainUriPrefix: "https://aegis-247.page.link",
         link: `https://location.aegis-247.com/?lat=${param.latitude}&long=${param.longitude}&type=help&uniqueId=${uniqueId}`,
         // androidInfo: {
         //   androidPackageName: process.env.ANDROID_PACKAGE_NAME,
@@ -892,7 +892,7 @@ exports.checkInOut = async (param) => {
         const uniqueId = param.user.id;
         let data = JSON.stringify({
           dynamicLinkInfo: {
-            domainUriPrefix: "https://link.aegis-247.com",
+            domainUriPrefix: "https://aegis-247.page.link",
             link: `https://location.aegis-247.com/?lat=${param.latitude}&long=${param.longitude}&time=${param.time}&type=checkIn&uniqueId=${uniqueId}`,
             // androidInfo: {
             //   androidPackageName: process.env.ANDROID_PACKAGE_NAME,
