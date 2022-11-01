@@ -942,7 +942,7 @@ exports.checkInOut = async (param) => {
             },
           },
         };
-        await updateStatus(STATUS.COMPLETED, param.user.id);
+        // await updateStatus(STATUS.COMPLETED, param.user.id);
       }
       sns.publish(sendSMS, (err, result) => {
         if (err) {
