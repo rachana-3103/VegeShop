@@ -590,6 +590,7 @@ exports.alertSafetyPlan = async (param) => {
       for (const id of safetyplan.dataValues.help_group) {
         const group = await findGroupById(safetyplan.dataValues.user_id, id);
         helpArray = [...group.contacts];
+      }
         for (const element of safetyplan.dataValues.help_individuals) {
           if (
             !helpArray.some(
@@ -624,7 +625,6 @@ exports.alertSafetyPlan = async (param) => {
             }
           });
         }
-      }
       await updateAlert(param.user.id);
       msg = "Safetyplan live location share.";
     }
