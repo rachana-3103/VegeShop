@@ -591,43 +591,45 @@ exports.alertSafetyPlan = async (param) => {
         const group = await findGroupById(safetyplan.dataValues.user_id, id);
         helpArray = [...group.contacts];
       }
-        for (const element of safetyplan.dataValues.help_individuals) {
-          if (
-            !helpArray.some(
-              (objData) =>
-                objData.phone_number == element.phone_number &&
-                objData.country_code == element.country_code
-            )
-          ) {
-            helpArray.push(element);
-          }
+      for (const element of safetyplan.dataValues.help_individuals) {
+        if (
+          !helpArray.some(
+            (objData) =>
+              objData.phone_number == element.phone_number &&
+              objData.country_code == element.country_code
+          )
+        ) {
+          helpArray.push(element);
         }
-        await updateBattery(param.user.id, param.battery, param.altitude);
-        for (const objHelp of helpArray) {
-          number = objHelp.country_code + objHelp.phone_number;
-          sendSMS = {
-            Subject: "Aegis247 alert for help",
-            Message: `${param.user.name} has activated the help button on their AEGIS247 mobile safety app.\r\n\r\nView their live location. ${obj.link}\r\n\r\nContact this person now.\r\n\r\nAEGIS247`,
-            PhoneNumber: number,
-            MessageAttributes: {
-              "AWS.MM.SMS.OriginationNumber": {
-                DataType: "String",
-                StringValue: process.env.TEN_DLC,
-              },
+      }
+      await updateBattery(param.user.id, param.battery, param.altitude);
+      console.log('helpArray', helpArray)
+      for (const objHelp of helpArray) {
+        number = objHelp.country_code + objHelp.phone_number;
+        console.log('number', number)
+        sendSMS = {
+          Subject: "Aegis247 alert for help",
+          Message: `${param.user.name} has activated the help button on their AEGIS247 mobile safety app.\r\n\r\nView their live location. ${obj.link}\r\n\r\nContact this person now.\r\n\r\nAEGIS247`,
+          PhoneNumber: number,
+          MessageAttributes: {
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
+              StringValue: process.env.TEN_DLC,
             },
-          };
+          },
+        };
 
-          sns.publish(sendSMS, (err, result) => {
-            if (err) {
-              console.info(err);
-            } else {
-              console.info(result);
-            }
-          });
-        }
+        await sns.publish(sendSMS, (err, result) => {
+          if (err) {
+            console.info(err);
+          } else {
+            console.info(result);
+          }
+        }).promise();
+      }
+    }
       await updateAlert(param.user.id);
       msg = "Safetyplan live location share.";
-    }
     return {
       err: false,
       data: obj,
@@ -902,7 +904,7 @@ exports.checkInOut = async (param) => {
             // },
           },
         });
-    
+
         const config = {
           method: "POST",
           url: `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${process.env.KEY}`,
@@ -931,7 +933,7 @@ exports.checkInOut = async (param) => {
       if (param.check == false) {
         sendSMS = {
           Subject: "Aegis247 For Safety plan check out",
-          
+
           Message: `${param.user.name} has now checked out of the location in their AEGIS247 safety plan.\r\n\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\n\r\nAEGIS247`,
           // Message:`${param.user.name} has now checked out of Location from safety plan.\r\nAs part of their safety plan, they wanted you to know.\r\nFor more contact ${obj.name} on ${param.user.country_code}${param.user.phone_number}.\r\nAegis 24/7.`,
           PhoneNumber: number,
@@ -959,7 +961,7 @@ exports.checkInOut = async (param) => {
       msg: "Contact informed successfully.",
     };
   } catch (error) {
-    console.log('~ error', error)
+    console.log("~ error", error);
     return {
       err: true,
       msg: error.message,
