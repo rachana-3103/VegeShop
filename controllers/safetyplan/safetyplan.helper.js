@@ -603,10 +603,8 @@ exports.alertSafetyPlan = async (param) => {
         }
       }
       await updateBattery(param.user.id, param.battery, param.altitude);
-      console.log('helpArray', helpArray)
       for (const objHelp of helpArray) {
         number = objHelp.country_code + objHelp.phone_number;
-        console.log('number', number)
         sendSMS = {
           Subject: "Aegis247 alert for help",
           Message: `${param.user.name} has activated the help button on their AEGIS247 mobile safety app.\r\n\r\nView their live location. ${obj.link}\r\n\r\nContact this person now.\r\n\r\nAEGIS247`,
