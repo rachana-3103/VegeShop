@@ -884,6 +884,7 @@ exports.checkInOut = async (param) => {
         }
       }
     }
+    let obj1 = {};
     let link;
     for (const obj of checkInOutrray) {
       number = obj.country_code + obj.phone_number;
@@ -912,7 +913,7 @@ exports.checkInOut = async (param) => {
           data: data,
         };
         const linkShare = await axios(config);
-        obj.link = linkShare.data.shortLink;
+        obj1.link = linkShare.data.shortLink;
         obj.uniqueID = uniqueId;
         link = obj.link;
         sendSMS = {
@@ -955,7 +956,7 @@ exports.checkInOut = async (param) => {
 
     return {
       err: false,
-      data: link,
+      data: obj1,
       msg: "Contact informed successfully.",
     };
   } catch (error) {
