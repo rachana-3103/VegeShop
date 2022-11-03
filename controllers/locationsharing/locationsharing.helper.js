@@ -91,7 +91,7 @@ exports.locationSharing = async (param) => {
       const data = JSON.stringify({
         dynamicLinkInfo: {
           domainUriPrefix: "https://link.aegis-247.com",
-          link: `https://location.aegis-247.com/?clat=${param.currentLatitude}&clong=${param.currentLongitude}&dlat=${param.destinationLatitude}&dlong=${param.destinationLongitude}&type=live&uniqueId=${uniqueId}`,
+          link: `https://location.aegis-247.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&dlat=${param.destinationLatitude}&dlong=${param.destinationLongitude}&type=live&uniqueId=${uniqueId}`,
           androidInfo: {
             androidPackageName: process.env.ANDROID_PACKAGE_NAME,
           },
