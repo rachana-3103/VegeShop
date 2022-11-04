@@ -617,13 +617,13 @@ exports.alertSafetyPlan = async (param) => {
           },
         };
 
-        await sns.publish(sendSMS, (err, result) => {
+       sns.publish(sendSMS, (err, result) => {
           if (err) {
             console.info(err);
           } else {
             console.info(result);
           }
-        }).promise();
+        });
       }
     }
       await updateAlert(param.user.id);
