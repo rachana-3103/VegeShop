@@ -885,7 +885,6 @@ exports.checkInOut = async (param) => {
       }
     }
     let obj1 = {};
-    let link;
     for (const obj of checkInOutrray) {
       number = obj.country_code + obj.phone_number;
       let sendSMS;
@@ -914,12 +913,11 @@ exports.checkInOut = async (param) => {
         };
         const linkShare = await axios(config);
         obj1.link = linkShare.data.shortLink;
-        obj.uniqueID = uniqueId;
-        link = obj.link;
+        obj1.uniqueID = uniqueId;
         sendSMS = {
           Subject: "Aegis247 For Safety plan check in",
           // Message:`${param.user.name} has checked into Location from safety plan and have shared their safety plan with you:\r\nUser full name:${param.user.name}\r\nUser phone number:${param.user.country_code}${param.user.phone_number}\r\nLocation to attend:${location.name}\r\nPerson(s) at location:${safetyplan.person_name}\r\nTime at location:${param.time}\r\nNotify Contacts on Help activation\r\nFor more contact ${param.user.name} on ${param.user.country_code}${param.user.phone_number}.\r\nAegis 24/7\r\nwww.google.com`,
-          Message: `${param.user.name} has checked into a location and shared their AEGIS247 safety plan with you.\r\n\r\nView here.${obj.link}\r\n\r\nFor more contact ${param.user.name} on ${param.user.country_code}${param.user.phone_number}.\r\n\r\nAEGIS247`,
+          Message: `${param.user.name} has checked into a location and shared their AEGIS247 safety plan with you.\r\n\r\nView here.${obj1.link}\r\n\r\nFor more contact ${param.user.name} on ${param.user.country_code}${param.user.phone_number}.\r\n\r\nAEGIS247`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
