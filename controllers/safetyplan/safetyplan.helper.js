@@ -405,7 +405,7 @@ exports.getSafetyPlan = async (param) => {
 exports.getSafetyPlanDetails = async (param) => {
   try {
     let safetyplan = await findSafetyPlan(param.userId);
-
+    let user = {};
     if (safetyplan) {
       const location = await findLocationById(
         param.userId,
@@ -439,14 +439,9 @@ exports.getSafetyPlanDetails = async (param) => {
           alert: true,
         },
       });
-      if (!findManualHelp) {
-        return {
-          err: true,
-          msg: "Manual help and safety plan not found",
-        };
-      }
-      const user = await findUserById(findManualHelp.dataValues.user_id);
+
       if (findManualHelp) {
+        const user = await findUserById(findManualHelp.dataValues.user_id);
         Object.assign(findManualHelp.dataValues, {
           name: user.dataValues.name,
           cell: user.dataValues.country_code + user.dataValues.phone_number,
@@ -458,14 +453,19 @@ exports.getSafetyPlanDetails = async (param) => {
             findManualHelp.dataValues.help_individuals.length +
             findManualHelp.dataValues.help_group.length,
         });
+        return {
+          err: false,
+          data: findManualHelp,
+          msg: "Manual Help Details",
+        };
+      } else {
+        const user = await findUserById(param.userId);
+        return {
+          err: false,
+          data: user,
+          msg: "User Details",
+        };
       }
-      delete findManualHelp.dataValues.help_group;
-      delete findManualHelp.dataValues.help_individuals;
-      return {
-        err: false,
-        data: findManualHelp,
-        msg: "Manual Help Details",
-      };
     }
   } catch (error) {
     console.log("~ error", error);
@@ -617,7 +617,7 @@ exports.alertSafetyPlan = async (param) => {
           },
         };
 
-       sns.publish(sendSMS, (err, result) => {
+        sns.publish(sendSMS, (err, result) => {
           if (err) {
             console.info(err);
           } else {
@@ -626,8 +626,8 @@ exports.alertSafetyPlan = async (param) => {
         });
       }
     }
-      await updateAlert(param.user.id);
-      msg = "Safetyplan live location share.";
+    await updateAlert(param.user.id);
+    msg = "Safetyplan live location share.";
     return {
       err: false,
       data: obj,
