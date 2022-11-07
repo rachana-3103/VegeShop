@@ -2,9 +2,9 @@ const { locationsharings } = require("../../models/index");
 const axios = require("axios");
 const uuid = require("uuid");
 const AWS = require("aws-sdk");
-const { findLiveLocation } = require("../../Dao/locationsharing");
+const { findLiveLocation , updateStatus } = require("../../Dao/locationsharing");
 const { LOCATION_NOT_FOUND } = require("../../helpers/messages");
-const { updateStatus } = require("../../Dao/locationsharing");
+const { updateBattery, findUserById } = require("../../Dao/user");
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SECRET_KEY,
@@ -34,7 +34,7 @@ exports.locationSharing = async (param) => {
       const data = JSON.stringify({
         dynamicLinkInfo: {
           domainUriPrefix: "https://link.aegis-247.com",
-          link: `https://location.aegis-247.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&type=static`,
+          link: `https://location.aegis-247.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&type=static&userId=${param.user.id}`,
           androidInfo: {
             androidPackageName: process.env.ANDROID_PACKAGE_NAME,
           },
@@ -91,7 +91,7 @@ exports.locationSharing = async (param) => {
       const data = JSON.stringify({
         dynamicLinkInfo: {
           domainUriPrefix: "https://link.aegis-247.com",
-          link: `https://location.aegis-247.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&dlat=${param.destinationLatitude}&dlong=${param.destinationLongitude}&type=live&uniqueId=${uniqueId}`,
+          link: `https://location.aegis-247.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&dlat=${param.destinationLatitude}&dlong=${param.destinationLongitude}&type=live&uniqueId=${uniqueId}&userId=${param.user.id}`,
           androidInfo: {
             androidPackageName: process.env.ANDROID_PACKAGE_NAME,
           },
@@ -135,8 +135,9 @@ exports.locationSharing = async (param) => {
         });
       }
     }
-
+    await updateBattery(param.user.id, param.battery, param.altitude);
     await locationsharings.create(locationSharing);
+
     return {
       err: false,
       data: obj,
