@@ -286,21 +286,21 @@ exports.completeSafetyPlan = async (param) => {
     }
     let number;
     let array = [];
-    for (const id of safetyplan.dataValues.help_group) {
-      const group = await findGroupById(safetyplan.dataValues.user_id, id);
-      array = [...group.contacts];
-    }
-    for (const element of safetyplan.dataValues.help_individuals) {
-      if (
-        !array.some(
-          (objData) =>
-            objData.phone_number == element.phone_number &&
-            objData.country_code == element.country_code
-        )
-      ) {
-        array.push(element);
-      }
-    }
+    // for (const id of safetyplan.dataValues.help_group) {
+    //   const group = await findGroupById(safetyplan.dataValues.user_id, id);
+    //   array = [...group.contacts];
+    // }
+    // for (const element of safetyplan.dataValues.help_individuals) {
+    //   if (
+    //     !array.some(
+    //       (objData) =>
+    //         objData.phone_number == element.phone_number &&
+    //         objData.country_code == element.country_code
+    //     )
+    //   ) {
+    //     array.push(element);
+    //   }
+    // }
     for (const id of safetyplan.dataValues.checkinout_group) {
       const group = await findGroupById(safetyplan.dataValues.user_id, id);
       array = [...group.contacts];
@@ -316,33 +316,35 @@ exports.completeSafetyPlan = async (param) => {
         array.push(element);
       }
     }
+    if (param.isCompleted) {
+      const ids = array.map((o) => o.phone_number);
+      const filtered = array.filter(
+        ({ phone_number }, index) => !ids.includes(phone_number, index + 1)
+      );
+      for (const obj of filtered) {
+        number = obj.country_code + obj.phone_number;
+        sendSMS = {
+          Subject: "Aegis247 alert for complete safety plan",
+          Message: `${param.user.name} has completed their Aegis 24/7 safety plan and chosen to remain at the loaction.\r\n\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\n\r\nAEGIS247`,
+          PhoneNumber: number,
+          MessageAttributes: {
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
+              StringValue: process.env.TEN_DLC,
+            },
+          },
+        };
 
-    // const ids = array.map((o) => o.phone_number);
-    // const filtered = array.filter(
-    //   ({ phone_number }, index) => !ids.includes(phone_number, index + 1)
-    // );
-    // for (const obj of filtered) {
-    //   number = obj.country_code + obj.phone_number;
-    //   sendSMS = {
-    //     Subject: "Aegis247 alert for complete safety plan",
-    //     Message: `${param.user.name} has completed their Aegis 24/7 safety plan and chosen to remain at the loaction.\r\n\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\n\r\nAegis 24/7`,
-    //     PhoneNumber: number,
-    //     MessageAttributes: {
-    //       "AWS.MM.SMS.OriginationNumber": {
-    //         DataType: "String",
-    //         StringValue: process.env.TEN_DLC,
-    //       },
-    //     },
-    //   };
+        sns.publish(sendSMS, (err, result) => {
+          if (err) {
+            console.info(err);
+          } else {
+            console.info(result);
+          }
+        });
+      }
+    }
 
-    //   sns.publish(sendSMS, (err, result) => {
-    //     if (err) {
-    //       console.info(err);
-    //     } else {
-    //       console.info(result);
-    //     }
-    //   });
-    // }
     await updateStatus(STATUS.COMPLETED, param.user.id);
 
     return {
