@@ -35,12 +35,12 @@ exports.locationSharing = async (param) => {
         dynamicLinkInfo: {
           domainUriPrefix: "https://link.aegis-247.com",
           link: `https://location.aegis-247.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&type=static&userId=${param.user.id}`,
-          androidInfo: {
-            androidPackageName: process.env.ANDROID_PACKAGE_NAME,
-          },
-          iosInfo: {
-            iosBundleId: process.env.IOS_PACKAGE_NAME,
-          },
+          // androidInfo: {
+          //   androidPackageName: process.env.ANDROID_PACKAGE_NAME,
+          // },
+          // iosInfo: {
+          //   iosBundleId: process.env.IOS_PACKAGE_NAME,
+          // },
         },
       });
       const config = {
@@ -92,12 +92,12 @@ exports.locationSharing = async (param) => {
         dynamicLinkInfo: {
           domainUriPrefix: "https://link.aegis-247.com",
           link: `https://location.aegis-247.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&dlat=${param.destinationLatitude}&dlong=${param.destinationLongitude}&type=live&uniqueId=${uniqueId}&userId=${param.user.id}`,
-          androidInfo: {
-            androidPackageName: process.env.ANDROID_PACKAGE_NAME,
-          },
-          iosInfo: {
-            iosBundleId: process.env.IOS_PACKAGE_NAME,
-          },
+          // androidInfo: {
+          //   androidPackageName: process.env.ANDROID_PACKAGE_NAME,
+          // },
+          // iosInfo: {
+          //   iosBundleId: process.env.IOS_PACKAGE_NAME,
+          // },
         },
       });
       const config = {
