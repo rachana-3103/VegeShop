@@ -16,6 +16,8 @@ exports.locationSharing = async (param) => {
   try {
     let obj = {};
     let msg;
+    const user = await findUserById(param.user.id);
+
     let locationSharing = {
       user_id: param.user.id,
       current_latitude: param.currentLatitude,
@@ -58,7 +60,7 @@ exports.locationSharing = async (param) => {
         const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
         let sendSMS = {
           Subject: "Aegis247 For Help",
-          Message: `${param.user.name} shared a static location with you.\r\n\r\nSee here. ${obj.link}\r\n\r\nAEGIS247`,
+          Message: `${user.name} shared a static location with you.\r\n\r\nSee here. ${obj.link}\r\n\r\nAEGIS247`,
           PhoneNumber: mobile,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -116,7 +118,7 @@ exports.locationSharing = async (param) => {
         const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
         let sendSMS = {
           Subject: "Aegis247 For Help",
-          Message: `${param.user.name} has shared their live location and end destination with you.\r\n\r\nView here. ${obj.link}\r\n\r\nAEGIS247`,
+          Message: `${user.name} has shared their live location and end destination with you.\r\n\r\nView here. ${obj.link}\r\n\r\nAEGIS247`,
           PhoneNumber: mobile,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
@@ -155,6 +157,7 @@ exports.status = async (param) => {
   try {
     let msg;
     let message;
+    const user = await findUserById(param.user.id);
     const location = await findLiveLocation(param.user.id);
     if (!location) {
       return {
@@ -174,13 +177,13 @@ exports.status = async (param) => {
     }
 
     for (const contact of location.contacts) {
-      const mobile = "+" + Number(contact.countryCode) + param.user.phoneNumber;
+      const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
       if (param.status == "Cancel") {
-        message = `${param.user.name} has cancelled their live location sharing prior to arriving at their location.\r\n\r\nAEGIS247`;
+        message = `${user.name} has cancelled their live location sharing prior to arriving at their location.\r\n\r\nAEGIS247`;
       }
 
       if (param.status == "Stop") {
-        message = `${param.user.name} has arrived at their destination. Live location sharing stopped.\r\n\r\nAEGIS247`;
+        message = `${user.name} has arrived at their destination. Live location sharing stopped.\r\n\r\nAEGIS247`;
       }
       let sendSMS = {
         Subject: "Aegis247 For Help",
