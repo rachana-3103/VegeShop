@@ -325,7 +325,7 @@ exports.completeSafetyPlan = async (param) => {
         number = obj.country_code + obj.phone_number;
         sendSMS = {
           Subject: "Aegis247 alert for complete safety plan",
-          Message: `${param.user.name} has completed their AEGIS247 safety plan and chosen to remain at the loaction.\r\n\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\n\r\nAEGIS247`,
+          Message: `${param.user.name} has completed their AEGIS247 safety plan and chosen to remain at the location.\r\n\r\nFor more contact ${param.user.name} ${param.user.country_code}${param.user.phone_number}.\r\n\r\nAEGIS247`,
           PhoneNumber: number,
           MessageAttributes: {
             "AWS.MM.SMS.OriginationNumber": {
