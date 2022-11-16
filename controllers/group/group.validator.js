@@ -5,7 +5,7 @@ const { validateRequest } = require("../../helpers/helpers");
 exports.addGroup = async (req, res, next) => {
   const param = { ...req.body };
   const schema = Joi.object({
-    name: Joi.string().max(20).required(),
+    name: Joi.string().max(30).required(),
     contacts: Joi.array().required(),
   });
 
@@ -21,7 +21,7 @@ exports.updateGroup = async (req, res, next) => {
   const param = { ...req.body };
   const schema = Joi.object({
     groupId:Joi.string().required(),
-    name: Joi.string().alphanum().max(30).required(),
+    name: Joi.string().max(30).required(),
     contacts: Joi.array().required(),
   });
 
