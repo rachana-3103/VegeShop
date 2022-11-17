@@ -165,12 +165,12 @@ exports.status = async (param) => {
       };
     }
 
-    if (param.status == "Cancel") {
+    if (param.status == "Stop") {
       await updateStatus("CANCELLED", param.user.id, "live");
       msg = "status has been cancelled.";
     }
 
-    if (param.status == "Stop") {
+    if (param.status == "Arrived") {
       await updateStatus("STOPPED", param.user.id, "live");
       msg = "status has been stopped.";
     }
