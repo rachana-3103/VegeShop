@@ -156,7 +156,6 @@ exports.locationSharing = async (param) => {
 exports.status = async (param) => {
   try {
     let msg;
-    let message;
     const user = await findUserById(param.user.id);
     const location = await findLiveLocation(param.user.id);
     if (!location) {
@@ -176,26 +175,40 @@ exports.status = async (param) => {
       msg = "status has been stopped.";
     }
 
+    console.log('location.contacts', location.contacts)
+    let sendSMS;
     for (const contact of location.contacts) {
+
       const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
       if (param.status == "Cancel") {
-        message = `${user.name} has cancelled their live location sharing prior to arriving at their location.\r\n\r\nAEGIS247`;
+         sendSMS = {
+          Subject: "Aegis247 For Help",
+          Message: `${user.name} has cancelled their live location sharing prior to arriving at their location.\r\n\r\nAEGIS247`,
+          PhoneNumber: mobile,
+          MessageAttributes: {
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
+              StringValue: process.env.TEN_DLC,
+              // StringValue: 'Promotional'
+            },
+          },
+        };
+      }
+      
+      if (param.status == "Stop") {
+        sendSMS = {
+          Subject: "Aegis247 For Help",
+          Message: `${user.name} has arrived at their destination. Live location sharing stopped.\r\n\r\nAEGIS247`,
+          PhoneNumber: mobile,
+          MessageAttributes: {
+            "AWS.MM.SMS.OriginationNumber": {
+              DataType: "String",
+              StringValue: process.env.TEN_DLC,
+            },
+          },
+        };
       }
 
-      if (param.status == "Stop") {
-        message = `${user.name} has arrived at their destination. Live location sharing stopped.\r\n\r\nAEGIS247`;
-      }
-      let sendSMS = {
-        Subject: "Aegis247 For Help",
-        Message: message,
-        PhoneNumber: mobile,
-        MessageAttributes: {
-          "AWS.MM.SMS.OriginationNumber": {
-            DataType: "String",
-            StringValue: process.env.TEN_DLC,
-          },
-        },
-      };
       sns.publish(sendSMS, (err, result) => {
         if (err) {
           console.info(err);
