@@ -180,7 +180,7 @@ exports.status = async (param) => {
     for (const contact of location.contacts) {
 
       const mobile = "+" + Number(contact.countryCode) + contact.phoneNumber;
-      if (param.status == "Cancel") {
+      if (param.status == "Stop") {
          sendSMS = {
           Subject: "Aegis247 For Help",
           Message: `${user.name} has cancelled their live location sharing prior to arriving at their location.\r\n\r\nAEGIS247`,
@@ -195,7 +195,7 @@ exports.status = async (param) => {
         };
       }
       
-      if (param.status == "Stop") {
+      if (param.status == "Arrived") {
         sendSMS = {
           Subject: "Aegis247 For Help",
           Message: `${user.name} has arrived at their destination. Live location sharing stopped.\r\n\r\nAEGIS247`,
