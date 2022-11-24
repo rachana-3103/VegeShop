@@ -35,7 +35,7 @@ exports.locationSharing = async (param) => {
       });
       const data = JSON.stringify({
         dynamicLinkInfo: {
-          domainUriPrefix: "https://link.aegis-247.com",
+          domainUriPrefix: process.env.DOMAINURIPREFIX,
           link: `https://location.aegis-247.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&type=static&userId=${param.user.id}`,
           // androidInfo: {
           //   androidPackageName: process.env.ANDROID_PACKAGE_NAME,
@@ -92,7 +92,7 @@ exports.locationSharing = async (param) => {
       });
       const data = JSON.stringify({
         dynamicLinkInfo: {
-          domainUriPrefix: "https://link.aegis-247.com",
+          domainUriPrefix: process.env.DOMAINURIPREFIX,
           link: `https://location.aegis-247.com/?lat=${param.currentLatitude}&long=${param.currentLongitude}&dlat=${param.destinationLatitude}&dlong=${param.destinationLongitude}&type=live&uniqueId=${uniqueId}&userId=${param.user.id}`,
           // androidInfo: {
           //   androidPackageName: process.env.ANDROID_PACKAGE_NAME,
