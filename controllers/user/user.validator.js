@@ -5,18 +5,19 @@ const { validateRequest } = require("../../helpers/helpers");
 exports.signup = async (req, res, next) => {
   const param = { ...req.body };
   const schema = Joi.object({
-    name: Joi.string().min(3).max(30).required(),
+    firstName: Joi.string().min(3).max(30).required(),
+    lastName: Joi.string().min(3).max(30).required(),
     password: Joi.string()
       .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
       .required(),
-    phoneNumber: Joi.number().required(),
-    countryCode: Joi.string().max(5).required(),
+    contactNumber: Joi.number().required(),
     email: Joi.string()
       .email({
         minDomainSegments: 2,
-        tlds: { allow: ["com", "net", "in", "us"] },
+        tlds: { allow: ["com", "net", "in", "us","au"] },
       })
       .lowercase(),
+    address: Joi.string().min(3).max(30).required(),
   });
 
   const error = validateRequest(param, schema);
@@ -31,12 +32,16 @@ exports.login = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
+    email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ["com", "net", "in", "us","au"] },
+    })
+    .lowercase(),
     password: Joi.string()
       .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
       .required(),
-    phoneNumber: Joi.string().required(),
-    countryCode: Joi.string().max(5).required(),
-  }).with("phoneNumber", "countryCode");
+  }).with("email", "password");
 
   const error = validateRequest(param, schema);
 
@@ -67,9 +72,13 @@ exports.forgot = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
-    phoneNumber: Joi.string().required(),
-    countryCode: Joi.string().max(5).required(),
-  }).with("phoneNumber", "countryCode");
+    email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ["com", "net", "in", "us","au"] },
+    })
+    .lowercase(),
+  });
 
   const error = validateRequest(param, schema);
 
@@ -103,7 +112,7 @@ exports.changePassword = async (req, res, next) => {
   const param = { ...req.body };
 
   const schema = Joi.object({
-    oldPassword: Joi.string()
+    currentPassword: Joi.string()
       .regex(new RegExp(/^[a-zA-Z0-9!@#$%&*\.?]{8,16}$/))
       .required(),
     newPassword: Joi.string()
@@ -197,11 +206,16 @@ exports.deviceTokenUpdate = async (req, res, next) => {
 exports.updateProfile = async (req, res, next) => {
   const param = { ...req.body };
   const schema = Joi.object({
-    name: Joi.string().min(3).max(30).required(),
-    email: Joi.string().email({
-      minDomainSegments: 2,
-      tlds: { allow: ["com", "net", "in", "us"] },
-    }),
+    firstName: Joi.string().min(3).max(30).required(),
+    lastName: Joi.string().min(3).max(30).required(),
+    email: Joi.string()
+      .email({
+        minDomainSegments: 2,
+        tlds: { allow: ["com", "net", "in", "us","au"] },
+      })
+      .lowercase(),
+    contactNumber: Joi.number().required(),
+    address: Joi.string().min(3).max(30).required(),
   });
   const error = validateRequest(param, schema);
   if (error) {

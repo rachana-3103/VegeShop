@@ -12,13 +12,13 @@ exports.DB_CONNECTION_SUCCESSFUL =
 exports.DB_CONNECTION_UNSUCCESSFUL = "Unable to connect to the database:";
 exports.UNAUTHORIZED_USER = "UnAuthorized User";
 exports.PASSWORD_NOT_MATCH = "New password and confirmed password not same.";
-exports.ALLREADY_REGISTER = "An account with that phone number already exists.";
+exports.ALLREADY_REGISTER = "An account already exists.";
 exports.SUCCESS = "success";
 exports.TOKEN_NOT_FOUND = "Token Not Found";
 exports.OTP_MESSAGE =
   "AEGIS247. Your cell phone verification code is:";
-exports.GROUP_ALREADY_EXIST = "Group Already Exist.";
-exports.GROUP_NOT_FOUND = "Group Not Found.";
+exports.PRODUCT_ALREADY_EXIST = "Product Already Exist.";
+exports.ORDER_NOT_FOUND = "Order Not Found.";
 exports.CONTACT_PHONENUMBER_SAME = "Contact Phone Number is the same.";
 exports.SAFETYPLAN_NOT_FOUND = "Safety Plan not found.";
 exports.MANUALHELP_NOT_FOUND = "Manual Help not found.";
@@ -36,7 +36,10 @@ exports.NOTIFIED_CONTACT = 'You are already notified of their help.';
 exports.NO_MORE_EXTEND='Max 3 +10 mins extensions. Edit safety plan to extend timer.'
 
 exports.STATUS = {
-  INPROGRESS: "Inprogress",
-  CANCELLED: "Cancelled",
-  COMPLETED: "Completed",
+  1: "Order Placed",
+  2: "Order Accepted",
+  3:"On The Way",
+  4: "Delivered",
+  5: "Cancelled",
+  6: "Rejected"
 };

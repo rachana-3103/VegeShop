@@ -1,5 +1,5 @@
 {
-  "name": "aegis247",
+  "name": "vege",
   "version": "1.0.0",
   "description": "aegis location management app",
   "main": "server.js",
@@ -42,6 +42,7 @@
     "morgan": "^1.10.0",
     "node-cache": "^5.1.2",
     "node-cron": "^3.0.0",
+    "nodemailer": "^6.9.5",
     "nodemon": "^2.0.15",
     "path": "^0.12.7",
     "pg": "^8.7.3",

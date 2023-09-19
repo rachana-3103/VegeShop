@@ -171,7 +171,7 @@ exports.updateNewNumber = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    const user = await logout(req.body.user.id);
+    const user = await logout(req.body.user.id , req);
 
     if (!isEmpty(user) && user.err) {
       return errorResponse(req, res, user.msg, 400);

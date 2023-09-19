@@ -10,22 +10,29 @@ exports.settingCreate = async (obj) => {
   return await settings.create(obj);
 };
 
-exports.findUserRegistered = async (countryCode, phoneNumber) => {
+
+exports.findUserByEmail = async (contactNumber, email) => {
   return await users.findOne({
     where: {
-      country_code: countryCode,
-      phone_number: phoneNumber,
-      sms_verified: false,
+      contact_number: contactNumber,
+      email: email,
     },
   });
 };
 
-exports.findUserByEmail = async (phoneNumber, countryCode) => {
+exports.findUserEmail = async (email) => {
   return await users.findOne({
     where: {
-      phone_number: phoneNumber,
-      country_code: countryCode,
-      sms_verified: true,
+      email,
+    },
+  });
+};
+
+exports.findUser = async (email, password) => {
+  return await users.findOne({
+    where: {
+      email,
+      password
     },
   });
 };
@@ -189,8 +196,6 @@ exports.updatePassword = async (password, user) => {
       where: {
         id: user.id,
         email: user.email,
-        phone_number: user.phone_number,
-        country_code: user.country_code,
       },
     }
   );
@@ -244,10 +249,13 @@ exports.deviceTokenUpdates = async (obj) => {
   );
 };
 
-exports.updateProfiles = async (name, email, userId) => {
+exports.updateProfiles = async (firstName,lastName,contactNumber,address, email, userId) => {
   return await users.update(
     {
-      name,
+      first_name:firstName,
+      last_name:lastName,
+      contact_number:contactNumber,
+      address,
       email,
     },
     {

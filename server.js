@@ -12,15 +12,15 @@ conn.dbConnect();
 const app = require('./app');
 require('./clusteredApp');
 
-const key = fs.existsSync('/etc/letsencrypt/live/backend.ourteamland.com/privkey.pem') && fs.readFileSync('/etc/letsencrypt/live/backend.ourteamland.com/privkey.pem');
-const cert = fs.existsSync('/etc/letsencrypt/live/backend.ourteamland.com/fullchain.pem') && fs.readFileSync('/etc/letsencrypt/live/backend.ourteamland.com/fullchain.pem');
+// const key = fs.existsSync('/etc/letsencrypt/live/backend.ourteamland.com/privkey.pem') && fs.readFileSync('/etc/letsencrypt/live/backend.ourteamland.com/privkey.pem');
+// const cert = fs.existsSync('/etc/letsencrypt/live/backend.ourteamland.com/fullchain.pem') && fs.readFileSync('/etc/letsencrypt/live/backend.ourteamland.com/fullchain.pem');
 let server;
 
-if (key && cert) {
-  server = https.createServer({ key, cert }, app);
-} else {
+// if (key && cert) {
+//   server = https.createServer({ key, cert }, app);
+// } else {
   server = http.createServer(app);
-}
+// }
 
 const io = socketIO(server, {
   origin: [`${process.env.FRONT_END_URL}:*`, 'https://localhost:*'],

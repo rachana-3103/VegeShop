@@ -1,5 +1,6 @@
 const moment = require("moment");
 const path = require("path");
+const nodemailer = require("nodemailer");
 const {
   generateJWTtoken,
   comparePassword,
@@ -27,7 +28,7 @@ const {
 const {
   findUserById,
   userFindByPhoneNumber,
-  usercheckCodeVerifed,
+  findUser,
   updateCodeByPhoneNumber,
   passwordEncrypt,
   getOldPassword,
@@ -44,19 +45,11 @@ const {
   updateProfiles,
   userDelete,
   userCreate,
-  findUserRegistered,
   updateNotification,
+  findUserEmail
 } = require("../../Dao/user");
 
-const { userGroupDelete } = require("../../Dao/group");
-const { userLocationDelete } = require("../../Dao/location");
-const {
-  userSafetyplanDelete,
-  findSafetyPlan,
-  updateStatus,
-} = require("../../Dao/safetyplan");
-const { userFaqDelete } = require("../../Dao/faq");
-const { userLocationSharingDelete } = require("../../Dao/locationsharing");
+const { userGroupDelete } = require("../../Dao/product");
 const AWS = require("aws-sdk");
 const { isEmpty } = require("lodash");
 const admin = require("firebase-admin");
@@ -81,7 +74,7 @@ const sns = new AWS.SNS();
 
 exports.userSignup = async (param) => {
   try {
-    let user = await findUserByEmail(param.phoneNumber, param.countryCode);
+    let user = await findUserByEmail(param.contactNumber, param.email);
     if (user) {
       return {
         err: true,
@@ -89,84 +82,25 @@ exports.userSignup = async (param) => {
       };
     }
 
-    const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
-    const OTP = Math.floor(100000 + Math.random() * 900000);
+    const userObj = {
+      first_name: param.firstName,
+      last_name: param.lastName,
+      contact_number: param.contactNumber,
+      email: param.email,
+      password: passwordEncrypt(param.password),
+      address: param.address,
+      role:param.role
+    };
 
-    let userRegistered = await findUserRegistered(
-      param.countryCode,
-      param.phoneNumber
-    );
-
-    if (userRegistered) {
-      let sendSMS = {
-        Subject: "Aegis 24/7. Your cell phone verification code is:",
-        Message: `${OTP_MESSAGE} ${OTP} `,
-        PhoneNumber: mobile,
-        MessageAttributes: {
-          "AWS.MM.SMS.OriginationNumber": {
-            DataType: "String",
-            StringValue: process.env.TEN_DLC,
-          },
-        },
-      };
-
-      sns.publish(sendSMS, (err, result) => {
-        if (err) {
-          console.info(err);
-        } else {
-          console.info(result);
-        }
-      });
-      await updateCodeByPhoneNumber(OTP, param);
-
-      userRegistered = await findUserById(userRegistered.id);
+    const newUser = await userCreate(userObj);
+    if (newUser) {
+      user = await findUserById(newUser.id);
       return {
         err: false,
         code: 200,
-        data: userRegistered,
+        data: user,
         msg: "Signup Successfully.",
       };
-    } else {
-      let sendSMS = {
-        Subject: "Aegis 24/7. Your cell phone verification code is:",
-        Message: `${OTP_MESSAGE} ${OTP} `,
-        PhoneNumber: mobile,
-        MessageAttributes: {
-          "AWS.MM.SMS.OriginationNumber": {
-            DataType: "String",
-            StringValue: process.env.TEN_DLC,
-          },
-        },
-      };
-
-      sns.publish(sendSMS, (err, result) => {
-        if (err) {
-          console.info(err);
-        } else {
-          console.info(result);
-        }
-      });
-
-      const userObj = {
-        name: param.name,
-        country_code: param.countryCode,
-        phone_number: param.phoneNumber,
-        email: param.email,
-        password: passwordEncrypt(param.password),
-        sms_code: OTP,
-        otp_generated_at: moment().format("YYYY-MM-DDTHH:mm"),
-      };
-
-      const newUser = await userCreate(userObj);
-      if (newUser) {
-        user = await findUserById(newUser.id);
-        return {
-          err: false,
-          code: 200,
-          data: user,
-          msg: "Signup Successfully.",
-        };
-      }
     }
   } catch (error) {
     return {
@@ -178,27 +112,14 @@ exports.userSignup = async (param) => {
 
 exports.userLogin = async (param) => {
   try {
-    let user = await userFindByPhoneNumber(
-      param.phoneNumber,
-      param.countryCode
-    );
+    let user = await findUser(param.email, passwordEncrypt(param.password));
     if (!user) {
       return {
         err: true,
-        msg: INVALID_PHNUMBER,
+        msg: USER_NOT_EXIST,
       };
-    } else {
-      let code = await usercheckCodeVerifed(
-        param.phoneNumber,
-        param.countryCode
-      );
-      if (code) {
-        return {
-          err: true,
-          msg: CODE_NOT_VERIFIED,
-        };
-      }
     }
+
     if (user) {
       const password = comparePassword(param.password, user.password);
       if (!password) {
@@ -215,18 +136,14 @@ exports.userLogin = async (param) => {
         id: user.id,
         email: user.email,
         password: user.password,
-        name: user.name,
-        phone_number: user.phone_number,
-        country_code: user.country_code,
+        role:user.role
       });
 
       const refreshToken = generateRefreshtoken({
         id: user.id,
         email: user.email,
-        name: user.name,
         password: user.password,
-        phone_number: user.phone_number,
-        country_code: user.country_code,
+        role:user.role
       });
 
       user = await findUserById(user.id);
@@ -276,44 +193,42 @@ exports.refreshToken = async (param) => {
 
 exports.forgotPassword = async (param) => {
   try {
-    let user = await userFindByPhoneNumber(
-      param.phoneNumber,
-      param.countryCode
-    );
-
+    const user = await findUserEmail(param.email);
     if (!user) {
       return {
         err: true,
-        msg: INVALID_PHNUMBER,
+        msg: USER_NOT_EXIST,
       };
-    } else {
-      const OTP = Math.floor(100000 + Math.random() * 900000);
-      const mobile = "+" + Number(param.countryCode) + param.phoneNumber;
-
-      let sendSMS = {
-        Subject: "Aegis 24/7. Your cell phone verification code is:",
-        Message: `${OTP_MESSAGE} ${OTP} `,
-        PhoneNumber: mobile,
-        MessageAttributes: {
-          "AWS.MM.SMS.OriginationNumber": {
-            DataType: "String",
-            StringValue: process.env.TEN_DLC,
-          },
-        },
-      };
-      sns.publish(sendSMS, (err, result) => {
-        if (err) {
-          console.info(err);
-        } else {
-          console.info(result);
-        }
-      });
-      await updateCodeByPhoneNumber(OTP, param);
     }
+
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PWD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: param.email,
+      subject: 'Password Reset Request',
+      text: `Your password reset token link is ..`,
+    };
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+        // res.status(500).json({ message: 'Error sending email' });
+      } else {
+        console.log('Email sent:', info.response);
+        // res.json({ message: 'Password reset email sent' });
+      }
+    });
 
     return {
       err: false,
-      msg: "OTP send in your phone number.",
+      msg: "Password reset link sent into your inbox.",
     };
   } catch (error) {
     return {
@@ -359,7 +274,7 @@ exports.changePassword = async (param) => {
     const user = param.user;
     const checkOldPwd = await getOldPassword(
       user.id,
-      passwordEncrypt(param.oldPassword)
+      passwordEncrypt(param.currentPassword)
     );
     if (!checkOldPwd) {
       return {
@@ -602,13 +517,9 @@ exports.updateNewNumber = async (param) => {
   }
 };
 
-exports.logout = async (id) => {
+exports.logout = async (id, req) => {
   try {
-    const safetyplan = await findSafetyPlan(id);
-    if (safetyplan) {
-      await updateStatus(STATUS.COMPLETED, id);
-    }
-    await deleteToken(id);
+    await deleteToken(id, req);
     return {
       err: false,
       data: null,
@@ -683,7 +594,14 @@ exports.updateProfile = async (param) => {
       };
     }
 
-    await updateProfiles(param.name, param.email, param.user.id);
+    await updateProfiles(
+      param.firstName,
+      param.lastName,
+      param.contactNumber,
+      param.address,
+      param.email,
+      param.user.id
+    );
 
     return {
       err: false,
@@ -748,7 +666,7 @@ exports.settings = async (req) => {
       html_type: req.body.htmlType,
       url,
     };
-    console.log('~ data', data)
+    console.log("~ data", data);
     return {
       err: false,
       data,

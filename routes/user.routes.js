@@ -3,11 +3,24 @@ const router = express.Router();
 
 const userController = require("../controllers/user/user.controller");
 const userValidator = require("../controllers/user/user.validator");
-const { authorization } = require("../helpers/helpers");
+const { authorization, authorizationUser} = require("../helpers/helpers");
 
 router.post("/signup", userValidator.signup, userController.signup);
 router.post("/login", userValidator.login, userController.login);
-router.get("/logout", authorization, userController.logout);
+router.post(
+  "/change-password",
+  authorization,
+  userValidator.changePassword,
+  userController.changePassword
+);
+router.put(
+  "/update-profile",
+  authorization,
+  userValidator.updateProfile,
+  userController.updateProfile
+);
+
+router.get("/logout", authorizationUser, userController.logout);
 
 router.post(
   "/refresh-token",
@@ -26,12 +39,7 @@ router.post(
   userController.resetPassword
 );
 
-router.post(
-  "/change-password",
-  authorization,
-  userValidator.changePassword,
-  userController.changePassword
-);
+
 
 router.post(
   "/code-verify",
@@ -62,12 +70,7 @@ router.post(
 
 router.post("/notification-send", userController.notificationSend);
 
-router.put(
-  "/update-profile",
-  authorization,
-  userValidator.updateProfile,
-  userController.updateProfile
-);
+
 
 router.delete(
   "/delete-account",
